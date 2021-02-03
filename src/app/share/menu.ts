@@ -6,22 +6,97 @@ export interface MenuItem {
   icon: string;
 }
 
-const MODULE1 = 'module1';
-const MODULE2 = 'module2';
+const RESOURCES = 'resources';
+const MODEL = 'model';
 const MENUS: {[key: string]: MenuItem[]} = {
-  [MODULE1]: [
+  [RESOURCES]: [
     {
-      id: 'menu1',
-      name: '菜单1',
-      icon: 'menu',
+      id: 'appMember',
+      name: 'appMember',
+      icon: '',
     },
     {
-      id: 'menu2',
-      name: '菜单2',
-      icon: 'menu',
-    }
+      id: 'app',
+      name: 'app',
+      icon: '',
+    },
+    {
+      id: 'bizMember',
+      name: 'bizMember',
+      icon: '',
+    },
+    {
+      id: 'biz',
+      name: 'biz',
+      icon: '',
+    },
+    {
+      id: 'cluster',
+      name: 'cluster',
+      icon: '',
+    },
+    {
+      id: 'evn',
+      name: 'evn',
+      icon: '',
+    },
+    {
+      id: 'host',
+      name: 'host',
+      icon: '',
+    },
+    {
+      id: 'idc',
+      name: 'idc',
+      icon: '',
+    },
+    {
+      id: 'instance',
+      name: 'instance',
+      icon: '',
+    },
+    {
+      id: 'logicIdcEnv',
+      name: 'logicIdcEnv',
+      icon: '',
+    },
+    {
+      id: 'logicIdc',
+      name: 'logicIdc',
+      icon: '',
+    },
+    {
+      id: 'programmingLanguage',
+      name: 'programmingLanguage',
+      icon: '',
+    },
+    {
+      id: 'replicaSetMember',
+      name: 'replicaSetMember',
+      icon: '',
+    },
+    {
+      id: 'replicaSet',
+      name: 'replicaSet',
+      icon: '',
+    },
+    {
+      id: 'repository',
+      name: 'repository',
+      icon: '',
+    },
+    {
+      id: 'user',
+      name: 'user',
+      icon: '',
+    },
+    {
+      id: 'vcs',
+      name: 'vcs',
+      icon: '',
+    },
   ],
-  [MODULE2]: [
+  [MODEL]: [
     {
       id: 'menu21',
       name: '菜单21',
@@ -34,17 +109,17 @@ const MENUS: {[key: string]: MenuItem[]} = {
     }
   ],
 };
-const ALL_MODULE1 = MENUS[MODULE1];
-const ALL_MODULE2 = MENUS[MODULE2];
+const ALL_RESOURCES = MENUS[RESOURCES];
+const ALL_MODEL = MENUS[MODEL];
 const ALL_SECTIONS: MenuItem[] = [
   {
-    id: MODULE1,
-    name: '模块1',
+    id: RESOURCES,
+    name: '资源',
     icon: '',
   },
   {
-    id: MODULE2,
-    name: '模块2',
+    id: MODEL,
+    name: '模型',
     icon: '',
   }
 ];
@@ -58,11 +133,11 @@ export class MenuItems {
   }
 
   getItems(section: string): MenuItem[]{
-    if (section === MODULE1) {
-      return ALL_MODULE1;
+    if (section === RESOURCES) {
+      return ALL_RESOURCES;
     }
-    if (section === MODULE2) {
-      return ALL_MODULE2;
+    if (section === MODEL) {
+      return ALL_MODEL;
     }
     return [];
   }

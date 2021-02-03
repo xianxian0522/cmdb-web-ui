@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { Module2RoutingModule } from './module2-routing.module';
+import { ModelRoutingModule } from './model-routing.module';
 import { Menu21Component } from './menu21/menu21.component';
 import { Menu22Component } from './menu22/menu22.component';
 
@@ -10,7 +10,7 @@ import { Menu22Component } from './menu22/menu22.component';
   declarations: [Menu21Component, Menu22Component],
   imports: [
     CommonModule,
-    Module2RoutingModule
+    ModelRoutingModule
   ]
 })
-export class Module2Module { }
+export class ModelModule { }

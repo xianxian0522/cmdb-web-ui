@@ -4,16 +4,16 @@ import {LayoutComponent} from './layout.component';
 
 const routes: Routes = [
   {
-    path: 'module1',
-    data: {section: 'module1'},
+    path: 'resources',
+    data: {section: 'resources'},
     component: LayoutComponent,
-    loadChildren: () => import('../../pages/module1/module1.module').then(m => m.Module1Module)
+    loadChildren: () => import('../../pages/resources/resources.module').then(m => m.ResourcesModule)
   },
   {
-    path: 'module2',
-    data: {section: 'module2'},
+    path: 'model',
+    data: {section: 'model'},
     component: LayoutComponent,
-    loadChildren: () => import('../../pages/module2/module2.module').then(m => m.Module2Module)
+    loadChildren: () => import('../../pages/model/model.module').then(m => m.ModelModule)
   },
   {
     path: '**', component: LayoutComponent
