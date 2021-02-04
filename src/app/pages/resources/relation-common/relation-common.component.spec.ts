@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Menu2Component } from './menu2.component';
+import { RelationCommonComponent } from './relation-common.component';
 
-describe('Menu2Component', () => {
-  let component: Menu2Component;
-  let fixture: ComponentFixture<Menu2Component>;
+describe('RelationCommonComponent', () => {
+  let component: RelationCommonComponent;
+  let fixture: ComponentFixture<RelationCommonComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ Menu2Component ]
+      declarations: [ RelationCommonComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(Menu2Component);
+    fixture = TestBed.createComponent(RelationCommonComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

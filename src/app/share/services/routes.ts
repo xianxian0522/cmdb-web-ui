@@ -11,10 +11,6 @@ export class GetServicesRoutes {
 }
 
 export function getRoutes(): Routes {
-    const http = GetServicesRoutes.prototype.getHttp();
-    // http.post(`/api/v1/AppMemberService/GetAppMember`, null).subscribe(res => {
-    //   console.log(res);
-    // });
     const r = [
         {path: '', redirectTo: 'appMember', pathMatch: 'full'},
         {path: 'appMember', component: ResourcesCommonComponent},

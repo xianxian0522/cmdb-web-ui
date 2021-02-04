@@ -1,4 +1,4 @@
-import {Component, OnInit, EventEmitter, Output, ViewChild, AfterViewInit} from '@angular/core';
+import {AfterViewInit, Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
 import {BaseRepository} from '../../../share/services/base.repository';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {NzTableComponent} from 'ng-zorro-antd/table';
@@ -19,7 +19,7 @@ export class ResourcesCommonComponent implements OnInit, AfterViewInit {
       private layoutComponent: LayoutComponent,
   ) { }
 
-  searchForm: FormGroup = this.fb.group({});
+  searchForm: FormGroup = this.fb.group({Username: null});
   @Output() refresh = new EventEmitter();
   data = [];
   total = 1;

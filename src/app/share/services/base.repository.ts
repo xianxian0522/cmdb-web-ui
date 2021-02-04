@@ -11,7 +11,8 @@ export class BaseRepository<MODEL extends {id?: number}>{
     protected constructor(protected httpClient: HttpClient) {}
 
     queryPage(resourceUrl: string, model: any): Observable<any> {
-        return this.httpClient.post(`${Api}/${resourceUrl}Service/Query${resourceUrl}`, model);
+        const body = this.genParams(model);
+        return this.httpClient.post(`${Api}/${resourceUrl}Service/Query${resourceUrl}`, body);
     }
     add(resourceUrl: string, model: any): Observable<any> {
         return this.httpClient.post(`${Api}/${resourceUrl}Service/Create${resourceUrl}`, model);
@@ -27,5 +28,25 @@ export class BaseRepository<MODEL extends {id?: number}>{
     }
     queryById(resourceUrl: string, model: any): Observable<any> {
         return this.httpClient.post(`${Api}/${resourceUrl}Service/Get${resourceUrl}`, model);
+    }
+
+    protected genParams(q?: {[key: string]: any}): any {
+        const body = {};
+        const addValue = (key, value) => {
+            if (value === 0 || value === false || value) {
+                body[key] = value;
+            }
+        };
+        if (q) {
+            Object.keys(q).forEach(k => {
+                const v = q[k];
+                // if (v instanceof Array) {
+                //     v.forEach(vv => addValue(k, vv));
+                //     return;
+                // }
+                addValue(k, v);
+            });
+        }
+        return body;
     }
 }

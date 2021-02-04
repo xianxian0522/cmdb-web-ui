@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { ResourcesRoutingModule } from './resources-routing.module';
 import { ResourcesCommonComponent } from './resources-common/resources-common.component';
-import { Menu2Component } from './menu2/menu2.component';
+import { RelationCommonComponent } from './relation-common/relation-common.component';
 import {NzTableModule} from 'ng-zorro-antd/table';
 import {NzInputModule} from 'ng-zorro-antd/input';
 import {NzFormModule} from 'ng-zorro-antd/form';
@@ -16,7 +16,10 @@ import {NzMessageModule} from 'ng-zorro-antd/message';
 
 
 @NgModule({
-  declarations: [ResourcesCommonComponent, Menu2Component],
+  declarations: [
+    ResourcesCommonComponent,
+    RelationCommonComponent,
+  ],
   imports: [
     CommonModule,
     ResourcesRoutingModule,

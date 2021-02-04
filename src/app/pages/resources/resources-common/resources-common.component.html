@@ -1,77 +1,86 @@
-<div nz-form nzLayout="inline" [formGroup]="searchForm" class="common-header">
-    <button nz-button nzType="primary" (click)="showCreateDialog()">新增</button>
-    <button nz-button nzType="primary" nzDanger nz-popconfirm nzPopconfirmTitle="确定要删除选择的吗" (nzOnCancel)="deleteCancel()" (nzOnConfirm)="deleteSelectByID()">删除</button>
-    <button nz-button nzType="primary" (click)="refresh.emit()">刷新</button>
-<!--    <nz-form-item *ngFor="let search of searchQuestion">-->
-<!--        <nz-form-label [nzSpan]="10" nzNoColon>{{search.column}}</nz-form-label>-->
-<!--        <nz-form-control [nzSpan]="14">-->
-<!--            <input nz-input [formControlName]="search.id" [placeholder]="search.column" nzSize="small">-->
-<!--        </nz-form-control>-->
-<!--    </nz-form-item >-->
+<div>
+    <div nz-form nzLayout="inline" [formGroup]="searchForm" class="common-header">
+        <button nz-button nzType="primary" (click)="showCreateDialog()">新增</button>
+        <button nz-button nzType="primary" nzDanger nz-popconfirm nzPopconfirmTitle="确定要删除选择的吗" (nzOnCancel)="deleteCancel()" (nzOnConfirm)="deleteSelectByID()">删除</button>
+        <button nz-button nzType="primary" (click)="refresh.emit()">刷新</button>
+        <nz-form-item>
+            <nz-form-label nzSpan="10" nzNoColon>Username</nz-form-label>
+            <nz-form-control nzSpan="14">
+                <input nz-input formControlName="Username" placeholder="Username" nzSize="small">
+            </nz-form-control>
+        </nz-form-item>
+        <!--    <nz-form-item *ngFor="let search of searchQuestion">-->
+        <!--        <nz-form-label [nzSpan]="10" nzNoColon>{{search.column}}</nz-form-label>-->
+        <!--        <nz-form-control [nzSpan]="14">-->
+        <!--            <input nz-input [formControlName]="search.id" [placeholder]="search.column" nzSize="small">-->
+        <!--        </nz-form-control>-->
+        <!--    </nz-form-item >-->
+    </div>
+
+    <div>
+        <nz-table
+            #rowSelectionTable
+            nzShowPagination
+            nzShowSizeChanger
+            [nzFrontPagination]="false"
+            (nzCurrentPageDataChange)="onCurrentPageDataChange()"
+            [nzData]="data"
+            [nzTotal]="total"
+            [nzPageSize]="pageSize"
+            [nzPageIndex]="pageIndex"
+            [nzScroll]="{ x: '2400px' }"
+            [nzLoading]="isLoadingResults"
+        >
+            <thead>
+            <tr>
+                <th nzLeft nzWidth="30px" [nzChecked]="checked" [nzIndeterminate]="indeterminate" (nzCheckedChange)="onAllChecked($event)"></th>
+                <!--            <th [nzWidth]="col.id === 'id' ? '80px' : col.id === 'name' ? '120px' : col.id === 'ipAddress' ? '180px' : 'auto'" [nzLeft]="col.id === 'id' || col.id === 'name' || col.id === 'ipAddress'" *ngFor="let col of colNames">{{col.name}}</th>-->
+                <th nzWidth="80px" nzLeft>ID</th>
+                <th>DingTalkUserID</th>
+                <th>State</th>
+                <th>Mail</th>
+                <th>Mobile</th>
+                <th>Password</th>
+                <th>Username</th>
+                <th>RealName</th>
+                <th>ReplicaSetMembers</th>
+                <th nzWidth="200px">创建时间</th>
+                <th nzWidth="200px">更新时间</th>
+                <th nzRight nzWidth="120px">操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let data of rowSelectionTable.data">
+                <td nzLeft
+                    [nzChecked]="setOfCheckedId.has(data.id)"
+                    [nzDisabled]="data.disabled"
+                    (nzCheckedChange)="onItemChecked(data.id, $event)"
+                ></td>
+                <!--            <td [nzLeft]="col.id === 'id' || col.id === 'name' || col.id === 'ipAddress'" *ngFor="let col of colNames">{{ data[col.id]}}</td>-->
+                <td nzLeft>{{ data.ID }}</td>
+                <td>{{ data.DingTalkUserID }}</td>
+                <td>{{ data.State }}</td>
+                <td>{{ data.Mail }}</td>
+                <td>{{ data.Mobile }}</td>
+                <td>{{ data.Password }}</td>
+                <td>{{ data.Username }}</td>
+                <td>{{ data.RealName }}</td>
+                <td>{{ data.ReplicaSetMembers }}</td>
+                <td>{{ data.CreatedAt | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
+                <td>{{ data.UpdatedAt | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
+                <td nzRight>
+                    <div style="display: flex;">
+                        <button nz-button nzType="text" (click)="showEditDialog(data)">
+                            <i nz-icon nzType="edit" nzTheme="outline"></i>
+                        </button>
+                        <a nz-button nzType="text" routerLink="relation">
+                            <i nz-icon nzType="search" nzTheme="outline"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </nz-table>
+    </div>
 </div>
 
-<div>
-    <nz-table
-        #rowSelectionTable
-        nzShowPagination
-        nzShowSizeChanger
-        [nzFrontPagination]="false"
-        (nzCurrentPageDataChange)="onCurrentPageDataChange()"
-        [nzData]="data"
-        [nzTotal]="total"
-        [nzPageSize]="pageSize"
-        [nzPageIndex]="pageIndex"
-        [nzScroll]="{ x: '2400px' }"
-        [nzLoading]="isLoadingResults"
-    >
-        <thead>
-        <tr>
-            <th nzLeft nzWidth="30px" [nzChecked]="checked" [nzIndeterminate]="indeterminate" (nzCheckedChange)="onAllChecked($event)"></th>
-<!--            <th [nzWidth]="col.id === 'id' ? '80px' : col.id === 'name' ? '120px' : col.id === 'ipAddress' ? '180px' : 'auto'" [nzLeft]="col.id === 'id' || col.id === 'name' || col.id === 'ipAddress'" *ngFor="let col of colNames">{{col.name}}</th>-->
-            <th nzWidth="80px" nzLeft>ID</th>
-            <th>DingTalkUserID</th>
-            <th>State</th>
-            <th>Mail</th>
-            <th>Mobile</th>
-            <th>Password</th>
-            <th>Username</th>
-            <th>RealName</th>
-            <th>ReplicaSetMembers</th>
-            <th nzWidth="200px">创建时间</th>
-            <th nzWidth="200px">更新时间</th>
-            <th nzRight nzWidth="120px">操作</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr *ngFor="let data of rowSelectionTable.data">
-            <td nzLeft
-                [nzChecked]="setOfCheckedId.has(data.id)"
-                [nzDisabled]="data.disabled"
-                (nzCheckedChange)="onItemChecked(data.id, $event)"
-            ></td>
-<!--            <td [nzLeft]="col.id === 'id' || col.id === 'name' || col.id === 'ipAddress'" *ngFor="let col of colNames">{{ data[col.id]}}</td>-->
-            <td nzLeft>{{ data.ID }}</td>
-            <td>{{ data.DingTalkUserID }}</td>
-            <td>{{ data.State }}</td>
-            <td>{{ data.Mail }}</td>
-            <td>{{ data.Mobile }}</td>
-            <td>{{ data.Password }}</td>
-            <td>{{ data.Username }}</td>
-            <td>{{ data.RealName }}</td>
-            <td>{{ data.ReplicaSetMembers }}</td>
-            <td>{{ data.CreatedAt | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
-            <td>{{ data.UpdatedAt | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
-            <td nzRight>
-                <div style="display: flex;">
-                    <button nz-button nzType="text" (click)="showEditDialog(data)">
-                        <i nz-icon nzType="edit" nzTheme="outline"></i>
-                    </button>
-                    <button nz-button nzType="text" (click)="showEditDialog(data)">
-                        <i nz-icon nzType="search" nzTheme="outline"></i>
-                    </button>
-                </div>
-            </td>
-        </tr>
-        </tbody>
-    </nz-table>
-</div>
