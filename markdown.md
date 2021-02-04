@@ -17,7 +17,7 @@
 ```ts
 [MODULE1]: [
     {
-      id: 'menu1',
+      id: 'resources-common',
       name: '菜单1',
       icon: 'menu',
     }
