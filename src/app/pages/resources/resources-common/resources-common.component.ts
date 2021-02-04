@@ -4,6 +4,7 @@ import {FormBuilder, FormGroup} from '@angular/forms';
 import {NzTableComponent} from 'ng-zorro-antd/table';
 import {merge} from 'rxjs';
 import {debounceTime, map, switchMap} from 'rxjs/operators';
+import {LayoutComponent} from '../../../share/layout/layout.component';
 
 @Component({
   selector: 'app-menu1',
@@ -15,6 +16,7 @@ export class ResourcesCommonComponent implements OnInit, AfterViewInit {
   constructor(
       private baseRepository: BaseRepository<any>,
       private fb: FormBuilder,
+      private layoutComponent: LayoutComponent,
   ) { }
 
   searchForm: FormGroup = this.fb.group({});
@@ -28,6 +30,7 @@ export class ResourcesCommonComponent implements OnInit, AfterViewInit {
   indeterminate = false;
   setOfCheckedId = new Set<number>();
   @ViewChild(NzTableComponent) table: NzTableComponent;
+  resourceUrl: string;
 
   updateCheckedSet(id: number, checked: boolean): void {
     if (checked) {
@@ -54,6 +57,8 @@ export class ResourcesCommonComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
+    this.resourceUrl = this.layoutComponent.baseTitle[0].toUpperCase() + this.layoutComponent.baseTitle.slice(1);
+    console.log(this.resourceUrl);
   }
   ngAfterViewInit(): void {
     merge(this.refresh, this.table.nzPageIndexChange, this.table.nzPageSizeChange, this.searchForm.valueChanges)
@@ -66,7 +71,7 @@ export class ResourcesCommonComponent implements OnInit, AfterViewInit {
             Offset: (this.table.nzPageIndex - 1) * this.table.nzPageSize,
             ...this.searchForm.value
           };
-          return this.baseRepository.queryPage('User', obj);
+          return this.baseRepository.queryPage(this.resourceUrl, obj);
         }),
         map(data => {
           this.isLoadingResults = false;
@@ -75,7 +80,7 @@ export class ResourcesCommonComponent implements OnInit, AfterViewInit {
         })
       ).subscribe(res => {
         this.data = res ? res : [];
-        console.log(this.data, this.total);
+        // console.log(this.data, this.total);
     });
     this.refresh.emit();
   }

@@ -36,8 +36,8 @@ const MENUS: {[key: string]: MenuItem[]} = {
       icon: '',
     },
     {
-      id: 'evn',
-      name: 'evn',
+      id: 'env',
+      name: 'env',
       icon: '',
     },
     {

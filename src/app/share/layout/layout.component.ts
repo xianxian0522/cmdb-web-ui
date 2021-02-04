@@ -20,6 +20,7 @@ export class LayoutComponent implements OnInit {
   section: string;
   sections: MenuItem[];
   sectionItem: MenuItem[];
+  baseTitle: string;
 
   ngOnInit(): void {
     this.sections = this.menuItems.getAllSections();
@@ -27,12 +28,17 @@ export class LayoutComponent implements OnInit {
     console.log(url, location.pathname);
     this.section = url.split('/')[1];
     this.sectionItem = this.menuItems.getItems(this.section);
-    const titleName = this.sectionItem.filter(v => v.id === url.split('/')[2]).map(n => n.name)[0];
-    this.title.setTitle(this.section.toUpperCase() + '-' + titleName);
+    this.titleCommon(url);
+
     this.location.onUrlChange(r => {
-      const t = this.sectionItem.filter(v => v.id === r.split('/')[2]).map(n => n.name)[0];
-      this.title.setTitle(this.section.toUpperCase() + '-' + t);
+      this.titleCommon(r);
     });
   }
 
+  titleCommon(url): void {
+    const titleName = this.sectionItem.filter(v => v.id === url.split('/')[2]).map(n => n.name)[0];
+    this.title.setTitle(this.section.toUpperCase() + '-' + titleName);
+
+    this.baseTitle = url.split('/')[2];
+  }
 }

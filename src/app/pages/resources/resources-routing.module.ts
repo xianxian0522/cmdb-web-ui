@@ -10,7 +10,7 @@ const routes: Routes = [
   // {path: 'bizMember', component: ResourcesCommonComponent},
   // {path: 'biz', component: ResourcesCommonComponent},
   // {path: 'cluster', component: ResourcesCommonComponent},
-  // {path: 'evn', component: ResourcesCommonComponent},
+  // {path: 'env', component: ResourcesCommonComponent},
   // {path: 'host', component: ResourcesCommonComponent},
   // {path: 'idc', component: ResourcesCommonComponent},
   // {path: 'instance', component: ResourcesCommonComponent},
