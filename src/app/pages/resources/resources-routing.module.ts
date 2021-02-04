@@ -5,7 +5,7 @@ import {getRoutes} from '../../share/services/routes';
 
 const routes: Routes = [
   {path: '', redirectTo: 'appMember', pathMatch: 'full'},
-  // {path: 'appMember', component: ResourcesCommonComponent},
+  {path: 'appMember', component: ResourcesCommonComponent},
   // {path: 'app', component: ResourcesCommonComponent},
   // {path: 'bizMember', component: ResourcesCommonComponent},
   // {path: 'biz', component: ResourcesCommonComponent},

@@ -16,6 +16,7 @@ export function getRoutes(): Routes {
     //   console.log(res);
     // });
     const r = [
+        {path: '', redirectTo: 'appMember', pathMatch: 'full'},
         {path: 'appMember', component: ResourcesCommonComponent},
         {path: 'app', component: ResourcesCommonComponent},
         {path: 'bizMember', component: ResourcesCommonComponent},

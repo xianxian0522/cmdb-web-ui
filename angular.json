@@ -17,6 +17,10 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "allowedCommonJsDependencies": [
+              "lodash",
+              "tinycolor2"
+            ],
             "outputPath": "dist/project-template",
             "index": "src/index.html",
             "main": "src/main.ts",
