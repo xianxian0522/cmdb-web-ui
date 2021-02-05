@@ -13,12 +13,16 @@ import {NzIconModule} from 'ng-zorro-antd/icon';
 import {NzPopconfirmModule} from 'ng-zorro-antd/popconfirm';
 import {NzModalModule} from 'ng-zorro-antd/modal';
 import {NzMessageModule} from 'ng-zorro-antd/message';
+import { ResourcesCommonEditComponent } from './resources-common/resources-common-edit.component';
+import {NzSelectModule} from 'ng-zorro-antd/select';
+import {NzInputNumberModule} from 'ng-zorro-antd/input-number';
 
 
 @NgModule({
   declarations: [
     ResourcesCommonComponent,
     RelationCommonComponent,
+    ResourcesCommonEditComponent,
   ],
   imports: [
     CommonModule,
@@ -33,6 +37,8 @@ import {NzMessageModule} from 'ng-zorro-antd/message';
     NzPopconfirmModule,
     NzModalModule,
     NzMessageModule,
+    NzSelectModule,
+    NzInputNumberModule,
   ]
 })
 export class ResourcesModule { }

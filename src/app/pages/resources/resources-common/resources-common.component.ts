@@ -5,6 +5,9 @@ import {NzTableComponent} from 'ng-zorro-antd/table';
 import {merge} from 'rxjs';
 import {debounceTime, map, switchMap} from 'rxjs/operators';
 import {LayoutComponent} from '../../../share/layout/layout.component';
+import {NzMessageService} from 'ng-zorro-antd/message';
+import { NzModalService} from 'ng-zorro-antd/modal';
+import {ResourcesCommonEditComponent} from './resources-common-edit.component';
 
 @Component({
   selector: 'app-menu1',
@@ -17,6 +20,8 @@ export class ResourcesCommonComponent implements OnInit, AfterViewInit {
       private baseRepository: BaseRepository<any>,
       private fb: FormBuilder,
       private layoutComponent: LayoutComponent,
+      private messageService: NzMessageService,
+      private modalService: NzModalService,
   ) { }
 
   searchForm: FormGroup = this.fb.group({Username: null});
@@ -86,10 +91,27 @@ export class ResourcesCommonComponent implements OnInit, AfterViewInit {
   }
 
   showCreateDialog(): void {
-
+    this.modalService.create({
+      nzFooter: null,
+      nzComponentParams: {data: {}, mode: 'create', resourceUrl: this.resourceUrl},
+      nzContent: ResourcesCommonEditComponent,
+    }).afterClose.subscribe(_ => {
+      if (_) {
+        this.refresh.emit();
+      }
+    });
   }
   showEditDialog(ele): void {
-
+    this.modalService.create({
+      nzContent: ResourcesCommonEditComponent,
+      nzFooter: null,
+      nzComponentParams: {data: ele, mode: 'edit', resourceUrl: this.resourceUrl},
+    }).afterClose.subscribe(_ => {
+      console.log(_, 'edit');
+      if (_) {
+        this.refresh.emit();
+      }
+    });
   }
   deleteCancel(): void {
 
