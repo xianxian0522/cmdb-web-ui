@@ -30,6 +30,7 @@ export class ResourcesCommonEditComponent implements OnInit {
   selectList = [];
 
   ngOnInit(): void {
+    this.modeTitle = this.resourceUrl;
     this.questions = [
       {
         value: null,
@@ -115,7 +116,7 @@ export class ResourcesCommonEditComponent implements OnInit {
         value: null,
         id: 'Username',
         name: '用户名',
-        must: false,
+        must: true,
         inputType: 'input',
         type: '',
         validation: '',
@@ -123,6 +124,19 @@ export class ResourcesCommonEditComponent implements OnInit {
       },
     ];
     this.editForm = this.questionServices.toFormGroup(this.questions);
+
+    if (this.mode === 'edit') {
+      // 查关联
+      this.baseRepository.queryById('User',
+        {
+          ID: this.data.ID,
+          WithParent: true,
+        }).subscribe(res => {
+        if (res.Parent) {
+          this.editForm.get('ParentID').setValue(res.Parent.ID);
+        }
+      });
+    }
     this.editForm.patchValue({...this.data});
 
     this.baseRepository.queryPage('User', {}).subscribe(res => {
@@ -132,7 +146,7 @@ export class ResourcesCommonEditComponent implements OnInit {
   }
 
   onClose(): void {
-
+    this.modalRef.close();
   }
   onSubmit(): void {
     const value = {...this.editForm.value};

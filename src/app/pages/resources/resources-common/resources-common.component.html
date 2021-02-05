@@ -52,9 +52,9 @@
             <tbody>
             <tr *ngFor="let data of rowSelectionTable.data">
                 <td nzLeft
-                    [nzChecked]="setOfCheckedId.has(data.id)"
+                    [nzChecked]="setOfCheckedId.has(data.ID)"
                     [nzDisabled]="data.disabled"
-                    (nzCheckedChange)="onItemChecked(data.id, $event)"
+                    (nzCheckedChange)="onItemChecked(data.ID, $event)"
                 ></td>
                 <!--            <td [nzLeft]="col.id === 'id' || col.id === 'name' || col.id === 'ipAddress'" *ngFor="let col of colNames">{{ data[col.id]}}</td>-->
                 <td nzLeft>{{ data.ID }}</td>

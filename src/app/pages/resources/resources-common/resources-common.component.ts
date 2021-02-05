@@ -49,11 +49,11 @@ export class ResourcesCommonComponent implements OnInit, AfterViewInit {
   }
   refreshCheckedStatus(): void {
     const data = this.data;
-    this.checked = data.every(({ id }) => this.setOfCheckedId.has(id));
-    this.indeterminate = data.some(({ id }) => this.setOfCheckedId.has(id)) && !this.checked;
+    this.checked = data.every(({ ID }) => this.setOfCheckedId.has(ID));
+    this.indeterminate = data.some(({ ID }) => this.setOfCheckedId.has(ID)) && !this.checked;
   }
   onAllChecked(checked: boolean): void {
-    this.data.forEach(({ id }) => this.updateCheckedSet(id, checked));
+    this.data.forEach(({ ID }) => this.updateCheckedSet(ID, checked));
     this.refreshCheckedStatus();
   }
   onItemChecked(id: number, checked: boolean): void {
@@ -114,9 +114,20 @@ export class ResourcesCommonComponent implements OnInit, AfterViewInit {
     });
   }
   deleteCancel(): void {
-
+    this.messageService.info('取消删除');
   }
   deleteSelectByID(): void {
-
+    const idSet = this.setOfCheckedId;
+    const ids = Array.from(idSet);
+    if (ids.length === 0) {
+      this.messageService.info('未选择要删除的');
+      return;
+    }
+    ids.forEach(ID => {
+      this.baseRepository.delete(this.resourceUrl, {ID}).subscribe(res => {
+        console.log(res, 'delete');
+        this.setOfCheckedId.delete(ID);
+      }, err => this.messageService.error(err));
+    });
   }
 }

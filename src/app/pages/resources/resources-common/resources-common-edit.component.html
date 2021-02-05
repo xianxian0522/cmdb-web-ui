@@ -1,5 +1,5 @@
 <h2 nz-row="24">
-  <div nz-col nzSpan="8" nzOffset="3" >{{mode === 'edit' ? '修改' + modeTitle : '创建' + modeTitle}}</div>
+  <div nz-col nzSpan="16" nzOffset="3" >{{mode === 'edit' ? '修改' + modeTitle : '创建' + modeTitle}}</div>
 </h2>
 <form nz-form nzLayout="horizontal" [formGroup]="editForm">
   <div *ngFor="let question of questions">
