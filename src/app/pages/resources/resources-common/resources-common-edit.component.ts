@@ -30,97 +30,132 @@ export class ResourcesCommonEditComponent implements OnInit {
   selectList = [];
 
   ngOnInit(): void {
-    this.modeTitle = this.resourceUrl;
     this.questions = [
       {
         value: null,
         id: 'ID',
-        name: 'ID',
+        Description: 'ID',
         must: false,
         inputType: 'input',
-        type: '',
+        Nillable: true,
+        Optional: true,
+        Type: 'string',
+        Immutable: false,
         validation: '',
         options: [],
+        isEnum: false,
       },
       {
         value: null,
         id: 'DingTalkUserID',
-        name: '钉用户id',
+        Description: '钉用户id',
         must: false,
         inputType: 'input',
-        type: '',
+        Nillable: true,
+        Optional: true,
+        Type: 'string',
+        Immutable: false,
         validation: '',
         options: [],
+        isEnum: false,
       },
       {
         value: null,
         id: 'Mail',
-        name: '邮箱',
+        Description: '邮箱',
         must: false,
         inputType: 'input',
-        type: '',
+        Nillable: true,
+        Optional: true,
+        Type: 'string',
+        Immutable: false,
         validation: '',
-        options: []
+        options: [],
+        isEnum: false,
       },
       {
         value: null,
         id: 'Mobile',
-        name: '电话',
+        Description: '电话',
         must: false,
         inputType: 'input',
-        type: '',
+        Nillable: true,
+        Optional: true,
+        Type: 'string',
+        Immutable: false,
         validation: '',
-        options: []
+        options: [],
+        isEnum: false,
       },
       {
         value: null,
         id: 'ParentID',
-        name: '上级',
+        Description: '上级',
         must: false,
         inputType: 'select',
-        type: '',
+        Nillable: true,
+        Optional: true,
+        Type: 'string',
+        Immutable: false,
         validation: '',
         options: [],
+        isEnum: false,
       },
       {
         value: null,
         id: 'Password',
-        name: '密码',
+        Description: '密码',
         must: false,
         inputType: 'input',
-        type: '',
+        Nillable: true,
+        Optional: true,
+        Type: 'string',
         validation: '',
+        Immutable: false,
         options: [],
+        isEnum: false,
       },
       {
         value: null,
         id: 'RealName',
-        name: '名字',
+        Description: '名字',
         must: false,
         inputType: 'input',
-        type: '',
+        Nillable: true,
+        Optional: true,
+        Type: 'string',
         validation: '',
+        Immutable: false,
         options: [],
+        isEnum: false,
       },
       {
         value: null,
         id: 'State',
-        name: '状态',
+        Description: '状态',
         must: true,
         inputType: 'input',
-        type: '',
+        Nillable: true,
+        Optional: true,
+        Type: 'string',
         validation: '',
+        Immutable: false,
         options: [],
+        isEnum: false,
       },
       {
         value: null,
         id: 'Username',
-        name: '用户名',
+        Description: '用户名',
         must: true,
         inputType: 'input',
-        type: '',
+        Nillable: true,
+        Optional: true,
+        Type: 'string',
         validation: '',
+        Immutable: false,
         options: [],
+        isEnum: false,
       },
     ];
     this.editForm = this.questionServices.toFormGroup(this.questions);
@@ -140,8 +175,19 @@ export class ResourcesCommonEditComponent implements OnInit {
     this.editForm.patchValue({...this.data});
 
     this.baseRepository.queryPage('User', {}).subscribe(res => {
-      console.log(res);
       this.selectList = res;
+    });
+
+    this.baseRepository.getModel(this.resourceUrl).subscribe(res => {
+      this.modeTitle = res.Description;
+      console.log(res);
+      const arr = Object.keys(res.Properties).map(key => ({id: key, ...res.Properties[key],
+        isEnum: res.Properties.hasOwnProperty('Enum')}));
+      const edit = this.questionServices.toTextFormGroup(arr);
+      this.questions = arr;
+      this.editForm = edit;
+      console.log(edit, 'model editForm');
+      console.log(this.questions, 'questions');
     });
   }
 

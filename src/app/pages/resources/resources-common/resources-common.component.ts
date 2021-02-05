@@ -36,6 +36,7 @@ export class ResourcesCommonComponent implements OnInit, AfterViewInit {
   setOfCheckedId = new Set<number>();
   @ViewChild(NzTableComponent) table: NzTableComponent;
   resourceUrl: string;
+  colNames;
 
   updateCheckedSet(id: number, checked: boolean): void {
     if (checked) {
@@ -61,9 +62,25 @@ export class ResourcesCommonComponent implements OnInit, AfterViewInit {
     this.refreshCheckedStatus();
   }
 
+  getEnum(v: string, list): string {
+    // Enum可枚举的V是填的值 N是展示的值
+    return list.filter(value => value.V === v).map(n => n.N);
+  }
+
   ngOnInit(): void {
     this.resourceUrl = this.layoutComponent.baseTitle[0].toUpperCase() + this.layoutComponent.baseTitle.slice(1);
     console.log(this.resourceUrl);
+
+    this.baseRepository.getModel(this.resourceUrl).subscribe(col => {
+      this.colNames = Object.keys(col.Properties).map(key => {
+        return {
+          name: col.Properties[key].Description ? col.Properties[key].Description : key,
+          id: key,
+          list: col.Properties[key].Enum ? col.Properties[key].Enum : null
+        };
+      });
+      console.log(this.colNames);
+    });
   }
   ngAfterViewInit(): void {
     merge(this.refresh, this.table.nzPageIndexChange, this.table.nzPageSizeChange, this.searchForm.valueChanges)
@@ -127,6 +144,7 @@ export class ResourcesCommonComponent implements OnInit, AfterViewInit {
       this.baseRepository.delete(this.resourceUrl, {ID}).subscribe(res => {
         console.log(res, 'delete');
         this.setOfCheckedId.delete(ID);
+        this.refresh.emit();
       }, err => this.messageService.error(err));
     });
   }

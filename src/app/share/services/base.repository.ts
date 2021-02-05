@@ -29,6 +29,9 @@ export class BaseRepository<MODEL extends {id?: number}>{
     queryById(resourceUrl: string, model: any): Observable<any> {
         return this.httpClient.post(`${Api}/${resourceUrl}Service/Get${resourceUrl}`, model);
     }
+    getModel(resourceUrl: string): Observable<any> {
+        return this.httpClient.get(`${Api}/${resourceUrl}Service/GetModel`);
+    }
 
     protected genParams(q?: {[key: string]: any}): any {
         const body = {};

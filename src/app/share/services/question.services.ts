@@ -17,6 +17,16 @@ export class QuestionServices {
     });
     return new FormGroup(group);
   }
+
+  toTextFormGroup(questions: QuestionBase<string>[]): FormGroup {
+    const group: any = {};
+
+    questions.forEach(question => {
+      group[question.id] = question.Nillable || question.Optional ? new FormControl(question.value || null) :
+        new FormControl(question.value || null, [Validators.required]);
+    });
+    return new FormGroup(group);
+  }
 }
 
 @Injectable({

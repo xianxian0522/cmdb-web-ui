@@ -34,16 +34,16 @@
             <thead>
             <tr>
                 <th nzLeft nzWidth="30px" [nzChecked]="checked" [nzIndeterminate]="indeterminate" (nzCheckedChange)="onAllChecked($event)"></th>
-                <!--            <th [nzWidth]="col.id === 'id' ? '80px' : col.id === 'name' ? '120px' : col.id === 'ipAddress' ? '180px' : 'auto'" [nzLeft]="col.id === 'id' || col.id === 'name' || col.id === 'ipAddress'" *ngFor="let col of colNames">{{col.name}}</th>-->
                 <th nzWidth="80px" nzLeft>ID</th>
-                <th>DingTalkUserID</th>
-                <th>State</th>
-                <th>Mail</th>
-                <th>Mobile</th>
-                <th>Password</th>
-                <th>Username</th>
-                <th>RealName</th>
-                <th>ReplicaSetMembers</th>
+                <th *ngFor="let col of colNames">{{col.name}}</th>
+<!--                <th>DingTalkUserID</th>-->
+<!--                <th>State</th>-->
+<!--                <th>Mail</th>-->
+<!--                <th>Mobile</th>-->
+<!--                <th>Password</th>-->
+<!--                <th>Username</th>-->
+<!--                <th>RealName</th>-->
+<!--                <th>ReplicaSetMembers</th>-->
                 <th nzWidth="200px">创建时间</th>
                 <th nzWidth="200px">更新时间</th>
                 <th nzRight nzWidth="120px">操作</th>
@@ -56,16 +56,16 @@
                     [nzDisabled]="data.disabled"
                     (nzCheckedChange)="onItemChecked(data.ID, $event)"
                 ></td>
-                <!--            <td [nzLeft]="col.id === 'id' || col.id === 'name' || col.id === 'ipAddress'" *ngFor="let col of colNames">{{ data[col.id]}}</td>-->
                 <td nzLeft>{{ data.ID }}</td>
-                <td>{{ data.DingTalkUserID }}</td>
-                <td>{{ data.State }}</td>
-                <td>{{ data.Mail }}</td>
-                <td>{{ data.Mobile }}</td>
-                <td>{{ data.Password }}</td>
-                <td>{{ data.Username }}</td>
-                <td>{{ data.RealName }}</td>
-                <td>{{ data.ReplicaSetMembers }}</td>
+<!--                <td>{{ data.DingTalkUserID }}</td>-->
+<!--                <td>{{ data.State }}</td>-->
+<!--                <td>{{ data.Mail }}</td>-->
+<!--                <td>{{ data.Mobile }}</td>-->
+<!--                <td>{{ data.Password }}</td>-->
+<!--                <td>{{ data.Username }}</td>-->
+<!--                <td>{{ data.RealName }}</td>-->
+<!--                <td>{{ data.ReplicaSetMembers }}</td>-->
+                <td *ngFor="let col of colNames">{{ col.list ? getEnum(data[col.id], col.list) : data[col.id]}}</td>
                 <td>{{ data.CreatedAt | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
                 <td>{{ data.UpdatedAt | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
                 <td nzRight>
