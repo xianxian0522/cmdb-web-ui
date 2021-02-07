@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {QuestionBase, SearchBase} from '../mode/question.base';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {FormArray, FormControl, FormGroup, Validators} from '@angular/forms';
 
 @Injectable({
   providedIn: 'root'
@@ -28,6 +28,16 @@ export class QuestionServices {
         // Optional和Nillable 类型array的里没有这个字段 需要后台加 后台返回ID后不需要unshift
         loop.unshift({id: 'ID', Type: 'integer', Nillable: true, });
         group[question.id] = this.toTextFormGroup(loop);
+      } else if (question.Type === 'array') {
+        if (question.Items.Properties) {
+          const loop = Object.keys(question.Items.Properties).map(key => ({id: key, ...question.Items.Properties[key],
+            isEnum: question.Items.Properties[key].hasOwnProperty('Enum'), Nillable: true}));
+          // Optional和Nillable 类型array的里没有这个字段 需要后台加 后台返回ID后不需要unshift
+          loop.unshift({id: 'ID', Type: 'integer', Nillable: true, });
+          group[question.id] = new FormArray([this.toTextFormGroup(loop)]);
+        } else {
+          group[question.id] = new FormArray([]);
+        }
       } else {
         group[question.id] = question.Nillable || question.Optional ? new FormControl(question.value || null) :
           new FormControl(question.value || null, [Validators.required]);

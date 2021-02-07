@@ -1,5 +1,5 @@
 <form nz-form nzLayout="horizontal" [formGroup]="editForm">
-  <div *ngFor="let question of questions">
+  <div *ngFor="let question of questions;">
     <nz-form-item *ngIf="question.isEnum; else elseBlock">
       <nz-form-label [nzSpan]="8" nzNoColon>{{question.Description}}</nz-form-label>
       <nz-form-control [nzSpan]="14">
@@ -12,13 +12,28 @@
       <nz-form-item [ngSwitch]="question.Type">
         <nz-form-label [nzSpan]="8" nzNoColon>{{question.Description}}</nz-form-label>
         <nz-form-control [nzSpan]="14" *ngSwitchCase="'string'">
-          <input nz-input [formControlName]="question.id" [placeholder]="question.Description" aria-disabled="{{question.Immutable}}" [readonly]="question.id === 'ID'" nzSize="small">
+          <input nz-input [formControlName]="question.id" [placeholder]="question.Description" [readonly]="question.id === 'ID' || (mode === 'edit' && question.Immutable)" nzSize="small">
         </nz-form-control>
         <nz-form-control [nzSpan]="14" *ngSwitchCase="'integer'">
           <nz-input-number [formControlName]="question.id" nzSize="small" [nzDisabled]="question.id === 'ID' || question.Immutable"></nz-input-number>
         </nz-form-control>
         <div *ngSwitchCase="'object'">
-          <div *ngIf="question.Properties" app-common-form [selectList]="question.Enum" [questions]="question.Properties" [editForm]="editForm.get(question.id)"></div>
+          <div *ngIf="question.Properties" app-common-form [selectList]="question.Enum" [questions]="question.Properties" [editForm]="editForm.get(question.id)" [field]="question.id" [mode]="mode"></div>
+        </div>
+        <div *ngSwitchCase="'array'">
+<!--          <div [formArrayName]="editForm.get(field)">-->
+<!--            <div *ngFor="let control of question.Items.Properties; let i = index">-->
+<!--              <ng-container >-->
+<!--                <nz-form-item>-->
+<!--                  <nz-form-label>{{control.Description}}</nz-form-label>-->
+<!--                  <input nz-input [formControlName]="control.id" [placeholder]="control.id"/>-->
+<!--                </nz-form-item>-->
+<!--              </ng-container>-->
+<!--            </div>-->
+<!--          </div>-->
+          <div *ngFor="let num of [1]; let i = index">
+<!--            <div app-common-form [selectList]="question.Items.Enum" [questions]="question.Items.Properties" [editForm]="peoples.at(i)" [mode]="mode"></div>-->
+          </div>
         </div>
       </nz-form-item >
     </ng-template>

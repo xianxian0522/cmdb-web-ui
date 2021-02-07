@@ -12,6 +12,8 @@ export class QuestionBase<T> {
   isEnum: boolean;
   options: {};
   Properties: any;
+  Items: any;
+  arrItems: any;
 
   constructor(options: {
     value?: T;
@@ -27,6 +29,8 @@ export class QuestionBase<T> {
     validation?: string;
     options?: {key: string, value: string}[];
     Properties?: QuestionBase<T>;
+    Items?: QuestionBase<T>;
+    arrItems?: any;
   } = {}) {
     this.value = options.value;
     this.id = options.id || '';
@@ -41,6 +45,8 @@ export class QuestionBase<T> {
     this.validation = options.validation || '';
     this.options = options.options || {};
     this.Properties = options.Properties || null;
+    this.Items = options.Items || [];
+    this.arrItems = options.arrItems || [];
   }
 }
 
