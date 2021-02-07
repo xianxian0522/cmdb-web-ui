@@ -12,13 +12,13 @@
       <nz-form-item [ngSwitch]="question.Type">
         <nz-form-label [nzSpan]="8" nzNoColon>{{question.Description}}</nz-form-label>
         <nz-form-control [nzSpan]="14" *ngSwitchCase="'string'">
-          <input nz-input [formControlName]="question.id" [placeholder]="question.Description" [readonly]="question.id === 'ID'" nzSize="small">
+          <input nz-input [formControlName]="question.id" [placeholder]="question.Description" aria-disabled="{{question.Immutable}}" [readonly]="question.id === 'ID'" nzSize="small">
         </nz-form-control>
         <nz-form-control [nzSpan]="14" *ngSwitchCase="'integer'">
-          <nz-input-number [formControlName]="question.id" nzSize="small"></nz-input-number>
+          <nz-input-number [formControlName]="question.id" nzSize="small" [nzDisabled]="question.id === 'ID' || question.Immutable"></nz-input-number>
         </nz-form-control>
         <div *ngSwitchCase="'object'">
-          <div *ngIf="question.Properties" app-common-form [selectList]="question.Enum" [questions]="question.Properties" [editForm]="question.editForm"></div>
+          <div *ngIf="question.Properties" app-common-form [selectList]="question.Enum" [questions]="question.Properties" [editForm]="editForm.get(question.id)"></div>
         </div>
       </nz-form-item >
     </ng-template>

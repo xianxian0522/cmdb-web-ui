@@ -22,8 +22,16 @@ export class QuestionServices {
     const group: any = {};
 
     questions.forEach(question => {
-      group[question.id] = question.Nillable || question.Optional ? new FormControl(question.value || null) :
-        new FormControl(question.value || null, [Validators.required]);
+      if (question.Type === 'object') {
+        const loop = Object.keys(question.Properties).map(key => ({id: key, ...question.Properties[key],
+          isEnum: question.Properties[key].hasOwnProperty('Enum'), Nillable: true}));
+        // Optional和Nillable 类型array的里没有这个字段 需要后台加 后台返回ID后不需要unshift
+        loop.unshift({id: 'ID', Type: 'integer', Nillable: true, });
+        group[question.id] = this.toTextFormGroup(loop);
+      } else {
+        group[question.id] = question.Nillable || question.Optional ? new FormControl(question.value || null) :
+          new FormControl(question.value || null, [Validators.required]);
+      }
       question.Description = question.Description || question.id;
     });
     return new FormGroup(group);

@@ -3,45 +3,6 @@
 </h2>
 <!--<form nz-form nzLayout="horizontal" [formGroup]="editForm">-->
 <!--  <div *ngFor="let question of questions">-->
-<!--    <nz-form-item [ngSwitch]="question.inputType">-->
-<!--      <nz-form-label [nzSpan]="6" nzNoColon>{{question.Description}}</nz-form-label>-->
-<!--      <nz-form-control [nzSpan]="14" *ngSwitchCase="'input'">-->
-<!--        <input nz-input [formControlName]="question.id" [placeholder]="question.Description" [readonly]="question.id === 'ID'" nzSize="small">-->
-<!--      </nz-form-control>-->
-<!--      <nz-form-control [nzSpan]="14" *ngSwitchCase="'inputNumber'">-->
-<!--        <nz-input-number [formControlName]="question.id" nzSize="small"></nz-input-number>-->
-<!--      </nz-form-control>-->
-<!--      <nz-form-control [nzSpan]="14" *ngSwitchCase="'textarea'">-->
-<!--        <textarea nz-input [formControlName]="question.id" [placeholder]="question.Description" nzAutosize nzSize="small"></textarea>-->
-<!--      </nz-form-control>-->
-<!--&lt;!&ndash;      <nz-form-control [nzSpan]="14" *ngSwitchCase="'tag'" >&ndash;&gt;-->
-<!--&lt;!&ndash;        <nz-select [nzDropdownMatchSelectWidth]="false" nzSize="small" nzMode="tags" nzShowSearch nzAllowClear [nzPlaceHolder]="question.name" [formControlName]="question.id">&ndash;&gt;-->
-<!--&lt;!&ndash;          <nz-option *ngFor="let contact of contactList" [nzLabel]="contact.name" [nzValue]="contact.id"></nz-option>&ndash;&gt;-->
-<!--&lt;!&ndash;        </nz-select>&ndash;&gt;-->
-<!--&lt;!&ndash;        &lt;!&ndash;        <div [ngSwitch]="question.id">&ndash;&gt;&ndash;&gt;-->
-<!--&lt;!&ndash;        &lt;!&ndash;          <nz-select *ngSwitchCase="'contactId'" [nzDropdownMatchSelectWidth]="false" nzSize="small" nzMode="tags" nzShowSearch nzAllowClear [nzPlaceHolder]="question.name" [formControlName]="question.id">&ndash;&gt;&ndash;&gt;-->
-<!--&lt;!&ndash;        &lt;!&ndash;            <nz-option *ngFor="let contact of contactList" [nzLabel]="contact.name" [nzValue]="contact.id"></nz-option>&ndash;&gt;&ndash;&gt;-->
-<!--&lt;!&ndash;        &lt;!&ndash;          </nz-select>&ndash;&gt;&ndash;&gt;-->
-<!--&lt;!&ndash;        &lt;!&ndash;          <nz-select *ngSwitchCase="'systemId'" [nzDropdownMatchSelectWidth]="false" nzSize="small" nzMode="tags" nzShowSearch nzAllowClear [nzPlaceHolder]="question.name" [formControlName]="question.id">&ndash;&gt;&ndash;&gt;-->
-<!--&lt;!&ndash;        &lt;!&ndash;            <nz-option *ngFor="let system of systemList" [nzLabel]="system.name" [nzValue]="system.id"></nz-option>&ndash;&gt;&ndash;&gt;-->
-<!--&lt;!&ndash;        &lt;!&ndash;          </nz-select>&ndash;&gt;&ndash;&gt;-->
-<!--&lt;!&ndash;        &lt;!&ndash;        </div>&ndash;&gt;&ndash;&gt;-->
-<!--&lt;!&ndash;      </nz-form-control>&ndash;&gt;-->
-<!--      <nz-form-control [nzSpan]="14" *ngSwitchCase="'select'">-->
-<!--        <div [ngSwitch]="question.id">-->
-<!--          <nz-select *ngSwitchCase="'ParentID'" [nzDropdownMatchSelectWidth]="false" nzSize="small" nzShowSearch nzAllowClear [nzPlaceHolder]="question.Description" [formControlName]="question.id">-->
-<!--            <nz-option *ngFor="let select of selectList" [nzLabel]="select.Username" [nzValue]="select.ID"></nz-option>-->
-<!--          </nz-select>-->
-<!--&lt;!&ndash;          <nz-select *ngSwitchCase="'hostId'" [nzDropdownMatchSelectWidth]="false" nzSize="small" nzShowSearch nzAllowClear [nzPlaceHolder]="question.name" [formControlName]="question.id">&ndash;&gt;-->
-<!--&lt;!&ndash;            <nz-option *ngFor="let host of hostList" [nzLabel]="host.ipAddress" [nzValue]="host.id"></nz-option>&ndash;&gt;-->
-<!--&lt;!&ndash;          </nz-select>&ndash;&gt;-->
-<!--        </div>-->
-<!--      </nz-form-control>-->
-<!--    </nz-form-item >-->
-<!--  </div>-->
-<!--</form>-->
-<!--<form nz-form nzLayout="horizontal" [formGroup]="editForm">-->
-<!--  <div *ngFor="let question of questions">-->
 <!--    <nz-form-item *ngIf="question.isEnum; else elseBlock">-->
 <!--      <nz-form-control [nzSpan]="14">-->
 <!--        <div [ngSwitch]="question.id">-->
