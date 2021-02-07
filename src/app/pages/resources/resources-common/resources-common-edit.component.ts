@@ -44,6 +44,7 @@ export class ResourcesCommonEditComponent implements OnInit {
         validation: '',
         options: [],
         isEnum: false,
+        Properties: null,
       },
       {
         value: null,
@@ -58,6 +59,7 @@ export class ResourcesCommonEditComponent implements OnInit {
         validation: '',
         options: [],
         isEnum: false,
+        Properties: null,
       },
       {
         value: null,
@@ -72,6 +74,7 @@ export class ResourcesCommonEditComponent implements OnInit {
         validation: '',
         options: [],
         isEnum: false,
+        Properties: null,
       },
       {
         value: null,
@@ -86,6 +89,7 @@ export class ResourcesCommonEditComponent implements OnInit {
         validation: '',
         options: [],
         isEnum: false,
+        Properties: null,
       },
       {
         value: null,
@@ -100,6 +104,7 @@ export class ResourcesCommonEditComponent implements OnInit {
         validation: '',
         options: [],
         isEnum: false,
+        Properties: null,
       },
       {
         value: null,
@@ -114,6 +119,7 @@ export class ResourcesCommonEditComponent implements OnInit {
         Immutable: false,
         options: [],
         isEnum: false,
+        Properties: null,
       },
       {
         value: null,
@@ -128,6 +134,7 @@ export class ResourcesCommonEditComponent implements OnInit {
         Immutable: false,
         options: [],
         isEnum: false,
+        Properties: null,
       },
       {
         value: null,
@@ -142,6 +149,7 @@ export class ResourcesCommonEditComponent implements OnInit {
         Immutable: false,
         options: [],
         isEnum: false,
+        Properties: null,
       },
       {
         value: null,
@@ -156,6 +164,7 @@ export class ResourcesCommonEditComponent implements OnInit {
         Immutable: false,
         options: [],
         isEnum: false,
+        Properties: null,
       },
     ];
     this.editForm = this.questionServices.toFormGroup(this.questions);
@@ -180,14 +189,31 @@ export class ResourcesCommonEditComponent implements OnInit {
 
     this.baseRepository.getModel(this.resourceUrl).subscribe(res => {
       this.modeTitle = res.Description;
+
       console.log(res);
       const arr = Object.keys(res.Properties).map(key => ({id: key, ...res.Properties[key],
-        isEnum: res.Properties.hasOwnProperty('Enum')}));
+        isEnum: res.Properties[key].hasOwnProperty('Enum')}));
       const edit = this.questionServices.toTextFormGroup(arr);
+      this.loopCommon(arr);
+
       this.questions = arr;
       this.editForm = edit;
-      console.log(edit, 'model editForm');
+
+      console.log(this.editForm, 'model editForm');
       console.log(this.questions, 'questions');
+    });
+  }
+
+  loopCommon(arr): any {
+    arr.forEach(obj => {
+      if (obj.Type === 'object' && obj.Properties) {
+        const loop = Object.keys(obj.Properties).map(key => ({id: key, ...obj.Properties[key],
+          isEnum: obj.Properties[key].hasOwnProperty('Enum')}));
+        const loopEdit = this.questionServices.toTextFormGroup(loop);
+        obj.Properties = loop;
+        obj.editForm = loopEdit;
+        this.loopCommon(loop);
+      }
     });
   }
 

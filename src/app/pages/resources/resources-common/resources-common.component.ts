@@ -112,6 +112,7 @@ export class ResourcesCommonComponent implements OnInit, AfterViewInit {
       nzFooter: null,
       nzComponentParams: {data: {}, mode: 'create', resourceUrl: this.resourceUrl},
       nzContent: ResourcesCommonEditComponent,
+      nzWidth: '60vw',
     }).afterClose.subscribe(_ => {
       if (_) {
         this.refresh.emit();
@@ -123,6 +124,7 @@ export class ResourcesCommonComponent implements OnInit, AfterViewInit {
       nzContent: ResourcesCommonEditComponent,
       nzFooter: null,
       nzComponentParams: {data: ele, mode: 'edit', resourceUrl: this.resourceUrl},
+      nzWidth: '60vw',
     }).afterClose.subscribe(_ => {
       console.log(_, 'edit');
       if (_) {

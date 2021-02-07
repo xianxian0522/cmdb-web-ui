@@ -16,6 +16,7 @@ import {NzMessageModule} from 'ng-zorro-antd/message';
 import { ResourcesCommonEditComponent } from './resources-common/resources-common-edit.component';
 import {NzSelectModule} from 'ng-zorro-antd/select';
 import {NzInputNumberModule} from 'ng-zorro-antd/input-number';
+import { CommonFormComponent } from './common-form/common-form.component';
 
 
 @NgModule({
@@ -23,6 +24,7 @@ import {NzInputNumberModule} from 'ng-zorro-antd/input-number';
     ResourcesCommonComponent,
     RelationCommonComponent,
     ResourcesCommonEditComponent,
+    CommonFormComponent,
   ],
   imports: [
     CommonModule,

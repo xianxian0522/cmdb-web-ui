@@ -24,6 +24,7 @@ export class QuestionServices {
     questions.forEach(question => {
       group[question.id] = question.Nillable || question.Optional ? new FormControl(question.value || null) :
         new FormControl(question.value || null, [Validators.required]);
+      question.Description = question.Description || question.id;
     });
     return new FormGroup(group);
   }

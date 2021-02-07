@@ -1,0 +1,26 @@
+<form nz-form nzLayout="horizontal" [formGroup]="editForm">
+  <div *ngFor="let question of questions">
+    <nz-form-item *ngIf="question.isEnum; else elseBlock">
+      <nz-form-label [nzSpan]="8" nzNoColon>{{question.Description}}</nz-form-label>
+      <nz-form-control [nzSpan]="14">
+        <nz-select [nzDropdownMatchSelectWidth]="false" nzSize="small" nzShowSearch nzAllowClear [nzPlaceHolder]="question.Description" [formControlName]="question.id">
+          <nz-option *ngFor="let select of question.Enum" [nzLabel]="select.N" [nzValue]="select.V"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <ng-template #elseBlock>
+      <nz-form-item [ngSwitch]="question.Type">
+        <nz-form-label [nzSpan]="8" nzNoColon>{{question.Description}}</nz-form-label>
+        <nz-form-control [nzSpan]="14" *ngSwitchCase="'string'">
+          <input nz-input [formControlName]="question.id" [placeholder]="question.Description" [readonly]="question.id === 'ID'" nzSize="small">
+        </nz-form-control>
+        <nz-form-control [nzSpan]="14" *ngSwitchCase="'integer'">
+          <nz-input-number [formControlName]="question.id" nzSize="small"></nz-input-number>
+        </nz-form-control>
+        <div *ngSwitchCase="'object'">
+          <div *ngIf="question.Properties" app-common-form [selectList]="question.Enum" [questions]="question.Properties" [editForm]="question.editForm"></div>
+        </div>
+      </nz-form-item >
+    </ng-template>
+  </div>
+</form>

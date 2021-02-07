@@ -11,6 +11,7 @@ export class QuestionBase<T> {
   Immutable: boolean;
   isEnum: boolean;
   options: {};
+  Properties: any;
 
   constructor(options: {
     value?: T;
@@ -25,6 +26,7 @@ export class QuestionBase<T> {
     isEnum?: boolean;
     validation?: string;
     options?: {key: string, value: string}[];
+    Properties?: QuestionBase<T>;
   } = {}) {
     this.value = options.value;
     this.id = options.id || '';
@@ -38,6 +40,7 @@ export class QuestionBase<T> {
     this.Immutable = !!options.Immutable;
     this.validation = options.validation || '';
     this.options = options.options || {};
+    this.Properties = options.Properties || null;
   }
 }
 

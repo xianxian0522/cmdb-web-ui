@@ -40,34 +40,34 @@
 <!--    </nz-form-item >-->
 <!--  </div>-->
 <!--</form>-->
-<form nz-form nzLayout="horizontal" [formGroup]="editForm">
-  <div *ngFor="let question of questions">
-    {{question.Enum}}
-    <nz-form-item *ngIf="question.Enum; else elseBlock">
-      <nz-form-control [nzSpan]="14">
-        <div [ngSwitch]="question.id">
-          <nz-select *ngSwitchCase="'ParentID'" [nzDropdownMatchSelectWidth]="false" nzSize="small" nzShowSearch nzAllowClear [nzPlaceHolder]="question.Description" [formControlName]="question.id">
-            <nz-option *ngFor="let select of selectList" [nzLabel]="select.Username" [nzValue]="select.ID"></nz-option>
-          </nz-select>
-        </div>
-      </nz-form-control>
-    </nz-form-item>
-    <ng-template #elseBlock>
-      <nz-form-item [ngSwitch]="question.Type">
-        <nz-form-label [nzSpan]="6" nzNoColon>{{question.Description}}</nz-form-label>
-        <nz-form-control [nzSpan]="14" *ngSwitchCase="'string'">
-          <input nz-input [formControlName]="question.id" [placeholder]="question.Description" [readonly]="question.id === 'ID'" nzSize="small">
-        </nz-form-control>
-        <nz-form-control [nzSpan]="14" *ngSwitchCase="'integer'">
-          <nz-input-number [formControlName]="question.id" nzSize="small"></nz-input-number>
-        </nz-form-control>
-        <nz-form-control [nzSpan]="14" *ngSwitchCase="'textarea'">
-          <textarea nz-input [formControlName]="question.id" [placeholder]="question.Description" nzAutosize nzSize="small"></textarea>
-        </nz-form-control>
-      </nz-form-item >
-    </ng-template>
-  </div>
-</form>
+<!--<form nz-form nzLayout="horizontal" [formGroup]="editForm">-->
+<!--  <div *ngFor="let question of questions">-->
+<!--    <nz-form-item *ngIf="question.isEnum; else elseBlock">-->
+<!--      <nz-form-control [nzSpan]="14">-->
+<!--        <div [ngSwitch]="question.id">-->
+<!--          <nz-select *ngSwitchCase="'ParentID'" [nzDropdownMatchSelectWidth]="false" nzSize="small" nzShowSearch nzAllowClear [nzPlaceHolder]="question.Description" [formControlName]="question.id">-->
+<!--            <nz-option *ngFor="let select of selectList" [nzLabel]="select.Username" [nzValue]="select.ID"></nz-option>-->
+<!--          </nz-select>-->
+<!--        </div>-->
+<!--      </nz-form-control>-->
+<!--    </nz-form-item>-->
+<!--    <ng-template #elseBlock>-->
+<!--      <nz-form-item [ngSwitch]="question.Type">-->
+<!--        <nz-form-label [nzSpan]="6" nzNoColon>{{question.Description}}</nz-form-label>-->
+<!--        <nz-form-control [nzSpan]="14" *ngSwitchCase="'string'">-->
+<!--          <input nz-input [formControlName]="question.id" [placeholder]="question.Description" [readonly]="question.id === 'ID'" nzSize="small">-->
+<!--        </nz-form-control>-->
+<!--        <nz-form-control [nzSpan]="14" *ngSwitchCase="'integer'">-->
+<!--          <nz-input-number [formControlName]="question.id" nzSize="small"></nz-input-number>-->
+<!--        </nz-form-control>-->
+<!--        <nz-form-control [nzSpan]="14" *ngSwitchCase="'textarea'">-->
+<!--          <textarea nz-input [formControlName]="question.id" [placeholder]="question.Description" nzAutosize nzSize="small"></textarea>-->
+<!--        </nz-form-control>-->
+<!--      </nz-form-item >-->
+<!--    </ng-template>-->
+<!--  </div>-->
+<!--</form>-->
+<div app-common-form [editForm]="editForm" [questions]="questions" [selectList]="selectList"></div>
 <div class="btns">
   <button nz-button (click)="onClose()">取消</button>
   <button nz-button nzType="primary" (click)="onSubmit()" [disabled]="!editForm.valid">确定</button>
