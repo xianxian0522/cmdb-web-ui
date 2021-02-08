@@ -3,9 +3,16 @@
     <nz-form-item *ngIf="question.isEnum; else elseBlock">
       <nz-form-label [nzSpan]="8" nzNoColon>{{question.Description}}</nz-form-label>
       <nz-form-control [nzSpan]="14">
-        <nz-select [nzDropdownMatchSelectWidth]="false" nzSize="small" nzShowSearch nzAllowClear [nzPlaceHolder]="question.Description" [formControlName]="question.id">
-          <nz-option *ngFor="let select of question.Enum" [nzLabel]="select.N" [nzValue]="select.V"></nz-option>
-        </nz-select>
+        <div *ngIf="question.isTags; else tagsBlock">
+          <nz-select nzMode="tags" [nzDropdownMatchSelectWidth]="false" nzSize="small" nzShowSearch nzAllowClear [nzPlaceHolder]="question.Description" [formControlName]="question.id">
+            <nz-option *ngFor="let select of question.Enum" [nzLabel]="select.N" [nzValue]="select.V"></nz-option>
+          </nz-select>
+        </div>
+        <ng-template #tagsBlock>
+          <nz-select [nzDropdownMatchSelectWidth]="false" nzSize="small" nzShowSearch nzAllowClear [nzPlaceHolder]="question.Description" [formControlName]="question.id">
+            <nz-option *ngFor="let select of question.Enum" [nzLabel]="select.N" [nzValue]="select.V"></nz-option>
+          </nz-select>
+        </ng-template>
       </nz-form-control>
     </nz-form-item>
     <ng-template #elseBlock>

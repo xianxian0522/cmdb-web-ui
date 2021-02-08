@@ -2,7 +2,7 @@ export class QuestionBase<T> {
   value: T;
   id: string;
   Description: string;
-  must: boolean;
+  isTags: boolean;
   inputType: string;
   validation: string;
   Nillable: boolean;
@@ -19,7 +19,7 @@ export class QuestionBase<T> {
     value?: T;
     id?: string;
     Description?: string;
-    must?: boolean;
+    isTags?: boolean;
     inputType?: string;
     Nillable?: boolean;
     Optional?: boolean;
@@ -35,7 +35,7 @@ export class QuestionBase<T> {
     this.value = options.value;
     this.id = options.id || '';
     this.Description = options.Description || options.id;
-    this.must = !!options.must;
+    this.isTags = !!options.isTags;
     this.Nillable = !!options.Nillable;
     this.Optional = !!options.Optional;
     this.isEnum = !!options.isEnum;
@@ -47,6 +47,34 @@ export class QuestionBase<T> {
     this.Properties = options.Properties || null;
     this.Items = options.Items || [];
     this.arrItems = options.arrItems || [];
+  }
+}
+
+export class QuestionEdgBase<T> {
+  Description: string;
+  Inverse: boolean;
+  Name: string;
+  Ref: string;
+  Required: boolean;
+  Type: string;
+  Unique: boolean;
+
+  constructor(options: {
+    Description?: string;
+    Inverse?: boolean;
+    Name?: string;
+    Ref?: string;
+    Required?: boolean;
+    Type?: string;
+    Unique?: boolean;
+  } = {}) {
+    this.Description = options.Description || options.Name;
+    this.Inverse = !!options.Inverse;
+    this.Name = options.Name;
+    this.Ref = options.Ref || '';
+    this.Required = !!options.Required;
+    this.Type = options.Type;
+    this.Unique = options.Unique;
   }
 }
 

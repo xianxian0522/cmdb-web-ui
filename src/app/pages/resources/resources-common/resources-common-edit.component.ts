@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
 import {QuestionBase} from '../../../share/mode/question.base';
 import {QuestionServices} from '../../../share/services/question.services';
 import {BaseRepository} from '../../../share/services/base.repository';
@@ -190,31 +190,79 @@ export class ResourcesCommonEditComponent implements OnInit {
     this.baseRepository.getModel(this.resourceUrl).subscribe(res => {
       this.modeTitle = res.Description;
 
-      console.log(res, 'res');
       const arr = Object.keys(res.Properties).map(key => ({id: key, ...res.Properties[key],
         isEnum: res.Properties[key].hasOwnProperty('Enum')}));
       // 后端返回ID后不需要用unshift添加
       arr.unshift({id: 'ID', Type: 'integer', Nillable: true, });
-      const edit = this.questionServices.toTextFormGroup(arr);
-      this.loopCommon(arr);
 
-      this.questions = arr;
-      this.editForm = edit;
+      const edg = [];
+      Object.keys(res.Edges).map(key => {
+        const url = res.Edges[key].Type;
+        let tags = [];
+        this.baseRepository.queryPage(url, { Limit: 1000, Offset: 0}).subscribe(r => {
+          if (r) {
+            tags = r.map(k => ({V: k.ID, N: k.Name ? k.Name : k.Username || k.Role}));
+          }
+          if (res.Edges[key].Required) {
+            edg.push({
+              id: res.Edges[key].Name, ...res.Edges[key],
+              Enum: tags,
+              // isEnum: (tags.length > 0) ? true : false,
+              isEnum: true,
+              isTags: !res.Edges[key].Unique,
+              Description: res.Edges[key].Description || res.Edges[key].Name,
+              // Type: 'integer',
+            });
+          } else {
+            edg.push({
+              Nillable: true,
+              id: res.Edges[key].Name, ...res.Edges[key],
+              Description: res.Edges[key].Description || res.Edges[key].Name,
+              Enum: tags,
+              isEnum: true,
+              isTags: !res.Edges[key].Unique,
+              // Type: 'integer'
+            });
+          }
+          const s = arr.concat(edg);
+          const edit = this.questionServices.toTextFormGroup(s);
+          this.loopCommon(s);
+
+          this.questions = s;
+          this.editForm = edit;
+          // console.log(this.editForm, 'model editForm', this.editForm.get('InstanceTemplate'));
+          // console.log(this.questions, 'questions');
+        });
+      });
+
+      // const edit = this.questionServices.toTextFormGroup(arr);
+      // this.loopCommon(arr);
+      //
+      // this.questions = arr;
+      // this.editForm = edit;
+      const withTrue = {};
+      Object.keys(res.Edges).map(key => {
+        withTrue[`With${key}`] = true;
+      });
       if (this.mode === 'edit') {
         // 查关联
         this.baseRepository.queryById(this.resourceUrl,
           {
             ID: this.data.ID,
+            ...withTrue,
           }).subscribe(e => {
-            console.log(e, 'host 返回字段不一样 Cpu 通过id查是CPU');
+            Object.keys(res.Edges).map(key => {
+              if (e[key] && e[key].length > 0) {
+                console.log(e[key], key, e);
+              } else if (e[key]) {
+                console.log('duix 查询出的字段Parent、Children 对应editForm字段是ParentID、ChildIDs', key, e);
+              }
+            });
             // e.InstanceTemplate.BindInfos = e.InstanceTemplate.BindInfos ? e.InstanceTemplate.BindInfos : [];
             // e.InstanceTemplate.EnvVars = e.InstanceTemplate.EnvVars ? e.InstanceTemplate.EnvVars : [];
             this.editForm.patchValue({...e});
         });
       }
-
-      console.log(this.editForm, 'model editForm', this.editForm.get('InstanceTemplate'));
-      console.log(this.questions, 'questions');
     });
   }
 
@@ -228,7 +276,7 @@ export class ResourcesCommonEditComponent implements OnInit {
         const loopEdit = this.questionServices.toTextFormGroup(loop);
         obj.Properties = loop;
         // 不需要将表单放入 editForm里面创建了group的 是group的 this.editForm.get(obj.id)获取 值会一一绑定对应
-        console.log(this.editForm.get(obj.id), obj.id, 'obj', loopEdit);
+        // console.log(this.editForm.get(obj.id), obj.id, 'obj', loopEdit);
         // obj.editForm = loopEdit;
         this.loopCommon(loop);
       } else if (obj.Type === 'array' && obj.Items.Properties) {
@@ -239,7 +287,7 @@ export class ResourcesCommonEditComponent implements OnInit {
         const loopEdit = this.questionServices.toTextFormGroup(loop);
         obj.Items.Properties = loop;
         // 不需要将表单放入 editForm里面创建了group的 是group的 this.editForm.get(obj.id)获取 值会一一绑定对应
-        console.log(this.editForm.get(obj.id), obj.id, 'obj', loopEdit);
+        // console.log( obj.id, 'obj', loopEdit);
         // obj.editForm = loopEdit;
         this.loopCommon(loop);
       }

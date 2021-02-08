@@ -12,7 +12,7 @@ export class QuestionServices {
     const group: any = {};
 
     questions.forEach(question => {
-      group[question.id] = question.must ? new FormControl(question.value || null,
+      group[question.id] = question.isTags ? new FormControl(question.value || null,
         [Validators.required]) : new FormControl(question.value || null);
     });
     return new FormGroup(group);
