@@ -22,18 +22,22 @@ export class QuestionServices {
     const group: any = {};
 
     questions.forEach(question => {
-      if (question.Type === 'object') {
-        const loop = Object.keys(question.Properties).map(key => ({id: key, ...question.Properties[key],
-          isEnum: question.Properties[key].hasOwnProperty('Enum'), Nillable: true}));
-        // Optional和Nillable 类型array的里没有这个字段 需要后台加 后台返回ID后不需要unshift
-        loop.unshift({id: 'ID', Type: 'integer', Nillable: true, });
-        group[question.id] = this.toTextFormGroup(loop);
+      if (question.Type === 'object' && question.Properties) {
+        // if (question.Properties) {
+          const loop = Object.keys(question.Properties).map(key => ({id: key, ...question.Properties[key],
+            isEnum: question.Properties[key].hasOwnProperty('Enum'), Nillable: true}));
+          // Optional和Nillable 类型array的里没有这个字段 需要后台加 后台返回ID后不需要unshift
+          // loop.unshift({id: 'ID', Type: 'integer', Nillable: true, });
+          group[question.id] = this.toTextFormGroup(loop);
+        // } else {
+        //   // group[question.id] = new FormGroup({});
+        // }
       } else if (question.Type === 'array') {
         if (question.Items.Properties) {
           const loop = Object.keys(question.Items.Properties).map(key => ({id: key, ...question.Items.Properties[key],
             isEnum: question.Items.Properties[key].hasOwnProperty('Enum'), Nillable: true}));
           // Optional和Nillable 类型array的里没有这个字段 需要后台加 后台返回ID后不需要unshift
-          loop.unshift({id: 'ID', Type: 'integer', Nillable: true, });
+          // loop.unshift({id: 'ID', Type: 'integer', Nillable: true, });
           group[question.id] = new FormArray([this.toTextFormGroup(loop)]);
         } else {
           group[question.id] = new FormArray([]);

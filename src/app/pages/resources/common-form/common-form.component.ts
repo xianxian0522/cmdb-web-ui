@@ -14,15 +14,12 @@ export class CommonFormComponent implements OnInit {
   @Input() questions;
   @Input() selectList;
   @Input() mode;
-  @Input() field;
 
   ngOnInit(): void {
-    // 先看看formArray
-    console.log(this.peoples, 'ss');
   }
 
-  get peoples(): FormArray {
-    return this.editForm.get(this.field) as FormArray;
+  getFormArray(id, question): FormArray {
+    // console.log(this.editForm.get(id), 'edit id', question);
+    return this.editForm.get(id) as FormArray;
   }
-
 }

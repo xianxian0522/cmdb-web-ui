@@ -206,42 +206,25 @@ export class ResourcesCommonEditComponent implements OnInit {
           {
             ID: this.data.ID,
           }).subscribe(e => {
-            console.log(e, 'eee');
-            e.InstanceTemplate.BindInfos = e.InstanceTemplate.BindInfos ? e.InstanceTemplate.BindInfos : [];
-            e.InstanceTemplate.EnvVars = e.InstanceTemplate.EnvVars ? e.InstanceTemplate.EnvVars : [];
+            console.log(e, 'host 返回字段不一样 Cpu 通过id查是CPU');
+            // e.InstanceTemplate.BindInfos = e.InstanceTemplate.BindInfos ? e.InstanceTemplate.BindInfos : [];
+            // e.InstanceTemplate.EnvVars = e.InstanceTemplate.EnvVars ? e.InstanceTemplate.EnvVars : [];
             this.editForm.patchValue({...e});
         });
       }
 
       console.log(this.editForm, 'model editForm', this.editForm.get('InstanceTemplate'));
       console.log(this.questions, 'questions');
-
-      console.log(this.fb.array([
-        this.fb.group({
-          name: [''],
-        }),
-        this.fb.group({
-          age: [''],
-        })
-      ]));
     });
   }
-
-  // patchValue(): void {
-  //   // 针对FormArray设置值
-  //   const setValue = ['13800000000', '13800000011'];
-  //   setValue.forEach(value => {
-  //     this.phoneArray.push(new FormControl(value));
-  //   });
-  // }
 
   loopCommon(arr): any {
     arr.forEach(obj => {
       if (obj.Type === 'object' && obj.Properties) {
         const loop = Object.keys(obj.Properties).map(key => ({id: key, ...obj.Properties[key],
           isEnum: obj.Properties[key].hasOwnProperty('Enum')}));
-        // 后端返回ID后不需要用unshift添加
-        loop.unshift({id: 'ID', Type: 'integer', Nillable: true, });
+        // // 后端返回ID后不需要用unshift添加
+        // loop.unshift({id: 'ID', Type: 'integer', Nillable: true, });
         const loopEdit = this.questionServices.toTextFormGroup(loop);
         obj.Properties = loop;
         // 不需要将表单放入 editForm里面创建了group的 是group的 this.editForm.get(obj.id)获取 值会一一绑定对应
@@ -252,7 +235,7 @@ export class ResourcesCommonEditComponent implements OnInit {
         const loop = Object.keys(obj.Items.Properties).map(key => ({id: key, ...obj.Items.Properties[key],
           isEnum: obj.Items.Properties[key].hasOwnProperty('Enum')}));
         // 后端返回ID后不需要用unshift添加
-        loop.unshift({id: 'ID', Type: 'integer', Nillable: true, });
+        // loop.unshift({id: 'ID', Type: 'integer', Nillable: true, });
         const loopEdit = this.questionServices.toTextFormGroup(loop);
         obj.Items.Properties = loop;
         // 不需要将表单放入 editForm里面创建了group的 是group的 this.editForm.get(obj.id)获取 值会一一绑定对应
