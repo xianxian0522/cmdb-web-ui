@@ -201,7 +201,7 @@ export class ResourcesCommonEditComponent implements OnInit {
         let tags = [];
         this.baseRepository.queryPage(url, { Limit: 1000, Offset: 0}).subscribe(r => {
           if (r) {
-            tags = r.map(k => ({V: k.ID, N: k.Name ? k.Name : k.Username || k.Role}));
+            tags = r.map(k => ({V: k.ID, N: k.Name ? k.Name : k.Username || k.Role || k.InnerIP}));
           }
           if (res.Edges[key].Required) {
             edg.push({
@@ -252,15 +252,20 @@ export class ResourcesCommonEditComponent implements OnInit {
             ...withTrue,
           }).subscribe(e => {
             Object.keys(res.Edges).map(key => {
-              if (e[key] && e[key].length > 0) {
-                console.log(e[key], key, e);
-              } else if (e[key]) {
-                console.log('duix 查询出的字段Parent、Children 对应editForm字段是ParentID、ChildIDs', key, e);
+              // console.log(key, e[key], 'key');
+              if (key.slice(-1) === 's') {
+                e[`${key.slice(0, -1)}IDs`] = (e[key] && e[key].length > 0) ? e[key].map(ids => ids.ID) : [];
+              } else if (key === 'Children') {
+                e[`${key.slice(0, 5)}IDs`] = (e[key] && e[key].length > 0) ? e[key].map(ids => ids.ID) : [];
+              } else {
+                e[`${key}ID`] = e[key] ? e[key].ID : null;
+                // console.log('duix 查询出的字段Parent、Children 对应editForm字段是ParentID、ChildIDs', key, e);
               }
             });
             // e.InstanceTemplate.BindInfos = e.InstanceTemplate.BindInfos ? e.InstanceTemplate.BindInfos : [];
             // e.InstanceTemplate.EnvVars = e.InstanceTemplate.EnvVars ? e.InstanceTemplate.EnvVars : [];
             this.editForm.patchValue({...e});
+            // console.log(e, this.editForm.value, 'wm');
         });
       }
     });
