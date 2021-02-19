@@ -49,6 +49,7 @@ export class Menu21Component implements OnInit, AfterViewInit {
   ngOnInit(): void {
     console.log(d3, 'd3');
     d3.select('#model').append(this.chart);
+    this.dataEdges();
   }
 
   chart = () => {
@@ -161,6 +162,142 @@ export class Menu21Component implements OnInit, AfterViewInit {
       .on('end', dragended);
   }
 
+  dataEdges(): void {
+    const h = 500;
+    const w = 750;
+    // 颜色函数 d3.schemeBlues[9]
+    const colors = d3.scaleOrdinal(d3.schemeCategory10); // 创建序数比例尺和包括20中颜色的输出范围
+    console.log(colors, 'colors');
+    const links = this.data.links.map(d => Object.create(d));
+    const nodes = this.data.nodes.map(d => Object.create(d));
+    const dataset = {
+      nodes: [
+        {id: 'Alice'},
+        {id: 'Bob'},
+        {id: 'Carol'}
+      ],
+      edges: [
+        {source: 0, target: 1}, // Alice → Bob
+        {source: 1, target: 2} // Bob → Carol
+      ]
+      // nodes: [ // 节点
+      //   {name: 'master', values: 12},
+      //   {name: 'das', values: 25},
+      //   {name: 'fd', values: 39},
+      //   {name: 'dsadsa', values: 45},
+      //   {name: 'htr', values: 25},
+      //   {name: 'vbcx', values: 24},
+      //   {name: 'ht', values: 90},
+      //   {name: 'nbv', values: 80},
+      //   {name: 'yrt', values: 68},
+      //   {name: 'jff', values: 63},
+      //   {name: 'nbv', values: 25},
+      //   {name: 'jyt', values: 45},
+      //   {name: 'mb', values: 35},
+      //   {name: 'jyt', values: 78},
+      //   {name: 'gtre', values: 79},
+      //   {name: 'bvc', values: 25},
+      //   {name: 'mjh', values: 58},
+      //   {name: 'ughf', values: 86},
+      //   {name: 'juy', values: 79},
+      //   {name: 'mjh', values: 53},
+      //   {name: 'njm', values: 52},
+      // ],
+      // edges: [ // 边
+      //   { source: 0, target: 1},
+      //   { source: 0, target: 2},
+      //   { source: 0, target: 3},
+      //   { source: 0, target: 4},
+      //   { source: 0, target: 5},
+      //   { source: 0, target: 6},
+      //   { source: 0, target: 7},
+      //   { source: 0, target: 8},
+      //   { source: 0, target: 9},
+      //   { source: 0, target: 10},
+      //   { source: 0, target: 11},
+      //   { source: 0, target: 12},
+      //   { source: 0, target: 13},
+      //   { source: 0, target: 14},
+      //   { source: 0, target: 15},
+      //   { source: 0, target: 16},
+      //   { source: 0, target: 17},
+      //   { source: 0, target: 18},
+      //   { source: 0, target: 19},
+      //   { source: 0, target: 20}
+      // ]
+    };
+    // 转化数据为适合生成力导向图的对象数组
+    const force = d3.forceSimulation(nodes) // 加载节点数据
+      .force('link', d3.forceLink(links).id(d => d.id)) // 加载边数据
+      .force('charge', d3.forceManyBody().strength(-400))
+      .force('distance', (d) => { // 根据权重不同连接线段的长度也不同
+        // console.log(d);
+        return 10; // 连线的长度
+      }).force('center', d3.forceCenter());
+    const svg = d3.select('#model')
+      .append('svg')
+      .attr('width', w)
+      .attr('height', h);
+
+    // 创建作为连线的svg直线
+    const edges = svg.selectAll('line')
+      .data(links)
+      .enter()
+      .append('line')
+      .style('stroke', (d) => { // 设置线的颜色
+        return colors(d.color);
+      })
+      .style('opacity', 0.5)
+      .style('stroke-width', (d, i) => { // 设置线的宽度
+        return 1;
+      });
+
+    // 创建作为连线的svg圆形
+    const node = svg.selectAll('circle')
+      .data(nodes)
+      .enter()
+      .append('circle')
+      .attr('r', (d) => { // 设置圆点的半径，master为10，其他为5
+        console.log(d, 'ddd');
+        if ( d.name === 'master') {
+          return 10;
+        }
+        return 5;
+      })
+      .style('fill', (d) => {
+        return colors(d.weight * d.weight * d.weight);
+      })
+      .call(this.drag(force)); // 可以拖动
+
+    // 打点更新，没有的话就显示不出来了
+    force.on('tick', () => {
+      console.log('tick');
+      nodes[0].x = w / 2;
+      nodes[0].y = h / 2;
+      // 边
+      edges.attr('x1', (d) => {
+        return  d.source.x;
+      })
+        .attr('y1', (d) => {
+          return  d.source.y;
+        })
+        .attr('x2', (d) => {
+          return  d.target.x;
+        })
+        .attr('y2', (d) => {
+          return  d.target.y;
+        });
+
+      // 节点
+      node.attr('cx', (d) => {
+        return d.x;
+      })
+        .attr('cy', (d) => {
+          return d.y;
+        });
+    });
+  }
+
   ngAfterViewInit(): void {
     const data = [{
         source: '陆洋',
@@ -258,7 +395,7 @@ export class Menu21Component implements OnInit, AfterViewInit {
         },
     ];
     const options: any = {};
-    options.backgroundColor = '#eee';
+    options.backgroundColor = '#fff';
     options.nodesFontType = 'SimHei';
     options.nodesFontSize = 14;
     options.lineFontType = 'SimHei';
@@ -268,7 +405,7 @@ export class Menu21Component implements OnInit, AfterViewInit {
     options.examplesX = 20;
     options.examplesY = 450;
     options.examplesFontColor = '#000000';
-    this.drawChart('model', options, data);
+    // this.drawChart('model', options, data);
   }
 
   drawChart(divid, options, datas, dataFilter?): void {
@@ -458,131 +595,564 @@ export class Menu21Component implements OnInit, AfterViewInit {
     });
     console.log(nodesArr, 'arr');
     // D3力导向布局
-    // const force = d3.layout.force()
-    //   .nodes(nodes)
-    //   .links(sourceDatas)
-    //   .size([width, height])
-    //   .linkDistance(200)
-    //   .charge(-1500)
-    //   .start();
-    // // 全图缩放器
-    // const zoom = d3.behavior.zoom()
-    //   .scaleExtent([0.25, 2])
-    //   .on('zoom', () => {
-    //     const {
-    //       translate,
-    //       scale
-    //     } = d3.event;
-    //     // console.log(container);
-    //     container.attr('transform', 'translate(' + translate + ')scale(' + scale * 0.6 + ')');
-    //   });
-    // const svg = d3.select('#' + divid).append('svg')
-    //   .attr('width', width)
-    //   .attr('height', height)
-    //   .attr('style', 'background-color:' + backgroundColor)
-    //   .call(zoom)
-    //   .on('dblclick.zoom', null);
-    // // 缩放层（位置必须在 container 之前）
-    // const zoomOverlay = svg.append('rect')
-    //   .attr('width', width)
-    //   .attr('height', height)
-    //   .style('fill', 'none')
-    //   .style('pointer-events', 'all');
-    // const container = svg.append('g')
-    //   .attr('transform', 'scale(' + 0.6 + ')')
-    //   .attr('class', 'container');
-    //
-    // const tooltip = d3.select('body').append('div')
-    //   .attr('class', 'tooltip')
-    //   .attr('opacity', 0.0);
+    const force = d3.forceSimulation(nodesArr) // 加载节点数据
+      .force('link', d3.forceLink(sourceDatas).id(d => d.id)) // 加载边数据
+      .force('charge', d3.forceManyBody().strength(-400))
+      .force('distance', (d) => { // 根据权重不同连接线段的长度也不同
+        // console.log(d);
+        return 10; // 连线的长度
+      }).force('center', d3.forceCenter());
+    // 全图缩放器
+    const zoom = d3.zoom()
+      .scaleExtent([0.25, 2])
+      .on('zoom', () => {
+        // const {
+        //   translate,
+        //   scale
+        // } = d3.event;
+        console.log(container, 'sssssssss');
+        // container.attr('transform', 'translate(' + translate + ')scale(' + scale * 0.6 + ')');
+      });
+    const svg = d3.select('#' + divid).append('svg')
+      .attr('width', width)
+      .attr('height', height)
+      .attr('style', 'background-color:' + backgroundColor)
+      .call(zoom)
+      .on('dblclick.zoom', null);
+    // 缩放层（位置必须在 container 之前）
+    const zoomOverlay = svg.append('rect')
+      .attr('width', width)
+      .attr('height', height)
+      .style('fill', 'none')
+      .style('pointer-events', 'all');
+    const container = svg.append('g')
+      .attr('transform', 'scale(' + 0.6 + ')')
+      .attr('class', 'container');
+
+    const tooltip = d3.select('body').append('div')
+      .attr('class', 'tooltip')
+      .attr('opacity', 0.0);
     // 根据分类进行筛选
-    // if (options.showExamples) {
-    //   const examples = svg.selectAll('.examples')
-    //     .data(relationColor)
-    //     .enter()
-    //     .append('svg:g')
-    //     .attr('fill-opacity', (d) => {
-    //       for (var i = 0; i < dataFilter.length; i++) {
-    //         if (d.relation === dataFilter[i].relation && dataFilter[i].isShow === 'false') {
-    //           return 0.2;
-    //         }
-    //       }
-    //       return 1;
-    //     })
-    //     .on('click', (d) => {
-    //       for (var i = 0; i < dataFilter.length; i++) {
-    //         if (dataFilter[i].relation === d.relation) {
-    //           if (dataFilter[i].isShow === 'true') {
-    //             dataFilter[i].isShow = 'false';
-    //           } else {
-    //             dataFilter[i].isShow = 'true';
-    //           }
-    //         }
-    //       }
-    //       this.drawChart(divid, options, datas, dataFilter);
-    //     });
-    //
-    //
-    //   examples.append('svg:path')
-    //     .attr('d', (d) => {
-    //       const x1 = d.x;
-    //       const y1 = d.y;
-    //       const x2 = x1 + 20;
-    //       const y2 = y1;
-    //       return 'M' + x1 + ' ' + y1 + ' L ' + x2 + ' ' + y2;
-    //     })
-    //     .style('stroke', (d) => {
-    //       if (d.lineColor === '') {
-    //         return lineColor;
-    //       } else {
-    //         return d.lineColor;
-    //       }
-    //     })
-    //     .style('stroke-width', 2.5);
-    //   examples.append('svg:text')
-    //     .style('font-size', '14px')
-    //     .style('fill', examplesFontColor)
-    //     .attr('x', (d) => {
-    //       if (d.relation.length > 3) {
-    //         return d.x + 20 + 14 * 4 / 2;
-    //       }
-    //       return d.x + 20 + 14 * d.relation.length / 2;
-    //     })
-    //     .attr('y', (d) => {
-    //       return d.y + 5;
-    //     })
-    //     .attr('text-anchor', 'middle')
-    //     .text((d) => {
-    //       if (d.relation.length > 3) {
-    //         return d.relation.substring(0, 3) + '...';
-    //       }
-    //       return d.relation;
-    //     })
-    //     .on('mouseover', (d) => {
-    //       console.log('放到分类上');
-    //       tooltip.html('<span>' + d.relation + '</span>')
-    //         .style('left', (d3.event.pageX) + 'px')
-    //         .style('top', (d3.event.pageY + 20) + 'px')
-    //         .style('display', 'block')
-    //         .style('position', 'absolut')
-    //         .style('opacity', 1.0);
-    //     })
-    //     .on('mouseout', (d, i) => {
-    //       tooltip.style('opacity', 0.0);
-    //     });
-    // }
+    if (options.showExamples) {
+      const examples = svg.selectAll('.examples')
+        .data(relationColor)
+        .enter()
+        .append('svg:g')
+        .attr('fill-opacity', (d) => {
+          dataFilter.forEach(key => {
+            if (d.relation === key.relation && key.isShow === 'false') {
+              return 0.2;
+            }
+          });
+          return 1;
+        })
+        .on('click', (d) => {
+          dataFilter.map(key => {
+            if (key.relation === d.relation) {
+              if (key.isShow === 'true') {
+                key.isShow = 'false';
+              } else {
+                key.isShow = 'true';
+              }
+            }
+          });
+          this.drawChart(divid, options, datas, dataFilter);
+        });
+
+
+      examples.append('svg:path')
+        .attr('d', (d) => {
+          const x1 = d.x;
+          const y1 = d.y;
+          const x2 = x1 + 20;
+          const y2 = y1;
+          return 'M' + x1 + ' ' + y1 + ' L ' + x2 + ' ' + y2;
+        })
+        .style('stroke', (d) => {
+          if (d.lineColor === '') {
+            return lineColor;
+          } else {
+            return d.lineColor;
+          }
+        })
+        .style('stroke-width', 2.5);
+      examples.append('svg:text')
+        .style('font-size', '14px')
+        .style('fill', examplesFontColor)
+        .attr('x', (d) => {
+          if (d.relation.length > 3) {
+            return d.x + 20 + 14 * 4 / 2;
+          }
+          return d.x + 20 + 14 * d.relation.length / 2;
+        })
+        .attr('y', (d) => {
+          return d.y + 5;
+        })
+        .attr('text-anchor', 'middle')
+        .text((d) => {
+          if (d.relation.length > 3) {
+            return d.relation.substring(0, 3) + '...';
+          }
+          return d.relation;
+        })
+        .on('mouseover', (d) => {
+          console.log('放到分类上');
+          tooltip.html('<span>' + d.relation + '</span>')
+            .style('left', (d3.axisLeft) + 'px')
+            .style('top', (d3.axisTop + 20) + 'px')
+            .style('display', 'block')
+            .style('position', 'absolut')
+            .style('opacity', 1.0);
+        })
+        .on('mouseout', (d, i) => {
+          tooltip.style('opacity', 0.0);
+        });
+    }
+
+    const edgesPath = container.selectAll('.edgepath')
+      .data(sourceDatas)
+      .enter()
+      .append('path')
+      .attr('marker-end', (d, i) => {
+        const arrowMarker = container.append('marker')
+          .attr('id', 'arrow' + i)
+          .attr('markerUnits', 'userSpaceOnUse')
+          .attr('markerWidth', '16')
+          .attr('markerHeight', '15')
+          .attr('viewBox', '0 0 12 12')
+          .attr('refX', 9)
+          .attr('refY', 6)
+          .attr('orient', 'auto')
+          .append('svg:path')
+          .attr('d', 'M2,2 L10,6 L2,10 L6,6 L2,2')
+          .attr('fill', () => {
+            return d.lineColor = '' ? lineColor : d.lineColor;
+          });
+
+        return 'url(#arrow' + i + ')';
+      })
+      .style('stroke', (d) => {
+        if (d.lineColor === '') {
+          return lineColor;
+        } else {
+          return d.lineColor;
+        }
+      })
+      .style('stroke-width', 1.5)
+      .on('mouseover', (d) => {
+        console.log('放到连接线');
+        // 设置参股或是融资信息
+        if (d.data) {
+          tooltip.html('<span>' + '融资额:' + d.data.rzs + '</span>')
+            .style('left', (d3.axisLeft) + 'px')
+            .style('top', (d3.axisTop + 20) + 'px')
+            .style('display', 'block')
+            .style('opacity', 1.0);
+        }
+        // 影藏其它连线上文字
+        edgesText.style('fill-opacity', (edge) => {
+          if (edge === d) {
+            return 1;
+          }
+          return 0;
+        });
+        edgesPath.style('stroke-width', (edge) => {
+          if (edge === d) {
+            return 4;
+          }
+          return 1.5;
+        });
+      })
+      .on('mouseout', (d, i) => {
+        // 显示连线上的文字
+        edgesText.style('fill-opacity', 1);
+        edgesPath.style('stroke-width', 1.5);
+        // 隐藏提示信息
+        tooltip.style('opacity', 0.0);
+      });
+
+    // 边上的文字（人物之间的关系），连接线
+    const edgesText = container.selectAll('.linetext')
+      .data(sourceDatas)
+      .enter()
+      .append('svg:g')
+      .attr('class', 'linetext')
+      .attr('fill-opacity', 1);
+    edgesText.append('svg:text')
+      .style('font-size', (12 + 'px'))
+      .style('font-family', lineFontType)
+      .style('fill', '#000000')
+      .attr('y', '.33em')
+      .attr('text-anchor', 'middle')
+      .text( (d) => {
+        return d.relation;
+      });
+
+    edgesText.insert('rect', 'text')
+      .attr('width', (d) => {
+        return d.relation.length * lineFontSize;
+      })
+      .attr('height', (d) => {
+        return lineFontSize;
+      })
+      .attr('y', '-.6em')
+      .attr('x', (d) => {
+        return -d.relation.length * lineFontSize / 2;
+      })
+      .style('fill', 'none');
+
+    // 节点设置，包含圆形图片节点（人物头像）
+    const circle = container.selectAll('circle')
+      .data(nodesArr)
+      .enter()
+      .append('circle')
+      .style('stroke', (d) => {
+        if (d.color === '') {
+          return '#EE8262';
+        } else if (d.color === '#0084ff') {
+          return '#0077c6';
+        } else if (d.color === '#F4793B') {
+          return '#FC3620';
+        }
+        return d.color;
+      })
+      .style('stroke-width', '2px')
+      .attr('r', (d) => {
+        return d.radius;
+      })
+      .attr('fill', (d, i) => {
+        // 节点图片不为空是添加背景色
+        if (d.image === '') {
+          if (d.color === '') {
+            return '#EE8262';
+          }
+          return d.color;
+        } else {
+          // 创建圆形图片
+          const defs = container.append('defs').attr('id', 'imgdefs');
+
+          const catpattern = defs.append('pattern')
+            .attr('id', 'catpattern' + i)
+            .attr('height', 1)
+            .attr('width', 1);
+
+          catpattern.append('image')
+            /* .attr("x", - (img_w / 2 - radius))
+            .attr("y", - (img_h / 2 - radius)) */
+            .attr('width', d.radius * 2)
+            .attr('height', d.radius * 2)
+            .attr('xlink:href', d.image);
+
+          return 'url(#catpattern' + i + ')';
+        }
+
+      })
+      .on('mouseover', (d, i) => {
+        console.log('放到人物头像');
+        // 影藏其它连线上文字
+        edgesText.style('fill-opacity', (edge) => {
+          if (edge.source === d || edge.target === d) {
+            return 1;
+          }
+          if (edge.source !== d && edge.target !== d) {
+            return 0;
+          }
+        });
+        // 其它节点亮度调低
+        circle.style('opacity', (edge) => {
+          const v = d.name;
+          if (edge.name === v || (edge[v] !== undefined && edge[v].name === v)) {
+            return 1;
+          } else {
+            return 0.2;
+          }
+        });
+        // 其他连先亮度调低
+        edgesPath.style('opacity', (edge) => {
+          if (edge.source === d || edge.target === d) {
+            return 1;
+          }
+          if (edge.source !== d && edge.target !== d) {
+            return 0.2;
+          }
+        });
+        // 其他节点文字亮度调低
+        nodesText.style('opacity', (edge) => {
+          const v = d.name;
+          if (edge.name === v || (edge[v] !== undefined && edge[v].name === v)) {
+            return 1;
+          } else {
+            return 0.2;
+          }
+        });
+
+      })
+      .on('mouseout', (d, i) => {
+        // 显示连线上的文字
+        edgesText.style('fill-opacity', 1);
+        edgesPath.style('opacity', 1);
+        circle.style('opacity', 1);
+        nodesText.style('opacity', 1);
+        tooltip.style('opacity', 0.0);
+
+      })
+      .call(this.drag(force));
+
+    // 节点文字设置
+    const nodesText = container.selectAll('.nodetext')
+      .data(nodesArr)
+      .enter()
+      .append('text')
+      .style('font-size', (nodesFontSize + 'px'))
+      .style('fill', '#ffffff')
+      .style('font-family', nodesFontType)
+      .attr('x', (d) => {
+        const name = d.name;
+        // 如果小于四个字符，不换行
+        if (name.length < 4) {
+          d3.select(this).append('tspan')
+            .attr('dx', -nodesFontSize * (name.length / 2))
+            .attr('dy', 5)
+            .text( () => {
+              return name;
+            });
+        } else if (name.length >= 4 && name.length <= 6) {
+          const top1 = d.name.substring(0, 3);
+          const bot1 = d.name.substring(3, name.length);
+
+          d3.select(this).append('tspan')
+            .attr('dx', -nodesFontSize * 1.5)
+            .attr('dy', -nodesFontSize * 0.5)
+            .text( () => {
+              return top1;
+            });
+
+          d3.select(this).append('tspan')
+            .attr('dx', -(nodesFontSize * name.length / 2))
+            .attr('dy', nodesFontSize)
+            .text( () => {
+              return bot1;
+            });
+        } else if (name.length > 7) {
+          const top = d.name.substring(0, 3);
+          const mid = d.name.substring(3, 6);
+          const bot = d.name.substring(6, name.length);
+
+          d3.select(this).append('tspan')
+            .attr('dx', -nodesFontSize * 1.5)
+            .attr('dy', -nodesFontSize * 0.5)
+            .text( () => {
+              return top;
+            });
+
+
+          d3.select(this).append('tspan')
+            .attr('dx', -nodesFontSize * 3)
+            .attr('dy', nodesFontSize)
+            .text( () => {
+              return mid;
+            });
+
+          d3.select(this).append('tspan')
+            .attr('dx', -nodesFontSize * 2)
+            .attr('dy', nodesFontSize)
+            .text( () => {
+              return '...';
+            });
+        }
+      })
+      .on('mouseover', (d, i) => {
+        console.log('放到关系文字');
+        // 影藏其它连线上文字
+        edgesText.style('fill-opacity', (edge) => {
+          if (edge.source === d || edge.target === d) {
+            return 1;
+          }
+          if (edge.source !== d && edge.target !== d) {
+            return 0;
+          }
+        });
+        // 其他节点亮度调低
+        circle.style('opacity', (edge) => {
+          const v = d.name;
+          if (edge.name === v || (edge[v] !== undefined && edge[v].name === v)) {
+            return 1;
+          } else {
+            return 0.2;
+          }
+        });
+        // 其他连线亮度调低
+        edgesPath.style('opacity', (edge) => {
+          if (edge.source === d || edge.target === d) {
+            return 1;
+          }
+          if (edge.source !== d && edge.target !== d) {
+            return 0.2;
+          }
+        });
+        // 其他节点文字亮度调低
+        nodesText.style('opacity', (edge) => {
+          const v = d.name;
+          if (edge.name === v || (edge[v] !== undefined && edge[v].name === v)) {
+            return 1;
+          } else {
+            return 0.2;
+          }
+        });
+        tooltip.html('<span>' + d.name + '</span>')
+          .style('left', (d3.axisLeft) + 'px')
+          .style('top', (d3.axisTop + 20) + 'px')
+          .style('display', 'block')
+          .style('opacity', 1.0);
+      })
+      .on('mouseout', (d, i) => {
+        // 显示连线上的文字
+        edgesText.style('fill-opacity', 1);
+        edgesPath.style('opacity', 1);
+        circle.style('opacity', 1);
+        nodesText.style('opacity', 1);
+        tooltip.style('opacity', 0.0);
+
+      })
+      .call(this.drag(force));
+    // 拖动节点
+    const drag = force.drag()
+      .on('dragstart', (d, i) => {
+        d.fixed = true; // 拖拽开始后设定被拖拽对象为固定
+        event.stopPropagation();
+      })
+      .on('dragend', (d, i) => {})
+      .on('drag', (d, i) => {});
+
+    // 力学图运动开始时
+    force.on('start', () => {});
+
+    // 力学图运动结束时
+    force.on('end', () => {});
+
+    force.on('tick', () => {
+      edgesPath.attr('d', (d) => {
+        const tan = Math.abs((d.target.y - d.source.y) / (d.target.x - d.source
+          .x)); // 圆心连线tan值
+        const x1 = d.target.x - d.source.x > 0 ? Math.sqrt(d.sourceRadius * d.sourceRadius / (
+          tan * tan + 1)) + d.source.x :
+          d.source.x - Math.sqrt(d.sourceRadius * d.sourceRadius / (tan * tan +
+          1)); // 起点x坐标
+        let y1 = d.target.y - d.source.y > 0 ? Math.sqrt(d.sourceRadius * d.sourceRadius *
+          tan * tan / (tan * tan + 1)) + d.source.y :
+          d.source.y - Math.sqrt(d.sourceRadius * d.sourceRadius * tan * tan / (tan *
+          tan + 1)); // 起点y坐标
+        const x2 = d.target.x - d.source.x > 0 ? d.target.x - Math.sqrt(d.targetRadius * d
+          .targetRadius / (1 + tan * tan)) :
+          d.target.x + Math.sqrt(d.targetRadius * d.targetRadius / (1 + tan *
+          tan)); // 终点x坐标
+        let y2 = d.target.y - d.source.y > 0 ? d.target.y - Math.sqrt(d.targetRadius * d
+          .targetRadius * tan * tan / (1 + tan * tan)) :
+          d.target.y + Math.sqrt(d.targetRadius * d.targetRadius * tan * tan / (1 + tan *
+          tan)); // 终点y坐标
+        if (d.target.x - d.source.x === 0 || tan === 0) { // 斜率无穷大的情况或为0时
+          y1 = d.target.y - d.source.y > 0 ? d.source.y + d.sourceRadius : d.source.y - d
+            .sourceRadius;
+          y2 = d.target.y - d.source.y > 0 ? d.target.y - d.targetRadius : d.target.y + d
+            .targetRadius;
+        }
+        // 防报错
+        if (!x1 || !y1 || !x2 || !y2) {
+          return;
+        }
+        if (d.linknum === 0) { // 设置编号为0的连接线为直线，其他连接线会均分在两边
+          d.x_start = x1;
+          d.y_start = y1;
+          d.x_end = x2;
+          d.y_end = y2;
+          return 'M' + x1 + ' ' + y1 + ' L ' + x2 + ' ' + y2;
+        }
+        const a = d.sourceRadius > d.targetRadius ? d.targetRadius * d.linknum / 3 : d
+          .sourceRadius * d.linknum / 3;
+        const xm = d.target.x - d.source.x > 0 ? d.source.x + Math.sqrt((d.sourceRadius * d
+          .sourceRadius - a * a) / (1 + tan * tan)) :
+          d.source.x - Math.sqrt((d.sourceRadius * d.sourceRadius - a * a) / (1 + tan *
+          tan));
+        let ym = d.target.y - d.source.y > 0 ? d.source.y + Math.sqrt((d.sourceRadius * d
+          .sourceRadius - a * a) * tan * tan / (1 + tan * tan)) :
+          d.source.y - Math.sqrt((d.sourceRadius * d.sourceRadius - a * a) * tan * tan / (
+          1 + tan * tan));
+        const xn = d.target.x - d.source.x > 0 ? d.target.x - Math.sqrt((d.targetRadius * d
+          .targetRadius - a * a) / (1 + tan * tan)) :
+          d.target.x + Math.sqrt((d.targetRadius * d.targetRadius - a * a) / (1 + tan *
+          tan));
+        let yn = d.target.y - d.source.y > 0 ? d.target.y - Math.sqrt((d.targetRadius * d
+          .targetRadius - a * a) * tan * tan / (1 + tan * tan)) :
+          d.target.y + Math.sqrt((d.targetRadius * d.targetRadius - a * a) * tan * tan / (
+          1 + tan * tan));
+        if (d.target.x - d.source.x === 0 || tan === 0) { // 斜率无穷大或为0时
+          ym = d.target.y - d.source.y > 0 ? d.source.y + Math.sqrt(d.sourceRadius * d
+            .sourceRadius - a * a) : d.source.y - Math.sqrt(d.sourceRadius * d
+            .sourceRadius - a * a);
+          yn = d.target.y - d.source.y > 0 ? d.target.y - Math.sqrt(d.targetRadius * d
+            .targetRadius - a * a) : d.target.y + Math.sqrt(d.targetRadius * d
+            .targetRadius - a * a);
+        }
+
+        const k = (x1 - x2) / (y2 - y1); // 连线垂线的斜率
+        let dx = Math.sqrt(a * a / (1 + k * k)); // 相对垂点x轴距离
+        let dy = Math.sqrt(a * a * k * k / (1 + k * k)); // 相对垂点y轴距离
+        if ((y2 - y1) === 0) {
+          dx = 0;
+          dy = Math.sqrt(a * a);
+        }
+        let xs;
+        let ys;
+        let xt;
+        let yt;
+        if (a > 0) {
+          xs = k > 0 ? xm - dx : xm + dx;
+          ys = ym - dy;
+          xt = k > 0 ? xn - dx : xn + dx;
+          yt = yn - dy;
+        } else {
+          xs = k > 0 ? xm + dx : xm - dx;
+          ys = ym + dy;
+          xt = k > 0 ? xn + dx : xn - dx;
+          yt = yn + dy;
+        }
+        // 记录连线起始和终止坐标，用于定位线上文字
+        d.x_start = xs;
+        d.y_start = ys;
+        d.x_end = xt;
+        d.y_end = yt;
+        return 'M' + xs + ' ' + ys + ' L ' + xt + ' ' + yt;
+      });
+
+      // 更新连接线上文字的位置
+      edgesText.attr('transform', (d) => {
+        // 防止报错
+        if (!d.x_start || !d.y_start || !d.x_end || !d.y_end) {
+          return;
+        }
+        return 'translate(' + (d.x_start + d.x_end) / 2 + ',' + ((+d.y_start) + (+d
+            .y_end)) / 2 +
+          ')' + ' rotate(' + Math.atan((d.y_end - d.y_start) / (d.x_end - d.x_start)) *
+          180 / Math.PI + ')';
+      });
+
+      // 更新结点图片和文字
+      circle.attr('cx', (d) => {
+        return d.x;
+      });
+      circle.attr('cy', (d) => {
+        return d.y;
+      });
+
+      nodesText.attr('x', (d) => {
+        return d.x;
+      });
+      nodesText.attr('y', (d) => {
+        return d.y;
+      });
+    });
   }
 
-  zoomFn(): void {
-    console.log('开始移动了');
-    // const {
-    //   translate,
-    //   scale
-    // } = d3.event;
-    // console.log(container);
-    //
-    // container.attr('transform', 'translate(' + translate + ')scale(' + scale * 0.6 + ')');
-  }
   // 分配编号
   setLinkNumber(group): void {
     if (group.length === 1) {
