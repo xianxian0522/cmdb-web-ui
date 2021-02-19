@@ -1,4 +1,5 @@
 import {AfterViewInit, Component, OnInit} from '@angular/core';
+
 import * as d3 from 'd3';
 
 @Component({
@@ -46,11 +47,11 @@ export class Menu21Component implements OnInit, AfterViewInit {
   };
 
   ngOnInit(): void {
-    console.log(this.data);
-    this.chart();
+    console.log(d3, 'd3');
+    d3.select('#model').append(this.chart);
   }
 
-  chart(): any {
+  chart = () => {
     const links = this.data.links.map(d => Object.create(d));
     const nodes = this.data.nodes.map(d => Object.create(d));
     const width = 750;
@@ -65,8 +66,8 @@ export class Menu21Component implements OnInit, AfterViewInit {
     const svg = d3.create('svg')
       .attr('viewBox', [-width / 2, -this.height / 2, width, this.height])
       .style('font', '12px sans-serif');
+    console.log(svg, 'svg');
 
-    // Per-type markers, as they don't inherit styles.
     svg.append('defs').selectAll('marker')
       .data(this.types)
       .join('marker')
@@ -119,6 +120,7 @@ export class Menu21Component implements OnInit, AfterViewInit {
     });
 
     // invalidation.then(() => simulation.stop());
+    simulation.stop();
 
     return svg.node();
   }
@@ -383,182 +385,204 @@ export class Menu21Component implements OnInit, AfterViewInit {
     });
 
     // // 节点
-    // let nodes = {};
-    // // 关系对应颜色
-    // let relationColor = {};
-    // d3.csvParse()
-    //
-    // for (var i = 0; i < sourceDatas.length; i++) {
-    //   sourceDatas[i].source = nodes[sourceDatas[i].source] || (nodes[sourceDatas[i].source] = {
-    //     name: sourceDatas[i].source,
-    //     color: sourceDatas[i].sourceColor,
-    //     image: sourceDatas[i].sourceImg,
-    //     radius: sourceDatas[i].sourceRadius
-    //   });
-    //   sourceDatas[i].target = nodes[sourceDatas[i].target] || (nodes[sourceDatas[i].target] = {
-    //     name: sourceDatas[i].target,
-    //     color: sourceDatas[i].targetColor,
-    //     image: sourceDatas[i].targetImg,
-    //     radius: sourceDatas[i].targetRadius
-    //   });
-    // }
-    //
-    // var sourceData = datas.links;
-    // for (var i = 0; i < sourceData.length; i++) {
-    //   relationColor[sourceData[i].relation] = {
-    //     "relation": sourceData[i].relation,
-    //     "lineColor": sourceData[i].lineColor
-    //   };
-    // }
-    //
-    //
+    const nodes = {};
+    // 关系对应颜色
+    const relationColor = {};
+    // d3.csv.parse();
+    console.log(sourceDatas);
+    sourceDatas.map(kk => {
+      kk.source = nodes[kk.source] || (nodes[kk.source] = {
+        name: kk.source,
+        color: kk.sourceColor,
+        image: kk.sourceImg,
+        radius: kk.sourceRadius
+      });
+      kk.target = nodes[kk.target] || (nodes[kk.target] = {
+        name: kk.target,
+        color: kk.targetColor,
+        image: kk.targetImg,
+        radius: kk.targetRadius
+      });
+    });
+    sourceDatas.map(key => {
+      relationColor[key.relation] = {
+        relation: key.relation,
+        lineColor: key.lineColor,
+      };
+    });
 
     // nodes = d3.values(nodes);
+    const nodesArr = Object.keys(nodes).map(key => nodes[key]);
     // relationColor = d3.values(relationColor);
-    //
-    // var examples_x = parseFloat(options.examplesX); //关系示例坐标x
-    // var examples_y = parseFloat(options.examplesY); //关系示例坐标y
-    // var examplesLength = 80;
-    // var examplesSize = Math.floor((width - examples_x) / examplesLength);
-    // var examplesRow = relationColor.length % examplesSize == 0 ? relationColor.length / examplesSize : Math
-    //   .ceil(relationColor.length / examplesSize);
-    // //计算关系示列位置
-    // for (var i = 1; i <= relationColor.length; i++) {
-    //   var num = i % examplesSize == 0 ? examplesSize : i % examplesSize;
-    //   relationColor[i - 1].x = examples_x + (num - 1) * examplesLength;
-    //   relationColor[i - 1].y = examples_y + 20 * Math.ceil(i / examplesSize);
-    // }
-    // if (dataFilter == undefined) {
-    //   dataFilter = [];
-    //   for (var i = 0; i < relationColor.length; i++) {
-    //     dataFilter.push({
-    //       "relation": relationColor[i].relation,
-    //       "isShow": "true"
-    //     });
-    //   }
-    // }
-    //
-    //
-    // //绑定相连节点
-    // for (var i = 0; i < nodes.length; i++) {
-    //   for (var j = 0; j < links.length; j++) {
-    //     if (nodes[i].name == links[j].source.name) {
-    //       nodes[i][links[j].target.name] = {
-    //         name: links[j].target.name
-    //       };
-    //     }
-    //     if (nodes[i].name == links[j].target.name) {
-    //       nodes[i][links[j].source.name] = {
-    //         name: links[j].source.name
-    //       };
-    //     }
-    //   }
-    // }
-    // //D3力导向布局
-    // var force = d3.layout.force()
+    const relationColors = Object.keys(relationColor).map(key => relationColor[key]);
+    console.log(nodesArr, 'nodes', relationColors);
+
+    const examplesX = parseFloat(options.examplesX); // 关系示例坐标x
+    const examplesY = parseFloat(options.examplesY); // 关系示例坐标y
+    const examplesLength = 80;
+    const examplesSize = Math.floor((width - examplesX) / examplesLength);
+    const examplesRow = relationColors.length % examplesSize === 0 ? relationColors.length / examplesSize : Math
+      .ceil(relationColors.length / examplesSize);
+    // 计算关系示列位置
+    relationColors.forEach((item, index) => {
+      const num = (index + 1) % examplesSize === 0 ? examplesSize : (index + 1) % examplesSize;
+      item.x = examplesX + (num - 1) * examplesLength;
+      item.y = examplesY + 20 * Math.ceil((index + 1) / examplesSize);
+    });
+
+    if (dataFilter === undefined) {
+      dataFilter = [];
+      relationColors.map(k => {
+        dataFilter.push({
+          relation: k.relation,
+          isShow: 'true'
+        });
+      });
+    }
+    console.log(dataFilter, 'datafil');
+
+    // 绑定相连节点
+    nodesArr.map(kk => {
+      sourceDatas.map(k => {
+        if (kk.name === k.source.name) {
+          kk[k.target.name] = {
+            name: k.target.name
+          };
+        }
+        if (kk.name === k.target.name) {
+          kk[k.source.name] = {
+            name: k.source.name
+          };
+        }
+      });
+    });
+    console.log(nodesArr, 'arr');
+    // D3力导向布局
+    // const force = d3.layout.force()
     //   .nodes(nodes)
-    //   .links(links)
+    //   .links(sourceDatas)
     //   .size([width, height])
     //   .linkDistance(200)
     //   .charge(-1500)
     //   .start();
     // // 全图缩放器
-    // var zoom = d3.behavior.zoom()
+    // const zoom = d3.behavior.zoom()
     //   .scaleExtent([0.25, 2])
-    //   .on('zoom', zoomFn);
-    // var svg = d3.select("#" + divid).append("svg")
-    //   .attr("width", width)
-    //   .attr("height", height)
-    //   .attr("style", "background-color:" + backgroundColor)
+    //   .on('zoom', () => {
+    //     const {
+    //       translate,
+    //       scale
+    //     } = d3.event;
+    //     // console.log(container);
+    //     container.attr('transform', 'translate(' + translate + ')scale(' + scale * 0.6 + ')');
+    //   });
+    // const svg = d3.select('#' + divid).append('svg')
+    //   .attr('width', width)
+    //   .attr('height', height)
+    //   .attr('style', 'background-color:' + backgroundColor)
     //   .call(zoom)
     //   .on('dblclick.zoom', null);
     // // 缩放层（位置必须在 container 之前）
-    // var zoomOverlay = svg.append('rect')
+    // const zoomOverlay = svg.append('rect')
     //   .attr('width', width)
     //   .attr('height', height)
     //   .style('fill', 'none')
     //   .style('pointer-events', 'all');
-    // var container = svg.append('g')
+    // const container = svg.append('g')
     //   .attr('transform', 'scale(' + 0.6 + ')')
     //   .attr('class', 'container');
-    // // 根据分类进行筛选
+    //
+    // const tooltip = d3.select('body').append('div')
+    //   .attr('class', 'tooltip')
+    //   .attr('opacity', 0.0);
+    // 根据分类进行筛选
     // if (options.showExamples) {
-    //   var examples = svg.selectAll(".examples")
+    //   const examples = svg.selectAll('.examples')
     //     .data(relationColor)
     //     .enter()
-    //     .append("svg:g")
-    //     .attr("fill-opacity", function(d) {
+    //     .append('svg:g')
+    //     .attr('fill-opacity', (d) => {
     //       for (var i = 0; i < dataFilter.length; i++) {
-    //         if (d.relation == dataFilter[i].relation && dataFilter[i].isShow == "false") {
+    //         if (d.relation === dataFilter[i].relation && dataFilter[i].isShow === 'false') {
     //           return 0.2;
     //         }
     //       }
     //       return 1;
     //     })
-    //     .on("click", function(d) {
+    //     .on('click', (d) => {
     //       for (var i = 0; i < dataFilter.length; i++) {
-    //         if (dataFilter[i].relation == d.relation) {
-    //           if (dataFilter[i].isShow == "true") {
-    //             dataFilter[i].isShow = "false";
+    //         if (dataFilter[i].relation === d.relation) {
+    //           if (dataFilter[i].isShow === 'true') {
+    //             dataFilter[i].isShow = 'false';
     //           } else {
-    //             dataFilter[i].isShow = "true";
+    //             dataFilter[i].isShow = 'true';
     //           }
     //         }
     //       }
-    //       drawChart(divid, options, datas, dataFilter);
+    //       this.drawChart(divid, options, datas, dataFilter);
     //     });
     //
     //
-    //   examples.append("svg:path")
-    //     .attr("d", function(d) {
-    //       var x1 = d.x;
-    //       var y1 = d.y;
-    //       var x2 = x1 + 20;
-    //       var y2 = y1;
+    //   examples.append('svg:path')
+    //     .attr('d', (d) => {
+    //       const x1 = d.x;
+    //       const y1 = d.y;
+    //       const x2 = x1 + 20;
+    //       const y2 = y1;
     //       return 'M' + x1 + ' ' + y1 + ' L ' + x2 + ' ' + y2;
     //     })
-    //     .style("stroke", function(d) {
-    //       if (d.lineColor == "") {
+    //     .style('stroke', (d) => {
+    //       if (d.lineColor === '') {
     //         return lineColor;
     //       } else {
     //         return d.lineColor;
     //       }
     //     })
-    //     .style("stroke-width", 2.5);
-    //   examples.append("svg:text")
-    //     .style("font-size", "14px")
-    //     .style("fill", examplesFontColor)
-    //     .attr("x", function(d) {
+    //     .style('stroke-width', 2.5);
+    //   examples.append('svg:text')
+    //     .style('font-size', '14px')
+    //     .style('fill', examplesFontColor)
+    //     .attr('x', (d) => {
     //       if (d.relation.length > 3) {
     //         return d.x + 20 + 14 * 4 / 2;
     //       }
     //       return d.x + 20 + 14 * d.relation.length / 2;
     //     })
-    //     .attr("y", function(d) {
+    //     .attr('y', (d) => {
     //       return d.y + 5;
     //     })
-    //     .attr('text-anchor', "middle")
-    //     .text(function(d) {
+    //     .attr('text-anchor', 'middle')
+    //     .text((d) => {
     //       if (d.relation.length > 3) {
-    //         return d.relation.substring(0, 3) + "...";
+    //         return d.relation.substring(0, 3) + '...';
     //       }
     //       return d.relation;
     //     })
-    //     .on("mouseover", function(d) {
+    //     .on('mouseover', (d) => {
     //       console.log('放到分类上');
-    //       tooltip.html("<span>" + d.relation + "</span>")
-    //         .style("left", (d3.event.pageX) + "px")
-    //         .style("top", (d3.event.pageY + 20) + "px")
-    //         .style("display", "block")
-    //         .style("position", "absolute")
-    //         .style("opacity", 1.0);
+    //       tooltip.html('<span>' + d.relation + '</span>')
+    //         .style('left', (d3.event.pageX) + 'px')
+    //         .style('top', (d3.event.pageY + 20) + 'px')
+    //         .style('display', 'block')
+    //         .style('position', 'absolut')
+    //         .style('opacity', 1.0);
     //     })
-    //     .on("mouseout", function(d, i) {
-    //       tooltip.style("opacity", 0.0);
+    //     .on('mouseout', (d, i) => {
+    //       tooltip.style('opacity', 0.0);
     //     });
     // }
   }
 
+  zoomFn(): void {
+    console.log('开始移动了');
+    // const {
+    //   translate,
+    //   scale
+    // } = d3.event;
+    // console.log(container);
+    //
+    // container.attr('transform', 'translate(' + translate + ')scale(' + scale * 0.6 + ')');
+  }
   // 分配编号
   setLinkNumber(group): void {
     if (group.length === 1) {
