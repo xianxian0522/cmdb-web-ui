@@ -1,6 +1,7 @@
 import {AfterViewInit, Component, OnInit} from '@angular/core';
 
 import * as d3 from 'd3';
+import {BaseRepository} from '../../../share/services/base.repository';
 
 @Component({
   selector: 'app-menu21',
@@ -8,7 +9,7 @@ import * as d3 from 'd3';
   styleUrls: ['./menu21.component.scss']
 })
 export class Menu21Component implements OnInit, AfterViewInit {
-  constructor() {
+  constructor(private baseRepository: BaseRepository<any>) {
   }
 
   height = 600;
@@ -23,7 +24,7 @@ export class Menu21Component implements OnInit, AfterViewInit {
   ];
   types = Array.from(new Set(this.links.map(d => d.type)));
   // data = ({nodes: Array.from(new Set(this.links.flatMap(l => [l.source, l.target])), id => ({id})), links: this.links});
-  color = d3.scaleOrdinal(this.types, d3.schemeCategory10);
+  // color = d3.scaleOrdinal(this.types, d3.schemeCategory10);
   data = {
     nodes: [
       {id: 'Microsoft'},
@@ -48,82 +49,82 @@ export class Menu21Component implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     console.log(d3, 'd3');
-    d3.select('#model').append(this.chart);
-    this.dataEdges();
+    // d3.select('#model').append(this.chart);
+    // this.dataEdges();
   }
 
   chart = () => {
-    const links = this.data.links.map(d => Object.create(d));
-    const nodes = this.data.nodes.map(d => Object.create(d));
-    const width = 750;
-    console.log(links, nodes, 'sss');
-    const simulation = d3.forceSimulation(nodes)
-      .force('link', d3.forceLink(links).id(d => d.id))
-      .force('charge', d3.forceManyBody().strength(-400))
-      .force('x', d3.forceX())
-      .force('y', d3.forceY());
-    console.log(simulation, 'sim');
-
-    const svg = d3.create('svg')
-      .attr('viewBox', [-width / 2, -this.height / 2, width, this.height])
-      .style('font', '12px sans-serif');
-    console.log(svg, 'svg');
-
-    svg.append('defs').selectAll('marker')
-      .data(this.types)
-      .join('marker')
-      .attr('id', d => `arrow-${d}`)
-      .attr('viewBox', '0 -5 10 10')
-      .attr('refX', 15)
-      .attr('refY', -0.5)
-      .attr('markerWidth', 6)
-      .attr('markerHeight', 6)
-      .attr('orient', 'auto')
-      .append('path')
-      .attr('fill', this.color)
-      .attr('d', 'M0,-5L10,0L0,5');
-
-    const link = svg.append('g')
-      .attr('fill', 'none')
-      .attr('stroke-width', 1.5)
-      .selectAll('path')
-      .data(links)
-      .join('path')
-      .attr('stroke', d => this.color(d.type))
-      .attr('marker-end', d => `url(${new URL(`#arrow-${d.type}`)})`);
-
-    const node = svg.append('g')
-      .attr('fill', 'currentColor')
-      .attr('stroke-linecap', 'round')
-      .attr('stroke-linejoin', 'round')
-      .selectAll('g')
-      .data(nodes)
-      .join('g')
-      .call(this.drag(simulation));
-
-    node.append('circle')
-      .attr('stroke', 'white')
-      .attr('stroke-width', 1.5)
-      .attr('r', 4);
-
-    node.append('text')
-      .attr('x', 8)
-      .attr('y', '0.31em')
-      .text(d => d.id)
-      .clone(true).lower()
-      .attr('fill', 'none')
-      .attr('stroke', 'white')
-      .attr('stroke-width', 3);
-
-    simulation.on('tick', () => {
-      link.attr('d', this.linkArc);
-      node.attr('transform', d => `translate(${d.x},${d.y})`);
-    });
-
-    // invalidation.then(() => simulation.stop());
-    simulation.stop();
-
-    return svg.node();
+    // const links = this.data.links.map(d => Object.create(d));
+    // const nodes = this.data.nodes.map(d => Object.create(d));
+    // const width = 750;
+    // console.log(links, nodes, 'sss');
+    // const simulation = d3.forceSimulation(nodes)
+    //   .force('link', d3.forceLink(links).id(d => d.id))
+    //   .force('charge', d3.forceManyBody().strength(-400))
+    //   .force('x', d3.forceX())
+    //   .force('y', d3.forceY());
+    // console.log(simulation, 'sim');
+    //
+    // const svg = d3.create('svg')
+    //   .attr('viewBox', [-width / 2, -this.height / 2, width, this.height])
+    //   .style('font', '12px sans-serif');
+    // console.log(svg, 'svg');
+    //
+    // svg.append('defs').selectAll('marker')
+    //   .data(this.types)
+    //   .join('marker')
+    //   .attr('id', d => `arrow-${d}`)
+    //   .attr('viewBox', '0 -5 10 10')
+    //   .attr('refX', 15)
+    //   .attr('refY', -0.5)
+    //   .attr('markerWidth', 6)
+    //   .attr('markerHeight', 6)
+    //   .attr('orient', 'auto')
+    //   .append('path')
+    //   .attr('fill', this.color)
+    //   .attr('d', 'M0,-5L10,0L0,5');
+    //
+    // const link = svg.append('g')
+    //   .attr('fill', 'none')
+    //   .attr('stroke-width', 1.5)
+    //   .selectAll('path')
+    //   .data(links)
+    //   .join('path')
+    //   .attr('stroke', d => this.color(d.type))
+    //   .attr('marker-end', d => `url(${new URL(`#arrow-${d.type}`)})`);
+    //
+    // const node = svg.append('g')
+    //   .attr('fill', 'currentColor')
+    //   .attr('stroke-linecap', 'round')
+    //   .attr('stroke-linejoin', 'round')
+    //   .selectAll('g')
+    //   .data(nodes)
+    //   .join('g')
+    //   .call(this.drag(simulation));
+    //
+    // node.append('circle')
+    //   .attr('stroke', 'white')
+    //   .attr('stroke-width', 1.5)
+    //   .attr('r', 4);
+    //
+    // node.append('text')
+    //   .attr('x', 8)
+    //   .attr('y', '0.31em')
+    //   .text(d => d.id)
+    //   .clone(true).lower()
+    //   .attr('fill', 'none')
+    //   .attr('stroke', 'white')
+    //   .attr('stroke-width', 3);
+    //
+    // simulation.on('tick', () => {
+    //   link.attr('d', this.linkArc);
+    //   node.attr('transform', d => `translate(${d.x},${d.y})`);
+    // });
+    //
+    // // invalidation.then(() => simulation.stop());
+    // simulation.stop();
+    //
+    // return svg.node();
   }
   linkArc(d): any {
     const r = Math.hypot(d.target.x - d.source.x, d.target.y - d.source.y);
@@ -163,142 +164,245 @@ export class Menu21Component implements OnInit, AfterViewInit {
   }
 
   dataEdges(): void {
-    const h = 500;
-    const w = 750;
-    // 颜色函数 d3.schemeBlues[9]
-    const colors = d3.scaleOrdinal(d3.schemeCategory10); // 创建序数比例尺和包括20中颜色的输出范围
-    console.log(colors, 'colors');
-    const links = this.data.links.map(d => Object.create(d));
-    const nodes = this.data.nodes.map(d => Object.create(d));
-    const dataset = {
-      nodes: [
-        {id: 'Alice'},
-        {id: 'Bob'},
-        {id: 'Carol'}
-      ],
-      edges: [
-        {source: 0, target: 1}, // Alice → Bob
-        {source: 1, target: 2} // Bob → Carol
-      ]
-      // nodes: [ // 节点
-      //   {name: 'master', values: 12},
-      //   {name: 'das', values: 25},
-      //   {name: 'fd', values: 39},
-      //   {name: 'dsadsa', values: 45},
-      //   {name: 'htr', values: 25},
-      //   {name: 'vbcx', values: 24},
-      //   {name: 'ht', values: 90},
-      //   {name: 'nbv', values: 80},
-      //   {name: 'yrt', values: 68},
-      //   {name: 'jff', values: 63},
-      //   {name: 'nbv', values: 25},
-      //   {name: 'jyt', values: 45},
-      //   {name: 'mb', values: 35},
-      //   {name: 'jyt', values: 78},
-      //   {name: 'gtre', values: 79},
-      //   {name: 'bvc', values: 25},
-      //   {name: 'mjh', values: 58},
-      //   {name: 'ughf', values: 86},
-      //   {name: 'juy', values: 79},
-      //   {name: 'mjh', values: 53},
-      //   {name: 'njm', values: 52},
-      // ],
-      // edges: [ // 边
-      //   { source: 0, target: 1},
-      //   { source: 0, target: 2},
-      //   { source: 0, target: 3},
-      //   { source: 0, target: 4},
-      //   { source: 0, target: 5},
-      //   { source: 0, target: 6},
-      //   { source: 0, target: 7},
-      //   { source: 0, target: 8},
-      //   { source: 0, target: 9},
-      //   { source: 0, target: 10},
-      //   { source: 0, target: 11},
-      //   { source: 0, target: 12},
-      //   { source: 0, target: 13},
-      //   { source: 0, target: 14},
-      //   { source: 0, target: 15},
-      //   { source: 0, target: 16},
-      //   { source: 0, target: 17},
-      //   { source: 0, target: 18},
-      //   { source: 0, target: 19},
-      //   { source: 0, target: 20}
-      // ]
-    };
-    // 转化数据为适合生成力导向图的对象数组
-    const force = d3.forceSimulation(nodes) // 加载节点数据
-      .force('link', d3.forceLink(links).id(d => d.id)) // 加载边数据
-      .force('charge', d3.forceManyBody().strength(-400))
-      .force('distance', (d) => { // 根据权重不同连接线段的长度也不同
-        // console.log(d);
-        return 10; // 连线的长度
-      }).force('center', d3.forceCenter());
-    const svg = d3.select('#model')
-      .append('svg')
-      .attr('width', w)
-      .attr('height', h);
+    // const h = 500;
+    // const w = 750;
+    // // 颜色函数 d3.schemeBlues[9]
+    // const colors = d3.scaleOrdinal(d3.schemeCategory10); // 创建序数比例尺和包括20中颜色的输出范围
+    // console.log(colors, 'colors');
+    // const links = this.data.links.map(d => Object.create(d));
+    // const nodes = this.data.nodes.map(d => Object.create(d));
+    // const dataset = {
+    //   nodes: [
+    //     {id: 'Alice'},
+    //     {id: 'Bob'},
+    //     {id: 'Carol'}
+    //   ],
+    //   edges: [
+    //     {source: 0, target: 1}, // Alice → Bob
+    //     {source: 1, target: 2} // Bob → Carol
+    //   ]
+    //   // nodes: [ // 节点
+    //   //   {name: 'master', values: 12},
+    //   //   {name: 'das', values: 25},
+    //   //   {name: 'fd', values: 39},
+    //   //   {name: 'dsadsa', values: 45},
+    //   //   {name: 'htr', values: 25},
+    //   //   {name: 'vbcx', values: 24},
+    //   //   {name: 'ht', values: 90},
+    //   //   {name: 'nbv', values: 80},
+    //   //   {name: 'yrt', values: 68},
+    //   //   {name: 'jff', values: 63},
+    //   //   {name: 'nbv', values: 25},
+    //   //   {name: 'jyt', values: 45},
+    //   //   {name: 'mb', values: 35},
+    //   //   {name: 'jyt', values: 78},
+    //   //   {name: 'gtre', values: 79},
+    //   //   {name: 'bvc', values: 25},
+    //   //   {name: 'mjh', values: 58},
+    //   //   {name: 'ughf', values: 86},
+    //   //   {name: 'juy', values: 79},
+    //   //   {name: 'mjh', values: 53},
+    //   //   {name: 'njm', values: 52},
+    //   // ],
+    //   // edges: [ // 边
+    //   //   { source: 0, target: 1},
+    //   //   { source: 0, target: 2},
+    //   //   { source: 0, target: 3},
+    //   //   { source: 0, target: 4},
+    //   //   { source: 0, target: 5},
+    //   //   { source: 0, target: 6},
+    //   //   { source: 0, target: 7},
+    //   //   { source: 0, target: 8},
+    //   //   { source: 0, target: 9},
+    //   //   { source: 0, target: 10},
+    //   //   { source: 0, target: 11},
+    //   //   { source: 0, target: 12},
+    //   //   { source: 0, target: 13},
+    //   //   { source: 0, target: 14},
+    //   //   { source: 0, target: 15},
+    //   //   { source: 0, target: 16},
+    //   //   { source: 0, target: 17},
+    //   //   { source: 0, target: 18},
+    //   //   { source: 0, target: 19},
+    //   //   { source: 0, target: 20}
+    //   // ]
+    // };
+    // // 转化数据为适合生成力导向图的对象数组
+    // const force = d3.forceSimulation(nodes) // 加载节点数据
+    //   .force('link', d3.forceLink(links).id(d => d.id)) // 加载边数据
+    //   .force('charge', d3.forceManyBody().strength(-400))
+    //   .force('distance', (d) => { // 根据权重不同连接线段的长度也不同
+    //     // console.log(d);
+    //     return 10; // 连线的长度
+    //   }).force('center', d3.forceCenter());
+    // const svg = d3.select('#model')
+    //   .append('svg')
+    //   .attr('width', w)
+    //   .attr('height', h);
+    //
+    // // 创建作为连线的svg直线
+    // const edges = svg.selectAll('line')
+    //   .data(links)
+    //   .enter()
+    //   .append('line')
+    //   .style('stroke', (d) => { // 设置线的颜色
+    //     return colors(d.color);
+    //   })
+    //   .style('opacity', 0.5)
+    //   .style('stroke-width', (d, i) => { // 设置线的宽度
+    //     return 1;
+    //   });
+    //
+    // // 创建作为连线的svg圆形
+    // const node = svg.selectAll('circle')
+    //   .data(nodes)
+    //   .enter()
+    //   .append('circle')
+    //   .attr('r', (d) => { // 设置圆点的半径，master为10，其他为5
+    //     console.log(d, 'ddd');
+    //     if ( d.name === 'master') {
+    //       return 10;
+    //     }
+    //     return 5;
+    //   })
+    //   .style('fill', (d) => {
+    //     return colors(d.weight * d.weight * d.weight);
+    //   })
+    //   .call(this.drag(force)); // 可以拖动
+    //
+    // // 打点更新，没有的话就显示不出来了
+    // force.on('tick', () => {
+    //   console.log('tick');
+    //   nodes[0].x = w / 2;
+    //   nodes[0].y = h / 2;
+    //   // 边
+    //   edges.attr('x1', (d) => {
+    //     return  d.source.x;
+    //   })
+    //     .attr('y1', (d) => {
+    //       return  d.source.y;
+    //     })
+    //     .attr('x2', (d) => {
+    //       return  d.target.x;
+    //     })
+    //     .attr('y2', (d) => {
+    //       return  d.target.y;
+    //     });
+    //
+    //   // 节点
+    //   node.attr('cx', (d) => {
+    //     return d.x;
+    //   })
+    //     .attr('cy', (d) => {
+    //       return d.y;
+    //     });
+    // });
+  }
 
-    // 创建作为连线的svg直线
-    const edges = svg.selectAll('line')
-      .data(links)
-      .enter()
-      .append('line')
-      .style('stroke', (d) => { // 设置线的颜色
-        return colors(d.color);
-      })
-      .style('opacity', 0.5)
-      .style('stroke-width', (d, i) => { // 设置线的宽度
-        return 1;
+  relationProperties(arr, data, tar): void {
+    Object.keys(data).map(key => {
+      // console.log(key, 'pro', data);
+      arr.push({
+        source: data[key].Description || key,
+        target: tar,
+        relation: key,
+        sourceImg: '',
+        targetImg: '',
+        sourceColor: '#F4793B',
+        targetColor: '#0084ff',
+        sourceRadius: '30',
+        targetRadius: '35',
       });
-
-    // 创建作为连线的svg圆形
-    const node = svg.selectAll('circle')
-      .data(nodes)
-      .enter()
-      .append('circle')
-      .attr('r', (d) => { // 设置圆点的半径，master为10，其他为5
-        console.log(d, 'ddd');
-        if ( d.name === 'master') {
-          return 10;
-        }
-        return 5;
-      })
-      .style('fill', (d) => {
-        return colors(d.weight * d.weight * d.weight);
-      })
-      .call(this.drag(force)); // 可以拖动
-
-    // 打点更新，没有的话就显示不出来了
-    force.on('tick', () => {
-      console.log('tick');
-      nodes[0].x = w / 2;
-      nodes[0].y = h / 2;
-      // 边
-      edges.attr('x1', (d) => {
-        return  d.source.x;
-      })
-        .attr('y1', (d) => {
-          return  d.source.y;
-        })
-        .attr('x2', (d) => {
-          return  d.target.x;
-        })
-        .attr('y2', (d) => {
-          return  d.target.y;
-        });
-
-      // 节点
-      node.attr('cx', (d) => {
-        return d.x;
-      })
-        .attr('cy', (d) => {
-          return d.y;
-        });
+      if (data[key].Type === 'object') {
+        const target = data[key].Description || key;
+        this.relationProperties(arr, data[key].Properties, target);
+      }
+      if (data[key].Type === 'array') {
+        console.log(data[key], 'xxx', key);
+        const t = data[key].Description || key;
+        this.relationProperties(arr, data[key].Items.Properties, t);
+      }
     });
   }
 
   ngAfterViewInit(): void {
+    this.baseRepository.getModel('App').subscribe(res => {
+      console.log(res);
+      const arr = [];
+      Object.keys(res.Edges).map(key => {
+        if (res.Edges[key].Ref) {
+          arr.push({
+            source: res.Edges[key].Description || res.Edges[key].Type,
+            target: 'App',
+            relation: res.Edges[key].Name,
+            sourceImg: '',
+            targetImg: '',
+            sourceColor: '#F4793B',
+            targetColor: '#0084ff',
+            sourceRadius: '30',
+            targetRadius: '35',
+          });
+          arr.push({
+            source: 'App',
+            target: res.Edges[key].Description || res.Edges[key].Type,
+            relation: res.Edges[key].Name,
+            sourceImg: '',
+            targetImg: '',
+            sourceColor: '#F4793B',
+            targetColor: '#0084ff',
+            sourceRadius: '30',
+            targetRadius: '35',
+          });
+        } else {
+          arr.push({
+            source: res.Edges[key].Description || res.Edges[key].Type,
+            target: 'App',
+            relation: res.Edges[key].Name,
+            sourceImg: '',
+            targetImg: '',
+            sourceColor: '#F4793B',
+            targetColor: '#0084ff',
+            sourceRadius: '30',
+            targetRadius: '35',
+          });
+        }
+      });
+      this.relationProperties(arr, res.Properties, 'App');
+      // Object.keys(res.Properties).map(k => {
+      //   arr.push({
+      //     source: res.Properties[k].Description || k,
+      //     target: 'App',
+      //     relation: k,
+      //     sourceImg: '',
+      //     targetImg: '',
+      //     sourceColor: '#F4793B',
+      //     targetColor: '#0084ff',
+      //     sourceRadius: '30',
+      //     targetRadius: '35',
+      //   });
+      //   if (res.Properties[k].Type === 'object') {
+      //     const target = res.Properties[k].Description || k;
+      //     this.relationProperties(arr, res.Properties[k].Properties, target);
+      //     console.log('xun huan', k, res.Properties[k], target);
+      //   }
+      // });
+
+      const options: any = {};
+      options.backgroundColor = '#fff';
+      options.nodesFontType = 'SimHei';
+      options.nodesFontSize = 14;
+      options.lineFontType = 'SimHei';
+      options.lineFontSize = 12;
+      options.lineColor = '#000000';
+      options.showExamples = true;
+      options.examplesX = 20;
+      options.examplesY = 450;
+      options.examplesFontColor = '#000000';
+      this.drawChart('model', options, arr);
+      const d = [{source: 'App' + res.Description}];
+
+    });
+
     const data = [{
         source: '陆洋',
         data: {
@@ -306,7 +410,7 @@ export class Menu21Component implements OnInit, AfterViewInit {
         },
         target: '建银国际产业基金管理有限公司',
         relation: '投资',
-        sourceImg: 'http://mail.tom.com/error/i2.gif',
+        sourceImg: '',
         targetImg: '',
         sourceColor: '#F4793B',
         targetColor: '#0084ff',
@@ -320,7 +424,7 @@ export class Menu21Component implements OnInit, AfterViewInit {
           },
           target: '投足有限公司',
           relation: '投资',
-          sourceImg: 'http://mail.tom.com/error/i2.gif',
+          sourceImg: '',
           targetImg: '',
           sourceColor: '#F4793B',
           targetColor: '#0084ff',
@@ -394,18 +498,6 @@ export class Menu21Component implements OnInit, AfterViewInit {
           targetRadius: '35',
         },
     ];
-    const options: any = {};
-    options.backgroundColor = '#fff';
-    options.nodesFontType = 'SimHei';
-    options.nodesFontSize = 14;
-    options.lineFontType = 'SimHei';
-    options.lineFontSize = 12;
-    options.lineColor = '#000000';
-    options.showExamples = true;
-    options.examplesX = 20;
-    options.examplesY = 450;
-    options.examplesFontColor = '#000000';
-    // this.drawChart('model', options, data);
   }
 
   drawChart(divid, options, datas, dataFilter?): void {
@@ -422,12 +514,6 @@ export class Menu21Component implements OnInit, AfterViewInit {
     const svgChart = d3.select('svg');
     svgChart.remove();
 
-    // var tip = $(".tooltip");
-    // if (tip.length > 0) {
-    //   tip.remove();
-    // }
-
-
     let sourceDatas = [];
     sourceDatas = datas.map( data => {
       const jsonObj: any = {};
@@ -442,30 +528,29 @@ export class Menu21Component implements OnInit, AfterViewInit {
       jsonObj.targetRadius = data.targetRadius;
       // 根据关系类型添加连接线的颜色
       jsonObj.lineColor = data.lineColor;
-      switch (data.relation) {
-        case '投资':
+      switch (data.relation.length) {
+        case 1: case 2: case 3:
           jsonObj.lineColor = '#458B00';
           break;
-        case '总经理':
+        case 4: case 5: case 6:
           jsonObj.lineColor = '#EEEE00';
           break;
-        case '董事':
+        case 7: case 8: case 9:
           jsonObj.lineColor = '#8fd2e1';
           break;
-        case '法人':
+        case 10: case 11: case 12:
           jsonObj.lineColor = '#c2de96';
           break;
-        case '董事长':
+        case 13: case 14: case 15:
           jsonObj.lineColor = '#ff4c00';
           break;
         default:
-          jsonObj.lineColor = '#000';
+          jsonObj.lineColor = '#ffa39e';
       }
       jsonObj.data = data.data;
       return jsonObj;
     });
-    console.log(sourceDatas);
-    // var resourceLinks = sourceDatas.links;
+    console.log(sourceDatas, 'data');
 
     if (dataFilter !== undefined && dataFilter.length > 0) {
       const indexArray = [];
@@ -490,8 +575,6 @@ export class Menu21Component implements OnInit, AfterViewInit {
         sourceDatas = tempArray;
       }
     }
-    // var links = resourceLinks;
-
     // 关系分组
     const linkGroup = {};
     // 对连接线进行统计和分组，不区分连接线的方向，只要属于同两个实体，即认为是同一组
@@ -517,16 +600,15 @@ export class Menu21Component implements OnInit, AfterViewInit {
       // 给节点分配编号
       if (group.length > 0) {
         this.setLinkNumber(group);
-        console.log('setGroup', linkGroup[kk]);
+        // console.log('setGroup', linkGroup[kk]);
       }
     });
 
-    // // 节点
+    // 节点
     const nodes = {};
     // 关系对应颜色
     const relationColor = {};
-    // d3.csv.parse();
-    console.log(sourceDatas);
+    console.log(sourceDatas, 'dataf');
     sourceDatas.map(kk => {
       kk.source = nodes[kk.source] || (nodes[kk.source] = {
         name: kk.source,
@@ -547,10 +629,11 @@ export class Menu21Component implements OnInit, AfterViewInit {
         lineColor: key.lineColor,
       };
     });
+    console.log(nodes, 'node');
 
-    // nodes = d3.values(nodes);
+    // const nodesArr = d3.values(nodes);
     const nodesArr = Object.keys(nodes).map(key => nodes[key]);
-    // relationColor = d3.values(relationColor);
+    // const relationColors = d3.values(relationColor);
     const relationColors = Object.keys(relationColor).map(key => relationColor[key]);
     console.log(nodesArr, 'nodes', relationColors);
 
@@ -595,33 +678,55 @@ export class Menu21Component implements OnInit, AfterViewInit {
     });
     console.log(nodesArr, 'arr');
     // D3力导向布局
-    const force = d3.forceSimulation(nodesArr) // 加载节点数据
-      .force('link', d3.forceLink(sourceDatas).id(d => d.id)) // 加载边数据
-      .force('charge', d3.forceManyBody().strength(-400))
-      .force('distance', (d) => { // 根据权重不同连接线段的长度也不同
-        // console.log(d);
-        return 10; // 连线的长度
-      }).force('center', d3.forceCenter());
+    // const force = d3.forceSimulation(nodesArr) // 加载节点数据
+    //   .force('link', d3.forceLink(sourceDatas).id(d => d.id)) // 加载边数据
+    //   .force('charge', d3.forceManyBody().strength(-400))
+    //   .force('distance', (d) => { // 根据权重不同连接线段的长度也不同
+    //     // console.log(d);
+    //     return 10; // 连线的长度
+    //   }).force('center', d3.forceCenter());
+    const force = d3.layout.force()
+      .nodes(nodesArr)
+      .links(sourceDatas)
+      .size([width, height])
+      .linkDistance(200)
+      .charge(-1500)
+      .start();
     // 全图缩放器
-    const zoom = d3.zoom()
+    const zoom = d3.behavior.zoom()
       .scaleExtent([0.25, 2])
       .on('zoom', () => {
-        // const {
-        //   translate,
-        //   scale
-        // } = d3.event;
-        console.log(container, 'sssssssss');
-        // container.attr('transform', 'translate(' + translate + ')scale(' + scale * 0.6 + ')');
+        const {
+          translate,
+          scale
+        } = d3.event;
+        container.attr('transform', 'translate(' + translate + ')scale(' + scale * 0.6 + ')');
       });
+    // const zoom = d3.zoom()
+    //   .scaleExtent([0.25, 2])
+    //   .on('zoom', () => {
+    //     // const {
+    //     //   translate,
+    //     //   scale
+    //     // } = d3.event;
+    //     console.log(container, 'sssssssss');
+    //     // container.attr('transform', 'translate(' + translate + ')scale(' + scale * 0.6 + ')');
+    //   });
     const svg = d3.select('#' + divid).append('svg')
-      .attr('width', width)
+      .attr('width', '100%')
       .attr('height', height)
       .attr('style', 'background-color:' + backgroundColor)
       .call(zoom)
       .on('dblclick.zoom', null);
+    // const svg = d3.select('#' + divid).append('svg')
+    //   .attr('width', width)
+    //   .attr('height', height)
+    //   .attr('style', 'background-color:' + backgroundColor)
+    //   .call(zoom)
+    //   .on('dblclick.zoom', null);
     // 缩放层（位置必须在 container 之前）
     const zoomOverlay = svg.append('rect')
-      .attr('width', width)
+      .attr('width', '100%')
       .attr('height', height)
       .style('fill', 'none')
       .style('pointer-events', 'all');
@@ -658,7 +763,6 @@ export class Menu21Component implements OnInit, AfterViewInit {
           });
           this.drawChart(divid, options, datas, dataFilter);
         });
-
 
       examples.append('svg:path')
         .attr('d', (d) => {
@@ -698,8 +802,8 @@ export class Menu21Component implements OnInit, AfterViewInit {
         .on('mouseover', (d) => {
           console.log('放到分类上');
           tooltip.html('<span>' + d.relation + '</span>')
-            .style('left', (d3.axisLeft) + 'px')
-            .style('top', (d3.axisTop + 20) + 'px')
+            .style('left', (d3.event.pageX) + 'px')
+            .style('top', (d3.event.pageY + 20) + 'px')
             .style('display', 'block')
             .style('position', 'absolut')
             .style('opacity', 1.0);
@@ -744,8 +848,8 @@ export class Menu21Component implements OnInit, AfterViewInit {
         // 设置参股或是融资信息
         if (d.data) {
           tooltip.html('<span>' + '融资额:' + d.data.rzs + '</span>')
-            .style('left', (d3.axisLeft) + 'px')
-            .style('top', (d3.axisTop + 20) + 'px')
+            .style('left', (d3.event.pageX) + 'px')
+            .style('top', (d3.event.pageY + 20) + 'px')
             .style('display', 'block')
             .style('opacity', 1.0);
         }
@@ -837,8 +941,6 @@ export class Menu21Component implements OnInit, AfterViewInit {
             .attr('width', 1);
 
           catpattern.append('image')
-            /* .attr("x", - (img_w / 2 - radius))
-            .attr("y", - (img_h / 2 - radius)) */
             .attr('width', d.radius * 2)
             .attr('height', d.radius * 2)
             .attr('xlink:href', d.image);
@@ -849,43 +951,7 @@ export class Menu21Component implements OnInit, AfterViewInit {
       })
       .on('mouseover', (d, i) => {
         console.log('放到人物头像');
-        // 影藏其它连线上文字
-        edgesText.style('fill-opacity', (edge) => {
-          if (edge.source === d || edge.target === d) {
-            return 1;
-          }
-          if (edge.source !== d && edge.target !== d) {
-            return 0;
-          }
-        });
-        // 其它节点亮度调低
-        circle.style('opacity', (edge) => {
-          const v = d.name;
-          if (edge.name === v || (edge[v] !== undefined && edge[v].name === v)) {
-            return 1;
-          } else {
-            return 0.2;
-          }
-        });
-        // 其他连先亮度调低
-        edgesPath.style('opacity', (edge) => {
-          if (edge.source === d || edge.target === d) {
-            return 1;
-          }
-          if (edge.source !== d && edge.target !== d) {
-            return 0.2;
-          }
-        });
-        // 其他节点文字亮度调低
-        nodesText.style('opacity', (edge) => {
-          const v = d.name;
-          if (edge.name === v || (edge[v] !== undefined && edge[v].name === v)) {
-            return 1;
-          } else {
-            return 0.2;
-          }
-        });
-
+        this.otherRelated(d, edgesText, circle, edgesPath, nodesText);
       })
       .on('mouseout', (d, i) => {
         // 显示连线上的文字
@@ -894,114 +960,94 @@ export class Menu21Component implements OnInit, AfterViewInit {
         circle.style('opacity', 1);
         nodesText.style('opacity', 1);
         tooltip.style('opacity', 0.0);
-
       })
-      .call(this.drag(force));
+      .call(force.drag);
+    // .call(this.drag(force));
 
     // 节点文字设置
     const nodesText = container.selectAll('.nodetext')
       .data(nodesArr)
       .enter()
       .append('text')
+      .attr('class', 'nodetext')
       .style('font-size', (nodesFontSize + 'px'))
-      .style('fill', '#ffffff')
+      .style('fill', '#000')
       .style('font-family', nodesFontType)
-      .attr('x', (d) => {
+      .attr('x', function(d): void {
+        const that = this;
+        // console.log(d3.select('.nodetext'), '..', that, d);
         const name = d.name;
+        // 中文 英文占位不一样 检测是全是中文
+        // console.log(/^[\u4e00-\u9fa5]*$/.test(name), /^[\u4e00-\u9fa5]*$/.test('那么'));
+        d3.select(that).append('tspan')
+          .attr('dx', /^[\u4e00-\u9fa5]*$/.test(name) ? -nodesFontSize * (name.length / 2) : -nodesFontSize * (name.length / 4))
+          .attr('dy', 5)
+          .text( () => {
+            return name;
+          });
         // 如果小于四个字符，不换行
-        if (name.length < 4) {
-          d3.select(this).append('tspan')
-            .attr('dx', -nodesFontSize * (name.length / 2))
-            .attr('dy', 5)
-            .text( () => {
-              return name;
-            });
-        } else if (name.length >= 4 && name.length <= 6) {
-          const top1 = d.name.substring(0, 3);
-          const bot1 = d.name.substring(3, name.length);
-
-          d3.select(this).append('tspan')
-            .attr('dx', -nodesFontSize * 1.5)
-            .attr('dy', -nodesFontSize * 0.5)
-            .text( () => {
-              return top1;
-            });
-
-          d3.select(this).append('tspan')
-            .attr('dx', -(nodesFontSize * name.length / 2))
-            .attr('dy', nodesFontSize)
-            .text( () => {
-              return bot1;
-            });
-        } else if (name.length > 7) {
-          const top = d.name.substring(0, 3);
-          const mid = d.name.substring(3, 6);
-          const bot = d.name.substring(6, name.length);
-
-          d3.select(this).append('tspan')
-            .attr('dx', -nodesFontSize * 1.5)
-            .attr('dy', -nodesFontSize * 0.5)
-            .text( () => {
-              return top;
-            });
-
-
-          d3.select(this).append('tspan')
-            .attr('dx', -nodesFontSize * 3)
-            .attr('dy', nodesFontSize)
-            .text( () => {
-              return mid;
-            });
-
-          d3.select(this).append('tspan')
-            .attr('dx', -nodesFontSize * 2)
-            .attr('dy', nodesFontSize)
-            .text( () => {
-              return '...';
-            });
-        }
+        // if (name.length < 4) {
+        //   d3.select(that).append('tspan')
+        //     // .attr('dx', -nodesFontSize * (name.length / 2))
+        //     .attr('dx', -nodesFontSize * (name.length / 4))
+        //     .attr('dy', 5)
+        //     .text( () => {
+        //       return name;
+        //     });
+        // } else if (name.length >= 4 && name.length <= 6) {
+        //   const top1 = d.name.substring(0, 3);
+        //   const bot1 = d.name.substring(3, name.length);
+        //
+        //   d3.select(that).append('tspan')
+        //     // .attr('dx', -nodesFontSize * 1.5)
+        //     .attr('dx', -nodesFontSize * 0.75)
+        //     .attr('dy', -nodesFontSize * 0.5)
+        //     .text( () => {
+        //       return top1;
+        //     });
+        //
+        //   d3.select(that).append('tspan')
+        //     // .attr('dx', -(nodesFontSize * name.length / 2))
+        //     .attr('dx', -(nodesFontSize * name.length / 4))
+        //     .attr('dy', nodesFontSize)
+        //     .text( () => {
+        //       return bot1;
+        //     });
+        // } else {
+        //   const top = d.name.substring(0, 3);
+        //   const mid = d.name.substring(3, 6);
+        //   d3.select(that).append('tspan')
+        //     // .attr('dx', -nodesFontSize * 1.5)
+        //     .attr('dx', -nodesFontSize * 0.75)
+        //     .attr('dy', -nodesFontSize * 0.5)
+        //     .text( () => {
+        //       return top;
+        //     });
+        //
+        //
+        //   d3.select(that).append('tspan')
+        //     // .attr('dx', -nodesFontSize * 3)
+        //     .attr('dx', -nodesFontSize * 1.5)
+        //     .attr('dy', nodesFontSize)
+        //     .text( () => {
+        //       return mid;
+        //     });
+        //
+        //   d3.select(that).append('tspan')
+        //     // .attr('dx', -nodesFontSize * 2)
+        //     .attr('dx', -nodesFontSize)
+        //     .attr('dy', nodesFontSize)
+        //     .text( () => {
+        //       return '...';
+        //     });
+        // }
       })
       .on('mouseover', (d, i) => {
         console.log('放到关系文字');
-        // 影藏其它连线上文字
-        edgesText.style('fill-opacity', (edge) => {
-          if (edge.source === d || edge.target === d) {
-            return 1;
-          }
-          if (edge.source !== d && edge.target !== d) {
-            return 0;
-          }
-        });
-        // 其他节点亮度调低
-        circle.style('opacity', (edge) => {
-          const v = d.name;
-          if (edge.name === v || (edge[v] !== undefined && edge[v].name === v)) {
-            return 1;
-          } else {
-            return 0.2;
-          }
-        });
-        // 其他连线亮度调低
-        edgesPath.style('opacity', (edge) => {
-          if (edge.source === d || edge.target === d) {
-            return 1;
-          }
-          if (edge.source !== d && edge.target !== d) {
-            return 0.2;
-          }
-        });
-        // 其他节点文字亮度调低
-        nodesText.style('opacity', (edge) => {
-          const v = d.name;
-          if (edge.name === v || (edge[v] !== undefined && edge[v].name === v)) {
-            return 1;
-          } else {
-            return 0.2;
-          }
-        });
+        this.otherRelated(d, edgesText, circle, edgesPath, nodesText);
         tooltip.html('<span>' + d.name + '</span>')
-          .style('left', (d3.axisLeft) + 'px')
-          .style('top', (d3.axisTop + 20) + 'px')
+          .style('left', (d3.event.pageX) + 'px')
+          .style('top', (d3.event.pageY + 20) + 'px')
           .style('display', 'block')
           .style('opacity', 1.0);
       })
@@ -1014,12 +1060,15 @@ export class Menu21Component implements OnInit, AfterViewInit {
         tooltip.style('opacity', 0.0);
 
       })
-      .call(this.drag(force));
+      .call(force.drag);
+    // .call(this.drag(force));
+
     // 拖动节点
     const drag = force.drag()
       .on('dragstart', (d, i) => {
         d.fixed = true; // 拖拽开始后设定被拖拽对象为固定
-        event.stopPropagation();
+        // event.stopPropagation();
+        d3.event.sourceEvent.stopPropagation();
       })
       .on('dragend', (d, i) => {})
       .on('drag', (d, i) => {});
@@ -1162,6 +1211,44 @@ export class Menu21Component implements OnInit, AfterViewInit {
       let startLinkNumber = group.length % 2 === 0 ? (-maxLinkNumber + 0.5) : (-maxLinkNumber);
       group.forEach(key => key.linknum = ++startLinkNumber);
     }
-    // return group;
+  }
+
+  otherRelated(d, edgesText, circle, edgesPath, nodesText): void {
+    // 影藏其它连线上文字
+    edgesText.style('fill-opacity', (edge) => {
+      if (edge.source === d || edge.target === d) {
+        return 1;
+      }
+      if (edge.source !== d && edge.target !== d) {
+        return 0;
+      }
+    });
+    // 其他节点亮度调低
+    circle.style('opacity', (edge) => {
+      const v = d.name;
+      if (edge.name === v || (edge[v] !== undefined && edge[v].name === v)) {
+        return 1;
+      } else {
+        return 0.2;
+      }
+    });
+    // 其他连线亮度调低
+    edgesPath.style('opacity', (edge) => {
+      if (edge.source === d || edge.target === d) {
+        return 1;
+      }
+      if (edge.source !== d && edge.target !== d) {
+        return 0.2;
+      }
+    });
+    // 其他节点文字亮度调低
+    nodesText.style('opacity', (edge) => {
+      const v = d.name;
+      if (edge.name === v || (edge[v] !== undefined && edge[v].name === v)) {
+        return 1;
+      } else {
+        return 0.2;
+      }
+    });
   }
 }
