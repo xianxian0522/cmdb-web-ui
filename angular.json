@@ -19,7 +19,8 @@
           "options": {
             "allowedCommonJsDependencies": [
               "lodash",
-              "tinycolor2"
+              "tinycolor2",
+              "d3"
             ],
             "outputPath": "dist/project-template",
             "index": "src/index.html",
