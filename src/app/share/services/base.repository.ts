@@ -33,6 +33,10 @@ export class BaseRepository<MODEL extends {id?: number}>{
         return this.httpClient.get(`${Api}/${resourceUrl}Service/GetModel`);
     }
 
+    getAllModel(): Observable<any>{
+        return this.httpClient.get(`${Api}/GetAllModels`);
+    }
+
     protected genParams(q?: {[key: string]: any}): any {
         const body = {};
         const addValue = (key, value) => {

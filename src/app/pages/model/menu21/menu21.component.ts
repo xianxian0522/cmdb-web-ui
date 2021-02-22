@@ -326,15 +326,16 @@ export class Menu21Component implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.baseRepository.getModel('App').subscribe(res => {
+    this.baseRepository.getAllModel().subscribe(res => {
       console.log(res);
       const arr = [];
-      Object.keys(res.Edges).map(key => {
-        if (res.Edges[key].Ref) {
+      Object.keys(res).map(key => {
+        Object.keys(res[key].Edges).map(k => {
           arr.push({
-            source: res.Edges[key].Description || res.Edges[key].Type,
-            target: 'App',
-            relation: res.Edges[key].Name,
+            // source: res[key].Edges[k].Description || res[key].Edges[k].Type,
+            source: res[key].Edges[k].Type,
+            target: key,
+            relation: res[key].Edges[k].Name,
             sourceImg: '',
             targetImg: '',
             sourceColor: '#F4793B',
@@ -342,50 +343,22 @@ export class Menu21Component implements OnInit, AfterViewInit {
             sourceRadius: '30',
             targetRadius: '35',
           });
-          arr.push({
-            source: 'App',
-            target: res.Edges[key].Description || res.Edges[key].Type,
-            relation: res.Edges[key].Name,
-            sourceImg: '',
-            targetImg: '',
-            sourceColor: '#F4793B',
-            targetColor: '#0084ff',
-            sourceRadius: '30',
-            targetRadius: '35',
-          });
-        } else {
-          arr.push({
-            source: res.Edges[key].Description || res.Edges[key].Type,
-            target: 'App',
-            relation: res.Edges[key].Name,
-            sourceImg: '',
-            targetImg: '',
-            sourceColor: '#F4793B',
-            targetColor: '#0084ff',
-            sourceRadius: '30',
-            targetRadius: '35',
-          });
-        }
+        });
+        // if (res.Edges[key].Ref) {
+        //   arr.push({
+        //     source: 'User',
+        //     target: res.Edges[key].Description || res.Edges[key].Type,
+        //     relation: res.Edges[key].Name,
+        //     sourceImg: '',
+        //     targetImg: '',
+        //     sourceColor: '#F4793B',
+        //     targetColor: '#0084ff',
+        //     sourceRadius: '30',
+        //     targetRadius: '35',
+        //   });
+        // }
       });
-      this.relationProperties(arr, res.Properties, 'App');
-      // Object.keys(res.Properties).map(k => {
-      //   arr.push({
-      //     source: res.Properties[k].Description || k,
-      //     target: 'App',
-      //     relation: k,
-      //     sourceImg: '',
-      //     targetImg: '',
-      //     sourceColor: '#F4793B',
-      //     targetColor: '#0084ff',
-      //     sourceRadius: '30',
-      //     targetRadius: '35',
-      //   });
-      //   if (res.Properties[k].Type === 'object') {
-      //     const target = res.Properties[k].Description || k;
-      //     this.relationProperties(arr, res.Properties[k].Properties, target);
-      //     console.log('xun huan', k, res.Properties[k], target);
-      //   }
-      // });
+      // this.relationProperties(arr, res.Properties, 'User');
 
       const options: any = {};
       options.backgroundColor = '#fff';
@@ -399,105 +372,8 @@ export class Menu21Component implements OnInit, AfterViewInit {
       options.examplesY = 450;
       options.examplesFontColor = '#000000';
       this.drawChart('model', options, arr);
-      const d = [{source: 'App' + res.Description}];
 
     });
-
-    const data = [{
-        source: '陆洋',
-        data: {
-          rzs: '1000万美元',
-        },
-        target: '建银国际产业基金管理有限公司',
-        relation: '投资',
-        sourceImg: '',
-        targetImg: '',
-        sourceColor: '#F4793B',
-        targetColor: '#0084ff',
-        sourceRadius: '30',
-        targetRadius: '35',
-      },
-        {
-          source: '陆洋',
-          data: {
-            rzs: '12万美元',
-          },
-          target: '投足有限公司',
-          relation: '投资',
-          sourceImg: '',
-          targetImg: '',
-          sourceColor: '#F4793B',
-          targetColor: '#0084ff',
-          sourceRadius: '30',
-          targetRadius: '35',
-        },
-        {
-          source: '汪红辉',
-          target: '乾行文化投资公司',
-          relation: '投资',
-          sourceImg: '',
-          targetImg: '',
-          sourceColor: '#F4793B',
-          targetColor: '#0084ff',
-          sourceRadius: '30',
-          targetRadius: '35',
-        },
-        {
-          source: '汪红辉',
-          target: '天津裕丰股权投资管理有限公司',
-          relation: '董事',
-          sourceImg: '',
-          targetImg: '',
-          sourceColor: '#F4793B',
-          targetColor: '#0084ff',
-          sourceRadius: '30',
-          targetRadius: '35',
-        },
-        {
-          source: '汪红辉',
-          target: '乾行文化投资公司',
-          relation: '法人',
-          sourceImg: '',
-          targetImg: '',
-          sourceColor: '#F4793B',
-          targetColor: '',
-          sourceRadius: '30',
-          targetRadius: '35',
-        },
-        {
-          source: '汪红辉',
-          target: '乾行文化投资公司',
-          relation: '董事长',
-          sourceImg: '',
-          targetImg: '',
-          sourceColor: '#F4793B',
-          targetColor: '',
-          sourceRadius: '30',
-          targetRadius: '35',
-        },
-        {
-          source: '汪红辉',
-          target: '建银国际产业基金管理有限公司',
-          relation: '董事',
-          sourceImg: '',
-          targetImg: '',
-          sourceColor: '#F4793B',
-          targetColor: '#0084ff',
-          sourceRadius: '30',
-          targetRadius: '35',
-        },
-        {
-          source: '胡章宏',
-          target: '建银国际产业基金管理有限公司',
-          relation: '董事长',
-          sourceImg: '',
-          targetImg: '',
-          sourceColor: '#F4793B',
-          targetColor: '#0084ff',
-          sourceRadius: '30',
-          targetRadius: '35',
-        },
-    ];
   }
 
   drawChart(divid, options, datas, dataFilter?): void {
@@ -608,7 +484,7 @@ export class Menu21Component implements OnInit, AfterViewInit {
     const nodes = {};
     // 关系对应颜色
     const relationColor = {};
-    console.log(sourceDatas, 'dataf');
+    console.log(sourceDatas, 'sourceDatas');
     sourceDatas.map(kk => {
       kk.source = nodes[kk.source] || (nodes[kk.source] = {
         name: kk.source,
@@ -737,6 +613,7 @@ export class Menu21Component implements OnInit, AfterViewInit {
     const tooltip = d3.select('body').append('div')
       .attr('class', 'tooltip')
       .attr('opacity', 0.0);
+
     // 根据分类进行筛选
     if (options.showExamples) {
       const examples = svg.selectAll('.examples')
@@ -813,11 +690,136 @@ export class Menu21Component implements OnInit, AfterViewInit {
         });
     }
 
+    // // marker箭头 需要设置自己指向自己的箭头
+    // const edgesPath = container.selectAll('.edgepath')
+    //   .data(sourceDatas)
+    //   .enter()
+    //   .append('path')
+    //   .attr('marker-end', (d, i) => {
+    //     let curvePath = 'M2,2 L10,6 L2,10 L6,6 L2,2';
+    //     if (d.source.name === d.target.name) {
+    //       console.log(d, 'en');
+    //       const dx = d.source.x;
+    //       const dy = d.source.y;
+    //       const dx1 = dx - 10;
+    //       const dx2 = dx + 10;
+    //       const dy1 = dy + 10;
+    //       const dy2 = dy + 20;
+    //       curvePath = 'M' + dx + ',' + dy + ' T' + dx1 + ',' + dy1 + ' T' + dx2 + ',' + dy2 + ' T' + dx + ',' + dy;
+    //     }
+    //     console.log(curvePath);
+    //     const arrowMarker = container.append('marker')
+    //       .attr('id', 'arrow' + i)
+    //       .attr('markerUnits', 'userSpaceOnUse')
+    //       .attr('markerWidth', '16')
+    //       .attr('markerHeight', '15')
+    //       .attr('viewBox', '0 0 12 12')
+    //       .attr('refX', 9)
+    //       .attr('refY', 6)
+    //       .attr('orient', 'auto')
+    //       .append('svg:path')
+    //       .attr('d', curvePath)
+    //       .attr('fill', () => {
+    //         return d.lineColor = '' ? lineColor : d.lineColor;
+    //       });
+    //
+    //     return 'url(#arrow' + i + ')';
+    //   })
+    //   .style('stroke', (d) => {
+    //     if (d.lineColor === '') {
+    //       return lineColor;
+    //     } else {
+    //       return d.lineColor;
+    //     }
+    //   })
+    //   .style('stroke-width', 1.5)
+    //   .on('mouseover', (d) => {
+    //     console.log('放到连接线');
+    //     // 设置参股或是融资信息
+    //     if (d.data) {
+    //       tooltip.html('<span>' + '融资额:' + d.data.rzs + '</span>')
+    //         .style('left', (d3.event.pageX) + 'px')
+    //         .style('top', (d3.event.pageY + 20) + 'px')
+    //         .style('display', 'block')
+    //         .style('opacity', 1.0);
+    //     }
+    //     // 影藏其它连线上文字
+    //     edgesText.style('fill-opacity', (edge) => {
+    //       if (edge === d) {
+    //         return 1;
+    //       }
+    //       return 0;
+    //     });
+    //     edgesPath.style('stroke-width', (edge) => {
+    //       if (edge === d) {
+    //         return 4;
+    //       }
+    //       return 1.5;
+    //     });
+    //   })
+    //   .on('mouseout', (d, i) => {
+    //     // 显示连线上的文字
+    //     edgesText.style('fill-opacity', 1);
+    //     edgesPath.style('stroke-width', 1.5);
+    //     // 隐藏提示信息
+    //     tooltip.style('opacity', 0.0);
+    //   });
+
+    // const defs = svg.append('defs');
+    // const arrowMarkers = defs.append('marker')
+    //   .attr('id', 'arrow')
+    //   .attr('markerUnits', 'userSpaceOnUse')
+    //   .attr('markerWidth', '16')
+    //   .attr('markerHeight', '15')
+    //   .attr('viewBox', '0 0 12 12')
+    //   .attr('refX', 9)
+    //   .attr('refY', 6)
+    //   .attr('orient', 'auto');
+    // container.append('defs').selectAll('marker')
+    //   .data(sourceDatas)
+    //   .enter()
+    //   .append('marker')
+    //   .attr('id', d => d)
+    //   .attr('markerUnits', 'userSpaceOnUse')
+    //   .attr('markerWidth', '16')
+    //   .attr('markerHeight', '15')
+    //   .attr('viewBox', '0 0 12 12')
+    //   .attr('refX', 9)
+    //   .attr('refY', 6)
+    //   .attr('orient', 'auto')
+    //   .append('path')
+    //   .attr('d', 'M2,2 L10,6 L2,10 L6,6 L2,2');
+    // marker箭头 设置指向自己的箭头
     const edgesPath = container.selectAll('.edgepath')
       .data(sourceDatas)
       .enter()
       .append('path')
       .attr('marker-end', (d, i) => {
+        let curvePath = 'M2,2 L10,6 L2,10 L6,6 L2,2';
+        if (d.source.name === d.target.name) {
+          console.log(d, 'en');
+          const dx = d.source.x;
+          const dy = d.source.y;
+          const dx1 = dx - 10;
+          const dx2 = dx + 10;
+          const dy1 = dy + 10;
+          const dy2 = dy + 20;
+          curvePath = 'M' + dx + ',' + dy + ' T' + dx1 + ',' + dy1 + ' T' + dx2 + ',' + dy2 + ' T' + dx + ',' + dy;
+
+          // const x1 = d.source.x;
+          // const y1 = d.source.y;
+          // let x2 = d.target.x;
+          // let y2 = d.target.y;
+          // const drx = (i + 1) * 10;
+          // const dry = (i + 2) * 10;
+          // const xRotation = -45;
+          // const largeArc = 1;
+          // const sweep = 1;
+          // x2 = x2 + 1;
+          // y2 = y2 + 1;
+          // curvePath = `M ${x1},${y1} A ${drx},${dry} ${xRotation},${largeArc},${sweep} ${x2},${y2}`;
+        }
+        console.log(curvePath);
         const arrowMarker = container.append('marker')
           .attr('id', 'arrow' + i)
           .attr('markerUnits', 'userSpaceOnUse')
@@ -828,7 +830,7 @@ export class Menu21Component implements OnInit, AfterViewInit {
           .attr('refY', 6)
           .attr('orient', 'auto')
           .append('svg:path')
-          .attr('d', 'M2,2 L10,6 L2,10 L6,6 L2,2')
+          .attr('d', curvePath)
           .attr('fill', () => {
             return d.lineColor = '' ? lineColor : d.lineColor;
           });
@@ -1108,6 +1110,17 @@ export class Menu21Component implements OnInit, AfterViewInit {
         // 防报错
         if (!x1 || !y1 || !x2 || !y2) {
           return;
+        }
+        console.log(d, 'you shuju');
+        if (d.source.name === d.target.name) {
+          console.log(d, '111en');
+          const dx0 = d.source.x;
+          const dy0 = d.source.y;
+          const dx1 = dx0 - 10;
+          const dx2 = dx0 + 10;
+          const dy1 = dy0 + 10;
+          const dy2 = dy0 + 20;
+          const c = 'M' + dx0 + ',' + dy0 + ' T' + dx1 + ',' + dy1 + ' T' + dx2 + ',' + dy2 + ' T' + dx0 + ',' + dy0;
         }
         if (d.linknum === 0) { // 设置编号为0的连接线为直线，其他连接线会均分在两边
           d.x_start = x1;
