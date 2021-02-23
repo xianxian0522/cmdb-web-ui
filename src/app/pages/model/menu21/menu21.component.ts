@@ -428,29 +428,29 @@ export class Menu21Component implements OnInit, AfterViewInit {
     });
     console.log(sourceDatas, 'data');
 
-    if (dataFilter !== undefined && dataFilter.length > 0) {
-      const indexArray = [];
-      dataFilter.map(vv => {
-        sourceDatas.map((v, index: number) => {
-          if (v.relation === vv.relation && vv.isShow === 'false') {
-            indexArray.push(index);
-          }
-        });
-      });
-      if (indexArray.length > 0) {
-        const tempArray = [];
-        sourceDatas.map((v, ix) => {
-          indexArray.map(idx => {
-            if (idx !== ix) {
-              if (idx === indexArray.length - 1) {
-                tempArray.push(v);
-              }
-            }
-          });
-        });
-        sourceDatas = tempArray;
-      }
-    }
+    // if (dataFilter !== undefined && dataFilter.length > 0) {
+    //   const indexArray = [];
+    //   dataFilter.map(vv => {
+    //     sourceDatas.map((v, index: number) => {
+    //       if (v.relation === vv.relation && vv.isShow === 'false') {
+    //         indexArray.push(index);
+    //       }
+    //     });
+    //   });
+    //   if (indexArray.length > 0) {
+    //     const tempArray = [];
+    //     sourceDatas.map((v, ix) => {
+    //       indexArray.map(idx => {
+    //         if (idx !== ix) {
+    //           if (idx === indexArray.length - 1) {
+    //             tempArray.push(v);
+    //           }
+    //         }
+    //       });
+    //     });
+    //     sourceDatas = tempArray;
+    //   }
+    // }
     // 关系分组
     const linkGroup = {};
     // 对连接线进行统计和分组，不区分连接线的方向，只要属于同两个实体，即认为是同一组
@@ -526,16 +526,16 @@ export class Menu21Component implements OnInit, AfterViewInit {
       item.y = examplesY + 20 * Math.ceil((index + 1) / examplesSize);
     });
 
-    if (dataFilter === undefined) {
-      dataFilter = [];
-      relationColors.map(k => {
-        dataFilter.push({
-          relation: k.relation,
-          isShow: 'true'
-        });
-      });
-    }
-    console.log(dataFilter, 'datafil');
+    // if (dataFilter === undefined) {
+    //   dataFilter = [];
+    //   relationColors.map(k => {
+    //     dataFilter.push({
+    //       relation: k.relation,
+    //       isShow: 'true'
+    //     });
+    //   });
+    // }
+    // console.log(dataFilter, 'datafil');
 
     // 绑定相连节点
     nodesArr.map(kk => {
@@ -614,212 +614,91 @@ export class Menu21Component implements OnInit, AfterViewInit {
       .attr('class', 'tooltip')
       .attr('opacity', 0.0);
 
-    // 根据分类进行筛选
-    if (options.showExamples) {
-      const examples = svg.selectAll('.examples')
-        .data(relationColor)
-        .enter()
-        .append('svg:g')
-        .attr('fill-opacity', (d) => {
-          dataFilter.forEach(key => {
-            if (d.relation === key.relation && key.isShow === 'false') {
-              return 0.2;
-            }
-          });
-          return 1;
-        })
-        .on('click', (d) => {
-          dataFilter.map(key => {
-            if (key.relation === d.relation) {
-              if (key.isShow === 'true') {
-                key.isShow = 'false';
-              } else {
-                key.isShow = 'true';
-              }
-            }
-          });
-          this.drawChart(divid, options, datas, dataFilter);
-        });
-
-      examples.append('svg:path')
-        .attr('d', (d) => {
-          const x1 = d.x;
-          const y1 = d.y;
-          const x2 = x1 + 20;
-          const y2 = y1;
-          return 'M' + x1 + ' ' + y1 + ' L ' + x2 + ' ' + y2;
-        })
-        .style('stroke', (d) => {
-          if (d.lineColor === '') {
-            return lineColor;
-          } else {
-            return d.lineColor;
-          }
-        })
-        .style('stroke-width', 2.5);
-      examples.append('svg:text')
-        .style('font-size', '14px')
-        .style('fill', examplesFontColor)
-        .attr('x', (d) => {
-          if (d.relation.length > 3) {
-            return d.x + 20 + 14 * 4 / 2;
-          }
-          return d.x + 20 + 14 * d.relation.length / 2;
-        })
-        .attr('y', (d) => {
-          return d.y + 5;
-        })
-        .attr('text-anchor', 'middle')
-        .text((d) => {
-          if (d.relation.length > 3) {
-            return d.relation.substring(0, 3) + '...';
-          }
-          return d.relation;
-        })
-        .on('mouseover', (d) => {
-          console.log('放到分类上');
-          tooltip.html('<span>' + d.relation + '</span>')
-            .style('left', (d3.event.pageX) + 'px')
-            .style('top', (d3.event.pageY + 20) + 'px')
-            .style('display', 'block')
-            .style('position', 'absolut')
-            .style('opacity', 1.0);
-        })
-        .on('mouseout', (d, i) => {
-          tooltip.style('opacity', 0.0);
-        });
-    }
-
-    // // marker箭头 需要设置自己指向自己的箭头
-    // const edgesPath = container.selectAll('.edgepath')
-    //   .data(sourceDatas)
-    //   .enter()
-    //   .append('path')
-    //   .attr('marker-end', (d, i) => {
-    //     let curvePath = 'M2,2 L10,6 L2,10 L6,6 L2,2';
-    //     if (d.source.name === d.target.name) {
-    //       console.log(d, 'en');
-    //       const dx = d.source.x;
-    //       const dy = d.source.y;
-    //       const dx1 = dx - 10;
-    //       const dx2 = dx + 10;
-    //       const dy1 = dy + 10;
-    //       const dy2 = dy + 20;
-    //       curvePath = 'M' + dx + ',' + dy + ' T' + dx1 + ',' + dy1 + ' T' + dx2 + ',' + dy2 + ' T' + dx + ',' + dy;
-    //     }
-    //     console.log(curvePath);
-    //     const arrowMarker = container.append('marker')
-    //       .attr('id', 'arrow' + i)
-    //       .attr('markerUnits', 'userSpaceOnUse')
-    //       .attr('markerWidth', '16')
-    //       .attr('markerHeight', '15')
-    //       .attr('viewBox', '0 0 12 12')
-    //       .attr('refX', 9)
-    //       .attr('refY', 6)
-    //       .attr('orient', 'auto')
-    //       .append('svg:path')
-    //       .attr('d', curvePath)
-    //       .attr('fill', () => {
-    //         return d.lineColor = '' ? lineColor : d.lineColor;
+    // 根据分类进行筛选 无分类
+    // if (options.showExamples) {
+    //   const examples = svg.selectAll('.examples')
+    //     .data(relationColor)
+    //     .enter()
+    //     .append('svg:g')
+    //     .attr('fill-opacity', (d) => {
+    //       dataFilter.forEach(key => {
+    //         if (d.relation === key.relation && key.isShow === 'false') {
+    //           return 0.2;
+    //         }
     //       });
+    //       return 1;
+    //     })
+    //     .on('click', (d) => {
+    //       dataFilter.map(key => {
+    //         if (key.relation === d.relation) {
+    //           if (key.isShow === 'true') {
+    //             key.isShow = 'false';
+    //           } else {
+    //             key.isShow = 'true';
+    //           }
+    //         }
+    //       });
+    //       this.drawChart(divid, options, datas, dataFilter);
+    //     });
     //
-    //     return 'url(#arrow' + i + ')';
-    //   })
-    //   .style('stroke', (d) => {
-    //     if (d.lineColor === '') {
-    //       return lineColor;
-    //     } else {
-    //       return d.lineColor;
-    //     }
-    //   })
-    //   .style('stroke-width', 1.5)
-    //   .on('mouseover', (d) => {
-    //     console.log('放到连接线');
-    //     // 设置参股或是融资信息
-    //     if (d.data) {
-    //       tooltip.html('<span>' + '融资额:' + d.data.rzs + '</span>')
+    //   examples.append('svg:path')
+    //     .attr('d', (d) => {
+    //       const x1 = d.x;
+    //       const y1 = d.y;
+    //       const x2 = x1 + 20;
+    //       const y2 = y1;
+    //       return 'M' + x1 + ' ' + y1 + ' L ' + x2 + ' ' + y2;
+    //     })
+    //     .style('stroke', (d) => {
+    //       if (d.lineColor === '') {
+    //         return lineColor;
+    //       } else {
+    //         return d.lineColor;
+    //       }
+    //     })
+    //     .style('stroke-width', 2.5);
+    //   examples.append('svg:text')
+    //     .style('font-size', '14px')
+    //     .style('fill', examplesFontColor)
+    //     .attr('x', (d) => {
+    //       if (d.relation.length > 3) {
+    //         return d.x + 20 + 14 * 4 / 2;
+    //       }
+    //       return d.x + 20 + 14 * d.relation.length / 2;
+    //     })
+    //     .attr('y', (d) => {
+    //       return d.y + 5;
+    //     })
+    //     .attr('text-anchor', 'middle')
+    //     .text((d) => {
+    //       if (d.relation.length > 3) {
+    //         return d.relation.substring(0, 3) + '...';
+    //       }
+    //       return d.relation;
+    //     })
+    //     .on('mouseover', (d) => {
+    //       console.log('放到分类上');
+    //       tooltip.html('<span>' + d.relation + '</span>')
     //         .style('left', (d3.event.pageX) + 'px')
     //         .style('top', (d3.event.pageY + 20) + 'px')
     //         .style('display', 'block')
+    //         .style('position', 'absolut')
     //         .style('opacity', 1.0);
-    //     }
-    //     // 影藏其它连线上文字
-    //     edgesText.style('fill-opacity', (edge) => {
-    //       if (edge === d) {
-    //         return 1;
-    //       }
-    //       return 0;
+    //     })
+    //     .on('mouseout', (d, i) => {
+    //       tooltip.style('opacity', 0.0);
     //     });
-    //     edgesPath.style('stroke-width', (edge) => {
-    //       if (edge === d) {
-    //         return 4;
-    //       }
-    //       return 1.5;
-    //     });
-    //   })
-    //   .on('mouseout', (d, i) => {
-    //     // 显示连线上的文字
-    //     edgesText.style('fill-opacity', 1);
-    //     edgesPath.style('stroke-width', 1.5);
-    //     // 隐藏提示信息
-    //     tooltip.style('opacity', 0.0);
-    //   });
+    // }
 
-    // const defs = svg.append('defs');
-    // const arrowMarkers = defs.append('marker')
-    //   .attr('id', 'arrow')
-    //   .attr('markerUnits', 'userSpaceOnUse')
-    //   .attr('markerWidth', '16')
-    //   .attr('markerHeight', '15')
-    //   .attr('viewBox', '0 0 12 12')
-    //   .attr('refX', 9)
-    //   .attr('refY', 6)
-    //   .attr('orient', 'auto');
-    // container.append('defs').selectAll('marker')
-    //   .data(sourceDatas)
-    //   .enter()
-    //   .append('marker')
-    //   .attr('id', d => d)
-    //   .attr('markerUnits', 'userSpaceOnUse')
-    //   .attr('markerWidth', '16')
-    //   .attr('markerHeight', '15')
-    //   .attr('viewBox', '0 0 12 12')
-    //   .attr('refX', 9)
-    //   .attr('refY', 6)
-    //   .attr('orient', 'auto')
-    //   .append('path')
-    //   .attr('d', 'M2,2 L10,6 L2,10 L6,6 L2,2');
     // marker箭头 设置指向自己的箭头
     const edgesPath = container.selectAll('.edgepath')
       .data(sourceDatas)
       .enter()
       .append('path')
+      .attr('fill', 'white')
+      .attr('marker-start', (d, i) => 'url(#arrow' + i + ')')
+      .attr('marker-mid', (d, i) => 'url(#arrow' + i + ')')
       .attr('marker-end', (d, i) => {
-        let curvePath = 'M2,2 L10,6 L2,10 L6,6 L2,2';
-        if (d.source.name === d.target.name) {
-          console.log(d, 'en');
-          const dx = d.source.x;
-          const dy = d.source.y;
-          const dx1 = dx - 10;
-          const dx2 = dx + 10;
-          const dy1 = dy + 10;
-          const dy2 = dy + 20;
-          curvePath = 'M' + dx + ',' + dy + ' T' + dx1 + ',' + dy1 + ' T' + dx2 + ',' + dy2 + ' T' + dx + ',' + dy;
-
-          // const x1 = d.source.x;
-          // const y1 = d.source.y;
-          // let x2 = d.target.x;
-          // let y2 = d.target.y;
-          // const drx = (i + 1) * 10;
-          // const dry = (i + 2) * 10;
-          // const xRotation = -45;
-          // const largeArc = 1;
-          // const sweep = 1;
-          // x2 = x2 + 1;
-          // y2 = y2 + 1;
-          // curvePath = `M ${x1},${y1} A ${drx},${dry} ${xRotation},${largeArc},${sweep} ${x2},${y2}`;
-        }
-        console.log(curvePath);
         const arrowMarker = container.append('marker')
           .attr('id', 'arrow' + i)
           .attr('markerUnits', 'userSpaceOnUse')
@@ -830,7 +709,7 @@ export class Menu21Component implements OnInit, AfterViewInit {
           .attr('refY', 6)
           .attr('orient', 'auto')
           .append('svg:path')
-          .attr('d', curvePath)
+          .attr('d', 'M2,2 L10,6 L2,10 L6,6 L2,2')
           .attr('fill', () => {
             return d.lineColor = '' ? lineColor : d.lineColor;
           });
@@ -847,9 +726,9 @@ export class Menu21Component implements OnInit, AfterViewInit {
       .style('stroke-width', 1.5)
       .on('mouseover', (d) => {
         console.log('放到连接线');
-        // 设置参股或是融资信息
+        // 显示数据
         if (d.data) {
-          tooltip.html('<span>' + '融资额:' + d.data.rzs + '</span>')
+          tooltip.html('<span>' + '数据:' + d.data.rzs + '</span>')
             .style('left', (d3.event.pageX) + 'px')
             .style('top', (d3.event.pageY + 20) + 'px')
             .style('display', 'block')
@@ -913,14 +792,14 @@ export class Menu21Component implements OnInit, AfterViewInit {
       .enter()
       .append('circle')
       .style('stroke', (d) => {
-        if (d.color === '') {
-          return '#EE8262';
-        } else if (d.color === '#0084ff') {
-          return '#0077c6';
-        } else if (d.color === '#F4793B') {
-          return '#FC3620';
-        }
-        return d.color;
+        // if (d.color === '') {
+        //   return '#EE8262';
+        // } else if (d.color === '#0084ff') {
+        //   return '#0077c6';
+        // } else if (d.color === '#F4793B') {
+        //   return '#FC3620';
+        // }
+        // return d.color;
       })
       .style('stroke-width', '2px')
       .attr('r', (d) => {
@@ -928,11 +807,13 @@ export class Menu21Component implements OnInit, AfterViewInit {
       })
       .attr('fill', (d, i) => {
         // 节点图片不为空是添加背景色
+        // console.log(d.color);
         if (d.image === '') {
-          if (d.color === '') {
-            return '#EE8262';
-          }
-          return d.color;
+          // if (d.color === '') {
+          //   return '#EE8262';
+          // }
+          // return d.color;
+          return '#0084ff';
         } else {
           // 创建圆形图片
           const defs = container.append('defs').attr('id', 'imgdefs');
@@ -1102,32 +983,39 @@ export class Menu21Component implements OnInit, AfterViewInit {
           d.target.y + Math.sqrt(d.targetRadius * d.targetRadius * tan * tan / (1 + tan *
           tan)); // 终点y坐标
         if (d.target.x - d.source.x === 0 || tan === 0) { // 斜率无穷大的情况或为0时
+          // console.log(d.source.name, d.target.name, 'user??');
           y1 = d.target.y - d.source.y > 0 ? d.source.y + d.sourceRadius : d.source.y - d
             .sourceRadius;
           y2 = d.target.y - d.source.y > 0 ? d.target.y - d.targetRadius : d.target.y + d
             .targetRadius;
         }
-        // 防报错
+        // 防报错 目标点和终点一个点 d.source.name = d.target.name
         if (!x1 || !y1 || !x2 || !y2) {
-          return;
-        }
-        console.log(d, 'you shuju');
-        if (d.source.name === d.target.name) {
-          console.log(d, '111en');
           const dx0 = d.source.x;
           const dy0 = d.source.y;
-          const dx1 = dx0 - 10;
-          const dx2 = dx0 + 10;
-          const dy1 = dy0 + 10;
-          const dy2 = dy0 + 20;
-          const c = 'M' + dx0 + ',' + dy0 + ' T' + dx1 + ',' + dy1 + ' T' + dx2 + ',' + dy2 + ' T' + dx0 + ',' + dy0;
+          const dx1 = dx0 - 20;
+          const dx2 = dx0 + 30;
+          const dy1 = dy0 + 20;
+          const dy2 = dy0 + 40;
+          if (d.linknum > 1) {
+            d.xStart = dx0 + 60;
+            d.yStart = dy1 - 40;
+            d.rotate = 90;
+            return 'M ' + dx0 + ',' + dy0 + ' T' + (dx0 + 60) + ',' + (dy0 + 30) + ' T' +
+              (dx0 + 100) + ',' + (dy0 + 10) + ' T' + dx0 + ',' + dy0;
+          }
+          d.xStart = dx0;
+          d.yStart = dy0;
+          d.rotate = 360;
+          return 'M ' + dx0 + ',' + dy0 + ' T' + dx1 + ',' + dy1 + ' T' + dx2 + ',' + dy2 + ' T' + dx0 + ',' + dy0;
+          // return;
         }
         if (d.linknum === 0) { // 设置编号为0的连接线为直线，其他连接线会均分在两边
-          d.x_start = x1;
-          d.y_start = y1;
-          d.x_end = x2;
-          d.y_end = y2;
-          return 'M' + x1 + ' ' + y1 + ' L ' + x2 + ' ' + y2;
+          d.xStart = x1;
+          d.yStart = y1;
+          d.xEnd = x2;
+          d.yEnd = y2;
+          return 'M ' + x1 + ' ' + y1 + ' L ' + x2 + ' ' + y2;
         }
         const a = d.sourceRadius > d.targetRadius ? d.targetRadius * d.linknum / 3 : d
           .sourceRadius * d.linknum / 3;
@@ -1179,22 +1067,24 @@ export class Menu21Component implements OnInit, AfterViewInit {
           yt = yn + dy;
         }
         // 记录连线起始和终止坐标，用于定位线上文字
-        d.x_start = xs;
-        d.y_start = ys;
-        d.x_end = xt;
-        d.y_end = yt;
-        return 'M' + xs + ' ' + ys + ' L ' + xt + ' ' + yt;
+        d.xStart = xs;
+        d.yStart = ys;
+        d.xEnd = xt;
+        d.yEnd = yt;
+        return 'M ' + xs + ' ' + ys + ' L ' + xt + ' ' + yt;
       });
 
       // 更新连接线上文字的位置
       edgesText.attr('transform', (d) => {
-        // 防止报错
-        if (!d.x_start || !d.y_start || !d.x_end || !d.y_end) {
-          return;
+        // 防止报错 目标点和终点一个点 d.source.name = d.target.name
+        if (!d.xStart || !d.yStart || !d.xEnd || !d.yEnd) {
+          // console.log(d.x_start, d.y_start, d.x_end, d.y_end, 'end', d);
+          return 'translate(' + (d.xStart + 40) + ',' + (+d.yStart + 40) +
+            ')' + ' rotate(' + d.rotate + ')';
         }
-        return 'translate(' + (d.x_start + d.x_end) / 2 + ',' + ((+d.y_start) + (+d
-            .y_end)) / 2 +
-          ')' + ' rotate(' + Math.atan((d.y_end - d.y_start) / (d.x_end - d.x_start)) *
+        return 'translate(' + (d.xStart + d.xEnd) / 2 + ',' + ((+d.yStart) + (+d
+            .yEnd)) / 2 +
+          ')' + ' rotate(' + Math.atan((d.yEnd - d.yStart) / (d.xEnd - d.xStart)) *
           180 / Math.PI + ')';
       });
 
