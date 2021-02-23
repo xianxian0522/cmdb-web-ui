@@ -4,11 +4,11 @@ import * as d3 from 'd3';
 import {BaseRepository} from '../../../share/services/base.repository';
 
 @Component({
-  selector: 'app-menu21',
-  templateUrl: './menu21.component.html',
-  styleUrls: ['./menu21.component.scss']
+  selector: 'app-graph',
+  templateUrl: './graph.component.html',
+  styleUrls: ['./graph.component.scss']
 })
-export class Menu21Component implements OnInit, AfterViewInit {
+export class GraphComponent implements OnInit, AfterViewInit {
   constructor(private baseRepository: BaseRepository<any>) {
   }
 
@@ -327,7 +327,6 @@ export class Menu21Component implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.baseRepository.getAllModel().subscribe(res => {
-      console.log(res);
       const arr = [];
       Object.keys(res).map(key => {
         Object.keys(res[key].Edges).map(k => {

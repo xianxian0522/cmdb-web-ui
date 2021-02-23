@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import {Menu21Component} from './menu21/menu21.component';
+import {GraphComponent} from './graph/graph.component';
 import {Menu22Component} from './menu22/menu22.component';
 
 const routes: Routes = [
-  {path: '', redirectTo: 'menu21', pathMatch: 'full'},
-  {path: 'menu21', component: Menu21Component},
+  {path: '', redirectTo: 'graph', pathMatch: 'full'},
+  {path: 'graph', component: GraphComponent},
   {path: 'menu22', component: Menu22Component}
 ];
 

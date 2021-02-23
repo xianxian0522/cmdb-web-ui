@@ -68,8 +68,8 @@ export class ResourcesCommonComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.resourceUrl = this.layoutComponent.baseTitle[0].toUpperCase() + this.layoutComponent.baseTitle.slice(1);
-    console.log(this.resourceUrl);
+    this.resourceUrl = this.layoutComponent.baseTitle;
+    console.log(this.resourceUrl, 'url');
 
     this.baseRepository.getModel(this.resourceUrl).subscribe(col => {
       this.colNames = Object.keys(col.Properties).map(key => {

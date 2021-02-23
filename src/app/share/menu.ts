@@ -98,8 +98,8 @@ const MENUS: {[key: string]: MenuItem[]} = {
   ],
   [MODEL]: [
     {
-      id: 'menu21',
-      name: '菜单21',
+      id: 'graph',
+      name: '关联图',
       icon: 'menu',
     },
     {

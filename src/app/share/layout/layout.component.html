@@ -24,12 +24,12 @@
     <nz-header class="app-head">
       <div style="display: flex;">
         <div class="app-header">
-        <span class="header-trigger" (click)="isCollapsed = !isCollapsed">
+          <span class="header-trigger" (click)="isCollapsed = !isCollapsed">
             <i class="trigger"
                nz-icon
                [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
             ></i>
-        </span>
+          </span>
         </div>
         <ul nz-menu nzMode="horizontal" *ngFor="let item of sections">
           <li nz-menu-item [nzMatchRouter]="item.id">

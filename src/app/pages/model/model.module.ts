@@ -2,7 +2,7 @@ import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 
 import {ModelRoutingModule} from './model-routing.module';
-import {Menu21Component} from './menu21/menu21.component';
+import {GraphComponent} from './graph/graph.component';
 import {Menu22Component} from './menu22/menu22.component';
 import {NzButtonModule} from 'ng-zorro-antd/button';
 import {NzIconModule} from 'ng-zorro-antd/icon';
@@ -10,7 +10,7 @@ import {NzIconModule} from 'ng-zorro-antd/icon';
 
 @NgModule({
   declarations: [
-    Menu21Component,
+    GraphComponent,
     Menu22Component
   ],
   imports: [
