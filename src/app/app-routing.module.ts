@@ -3,7 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import {WelcomeComponent} from './pages/welcome/welcome.component';
 
 const routes: Routes = [
-  { path: '', pathMatch: 'full', redirectTo: '/resources/appMember' },
+  { path: '', pathMatch: 'full', redirectTo: '/resources/AppMember' },
   { path: 'welcome', component: WelcomeComponent },
   { path: '',
     loadChildren: () => import('./share/layout/layout.module').then(m => m.LayoutModule)
