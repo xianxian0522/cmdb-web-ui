@@ -28,6 +28,7 @@ export class ResourcesCommonEditComponent implements OnInit {
   editForm: FormGroup = this.fb.group({});
   questions: QuestionBase<string>[];
   selectList = [];
+  editValueType = [];
 
   ngOnInit(): void {
     // this.questions = [
@@ -192,6 +193,7 @@ export class ResourcesCommonEditComponent implements OnInit {
 
       const arr = Object.keys(res.Properties).map(key => ({id: key, ...res.Properties[key],
         isEnum: res.Properties[key].hasOwnProperty('Enum')}));
+      this.editValueType = arr;
       // 后端返回ID后不需要用unshift添加
       arr.unshift({id: 'ID', Type: 'integer', Nillable: true, });
 
@@ -304,11 +306,24 @@ export class ResourcesCommonEditComponent implements OnInit {
   }
   onSubmit(): void {
     const value = {...this.editForm.value};
+    this.editValueType.map(key => {
+      if (key.Type === 'bytes') {
+        // 编码
+        value[key.id] = this.encode(value[key.id]);
+      }
+    });
     (this.mode === 'edit' ? this.baseRepository.update(this.resourceUrl, value) :
       this.baseRepository.add(this.resourceUrl, value)).subscribe(res => {
         this.modalRef.close(res);
         this.messageService.success(this.mode === 'edit' ? '修改成功' : '新增成功');
     }, err => this.messageService.error(err));
+  }
+  // 字符串转base64
+  encode(str: string): string{
+    // 对字符串进行编码
+    const code = encodeURI(str);
+    // 对编码的字符串转化base64
+    return btoa(code);
   }
 }
 
