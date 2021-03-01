@@ -8,6 +8,8 @@ import {LayoutComponent} from '../../../share/layout/layout.component';
 import {NzMessageService} from 'ng-zorro-antd/message';
 import { NzModalService} from 'ng-zorro-antd/modal';
 import {ResourcesCommonEditComponent} from './resources-common-edit.component';
+import {QuestionServices} from '../../../share/services/question.services';
+import {QuestionBase} from '../../../share/mode/question.base';
 
 @Component({
   selector: 'app-menu1',
@@ -22,9 +24,11 @@ export class ResourcesCommonComponent implements OnInit, AfterViewInit {
       private layoutComponent: LayoutComponent,
       private messageService: NzMessageService,
       private modalService: NzModalService,
+      private questionServices: QuestionServices,
   ) { }
 
-  searchForm: FormGroup = this.fb.group({Username: null});
+  searchForm: FormGroup = this.fb.group({});
+  searchQuestions: QuestionBase<string>[];
   @Output() refresh = new EventEmitter();
   data = [];
   total = 1;
@@ -79,7 +83,12 @@ export class ResourcesCommonComponent implements OnInit, AfterViewInit {
           list: col.Properties[key].Enum ? col.Properties[key].Enum : null
         };
       });
-      console.log(this.colNames);
+      let arr = Object.keys(col.Properties).map(key => ({id: key, ...col.Properties[key],
+        isEnum: col.Properties[key].hasOwnProperty('Enum')}));
+      this.searchQuestions = arr;
+      arr = arr.filter(item => item.Type === 'string');
+      this.searchForm = this.questionServices.toTextFormGroup(arr);
+      console.log(this.colNames, arr, this.searchForm);
     });
   }
   ngAfterViewInit(): void {
