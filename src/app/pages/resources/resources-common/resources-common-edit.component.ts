@@ -203,7 +203,7 @@ export class ResourcesCommonEditComponent implements OnInit {
         let tags = [];
         this.baseRepository.queryPage(url, { Limit: 1000, Offset: 0}).subscribe(r => {
           if (r) {
-            tags = r.map(k => ({V: k.ID, N: k.Name ? k.Name : k.Username || k.Role || k.InnerIP || k.Id}));
+            tags = r.map(k => ({V: k.ID, N: k.Name ? k.Name : k.Username || k.Role || k.InnerIP || k.ID}));
           }
           if (res.Edges[key].Required) {
             edg.push({

@@ -27,7 +27,7 @@ export class ResourcesCommonComponent implements OnInit, AfterViewInit {
       private questionServices: QuestionServices,
   ) { }
 
-  searchForm: FormGroup = this.fb.group({Username: null});
+  searchForm: FormGroup = this.fb.group({});
   sf: FormGroup = this.fb.group({Username: null});
   searchQuestions: QuestionBase<string>[];
   @Output() refresh = new EventEmitter();
@@ -86,13 +86,14 @@ export class ResourcesCommonComponent implements OnInit, AfterViewInit {
       });
       let arr = Object.keys(col.Properties).map(key => ({id: key, ...col.Properties[key],
         isEnum: col.Properties[key].hasOwnProperty('Enum')}));
-      this.searchQuestions = arr;
       arr = arr.filter(item => item.Type === 'string');
+      this.searchQuestions = arr;
       this.searchForm = this.questionServices.toTextFormGroup(arr);
       console.log(this.colNames, arr, this.searchForm, this.sf);
     });
   }
   ngAfterViewInit(): void {
+    this.sf.valueChanges.pipe(debounceTime(200)).subscribe(s => console.log(s, 'sss'));
     merge(this.refresh, this.table.nzPageIndexChange, this.table.nzPageSizeChange, this.searchForm.valueChanges)
       .pipe(
         debounceTime(200),
