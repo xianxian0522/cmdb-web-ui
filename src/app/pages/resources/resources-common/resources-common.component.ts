@@ -2,7 +2,7 @@ import {AfterViewInit, Component, EventEmitter, OnInit, Output, ViewChild} from 
 import {BaseRepository} from '../../../share/services/base.repository';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {NzTableComponent} from 'ng-zorro-antd/table';
-import {merge} from 'rxjs';
+import {merge, Subscription} from 'rxjs';
 import {debounceTime, map, switchMap} from 'rxjs/operators';
 import {LayoutComponent} from '../../../share/layout/layout.component';
 import {NzMessageService} from 'ng-zorro-antd/message';
@@ -28,7 +28,6 @@ export class ResourcesCommonComponent implements OnInit, AfterViewInit {
   ) { }
 
   searchForm: FormGroup = this.fb.group({});
-  sf: FormGroup = this.fb.group({Username: null});
   searchQuestions: QuestionBase<string>[];
   @Output() refresh = new EventEmitter();
   data = [];
@@ -89,12 +88,17 @@ export class ResourcesCommonComponent implements OnInit, AfterViewInit {
       arr = arr.filter(item => item.Type === 'string');
       this.searchQuestions = arr;
       this.searchForm = this.questionServices.toTextFormGroup(arr);
-      console.log(this.colNames, arr, this.searchForm, this.sf);
+      // console.log(this.colNames, arr, this.searchForm);
+      // const value = this.searchForm.value;
+      // console.log(value, 'value');
+      // Object.keys(value).map(key => {
+      //   this.searchForm.get(key).valueChanges.subscribe(r => console.log(r, 'xxx'));
+      // });
+      this.searchForm.valueChanges.subscribe(r => this.refresh.emit());
     });
   }
   ngAfterViewInit(): void {
-    this.sf.valueChanges.pipe(debounceTime(200)).subscribe(s => console.log(s, 'sss'));
-    merge(this.refresh, this.table.nzPageIndexChange, this.table.nzPageSizeChange, this.searchForm.valueChanges)
+    merge(this.refresh, this.table.nzPageIndexChange, this.table.nzPageSizeChange)
       .pipe(
         debounceTime(200),
         switchMap(() => {

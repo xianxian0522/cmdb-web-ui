@@ -1,12 +1,4 @@
 <div>
-    <div [formGroup]="sf">
-        <nz-form-item>
-            <nz-form-label nzSpan="10" nzNoColon>Username</nz-form-label>
-            <nz-form-control nzSpan="14">
-                <input nz-input formControlName="Username" placeholder="Username" nzSize="small">
-            </nz-form-control>
-        </nz-form-item>
-    </div>
     <div nz-form nzLayout="inline" [formGroup]="searchForm" class="common-header">
         <button nz-button nzType="primary" (click)="showCreateDialog()">新增</button>
         <button nz-button nzType="primary" nzDanger nz-popconfirm nzPopconfirmTitle="确定要删除选择的吗" (nzOnCancel)="deleteCancel()" (nzOnConfirm)="deleteSelectByID()">删除</button>
