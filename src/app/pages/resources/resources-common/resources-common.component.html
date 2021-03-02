@@ -78,7 +78,12 @@
 <!--                <td>{{ data.Username }}</td>-->
 <!--                <td>{{ data.RealName }}</td>-->
 <!--                <td>{{ data.ReplicaSetMembers }}</td>-->
-                <td *ngFor="let col of colNames">{{ col.list ? getEnum(data[col.id], col.list) : data[col.id]}}</td>
+                <td *ngFor="let col of colNames">
+                    <span *ngIf="col.type === 'object' || col.type === 'array'; else spanBlock" nz-tooltip [nzTooltipTitle]="data[col.id] | json">{{data[col.id]}}</span>
+                    <ng-template #spanBlock>
+                        <span>{{ col.list ? getEnum(data[col.id], col.list) : data[col.id]}}</span>
+                    </ng-template>
+                </td>
                 <td>{{ data.CreatedAt | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
                 <td>{{ data.UpdatedAt | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
                 <td nzRight>

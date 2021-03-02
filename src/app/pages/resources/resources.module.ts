@@ -17,6 +17,7 @@ import { ResourcesCommonEditComponent } from './resources-common/resources-commo
 import {NzSelectModule} from 'ng-zorro-antd/select';
 import {NzInputNumberModule} from 'ng-zorro-antd/input-number';
 import { CommonFormComponent } from './common-form/common-form.component';
+import {NzToolTipModule} from 'ng-zorro-antd/tooltip';
 
 
 @NgModule({
@@ -41,6 +42,7 @@ import { CommonFormComponent } from './common-form/common-form.component';
     NzMessageModule,
     NzSelectModule,
     NzInputNumberModule,
+    NzToolTipModule,
   ]
 })
 export class ResourcesModule { }

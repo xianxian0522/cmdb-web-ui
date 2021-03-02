@@ -80,7 +80,8 @@ export class ResourcesCommonComponent implements OnInit, AfterViewInit {
         return {
           name: col.Properties[key].Description ? col.Properties[key].Description : key,
           id: key,
-          list: col.Properties[key].Enum ? col.Properties[key].Enum : null
+          list: col.Properties[key].Enum ? col.Properties[key].Enum : null,
+          type: col.Properties[key].Type,
         };
       });
       let arr = Object.keys(col.Properties).map(key => ({id: key, ...col.Properties[key],
