@@ -29,6 +29,7 @@ export class ResourcesCommonEditComponent implements OnInit {
   questions: QuestionBase<string>[];
   selectList = [];
   editValueType = [];
+  isReturn = false;
 
   ngOnInit(): void {
     // this.questions = [
@@ -255,7 +256,7 @@ export class ResourcesCommonEditComponent implements OnInit {
           }).subscribe(e => {
             Object.keys(res.Edges).map(key => {
               // console.log(key, e[key], 'key');
-              if (key.slice(-1) === 's') {
+              if (key.slice(-1) === 's' && key !== 'Vcs') {
                 e[`${key.slice(0, -1)}IDs`] = (e[key] && e[key].length > 0) ? e[key].map(ids => ids.ID) : [];
               } else if (key === 'Children') {
                 e[`${key.slice(0, 5)}IDs`] = (e[key] && e[key].length > 0) ? e[key].map(ids => ids.ID) : [];
@@ -266,6 +267,11 @@ export class ResourcesCommonEditComponent implements OnInit {
             });
             // e.InstanceTemplate.BindInfos = e.InstanceTemplate.BindInfos ? e.InstanceTemplate.BindInfos : [];
             // e.InstanceTemplate.EnvVars = e.InstanceTemplate.EnvVars ? e.InstanceTemplate.EnvVars : [];
+            Object.keys(e).map(k => {
+              if (Object.prototype.toString.call(e[k]) === '[object Object]') {
+                e[k] = JSON.stringify(e[k]);
+              }
+            });
             this.editForm.patchValue({...e});
             // console.log(e, this.editForm.value, 'wm');
         });
@@ -275,17 +281,22 @@ export class ResourcesCommonEditComponent implements OnInit {
 
   loopCommon(arr): any {
     arr.forEach(obj => {
-      if (obj.Type === 'object' && obj.Properties) {
-        const loop = Object.keys(obj.Properties).map(key => ({id: key, ...obj.Properties[key],
-          isEnum: obj.Properties[key].hasOwnProperty('Enum')}));
-        // // 后端返回ID后不需要用unshift添加
-        // loop.unshift({id: 'ID', Type: 'integer', Nillable: true, });
-        const loopEdit = this.questionServices.toTextFormGroup(loop);
-        obj.Properties = loop;
-        // 不需要将表单放入 editForm里面创建了group的 是group的 this.editForm.get(obj.id)获取 值会一一绑定对应
-        // console.log(this.editForm.get(obj.id), obj.id, 'obj', loopEdit);
-        // obj.editForm = loopEdit;
-        this.loopCommon(loop);
+      if (obj.Type === 'object') {
+        if (obj.Properties) {
+          const loop = Object.keys(obj.Properties).map(key => ({id: key, ...obj.Properties[key],
+            isEnum: obj.Properties[key].hasOwnProperty('Enum')}));
+          // // 后端返回ID后不需要用unshift添加
+          // loop.unshift({id: 'ID', Type: 'integer', Nillable: true, });
+          const loopEdit = this.questionServices.toTextFormGroup(loop);
+          obj.Properties = loop;
+          // 不需要将表单放入 editForm里面创建了group的 是group的 this.editForm.get(obj.id)获取 值会一一绑定对应
+          // console.log(this.editForm.get(obj.id), obj.id, 'obj', loopEdit);
+          // obj.editForm = loopEdit;
+          this.loopCommon(loop);
+        } else {
+          obj.Type = 'object-textarea';
+          // console.log(obj, '需要json.parse传给后端 必须是json对象');
+        }
       } else if (obj.Type === 'array' && obj.Items.Properties) {
         const loop = Object.keys(obj.Items.Properties).map(key => ({id: key, ...obj.Items.Properties[key],
           isEnum: obj.Items.Properties[key].hasOwnProperty('Enum')}));
@@ -311,7 +322,19 @@ export class ResourcesCommonEditComponent implements OnInit {
         // 编码
         value[key.id] = this.encode(value[key.id]);
       }
+      if (key.Type === 'object-textarea') {
+        const obj = value[key.id];
+        if (obj && this.isJSONTest(obj)) {
+          // 转json对象
+          value[key.id] = JSON.parse(value[key.id]);
+          console.log(value[key.id], 'object-text');
+        }
+      }
     });
+    if (this.isReturn) {
+      this.messageService.info(`输入的格式不正确`);
+      return;
+    }
     (this.mode === 'edit' ? this.baseRepository.update(this.resourceUrl, value) :
       this.baseRepository.add(this.resourceUrl, value)).subscribe(res => {
         this.modalRef.close(res);
@@ -324,6 +347,18 @@ export class ResourcesCommonEditComponent implements OnInit {
     const code = encodeURI(str);
     // 对编码的字符串转化base64
     return btoa(code);
+  }
+  isJSONTest(str): boolean {
+    try {
+      const obj = JSON.parse(str);
+      this.isReturn = false;
+      // console.log('转换成功：' + obj);
+      return true;
+    } catch (e) {
+      this.isReturn = true;
+      // console.log('error：' + str + '!!!' + e);
+      return false;
+    }
   }
 }
 

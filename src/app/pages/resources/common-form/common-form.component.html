@@ -27,6 +27,9 @@
         <nz-form-control [nzSpan]="14" *ngSwitchCase="'integer'">
           <nz-input-number [formControlName]="question.id" nzSize="small" [nzDisabled]="question.id === 'ID' || question.Immutable"></nz-input-number>
         </nz-form-control>
+        <nz-form-control [nzSpan]="14" *ngSwitchCase="'object-textarea'">
+          <textarea nz-input nzAutosize [formControlName]="question.id" [placeholder]="question.Description" [readonly]="question.id === 'ID' || (mode === 'edit' && question.Immutable)" nzSize="small"></textarea>
+        </nz-form-control>
         <div *ngSwitchCase="'object'">
           <div *ngIf="question.Properties" app-common-form [selectList]="question.Enum" [questions]="question.Properties" [editForm]="editForm.get(question.id)" [mode]="mode"></div>
         </div>
