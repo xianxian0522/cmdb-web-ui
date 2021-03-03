@@ -74,6 +74,9 @@ export class ResourcesCommonComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.resourceUrl = this.layoutComponent.baseTitle;
     console.log(this.resourceUrl, 'url');
+    this.baseRepository.queryCount(this.resourceUrl).subscribe(count => {
+      this.total = count;
+    });
 
     this.baseRepository.getModel(this.resourceUrl).subscribe(col => {
       this.colNames = Object.keys(col.Properties).map(key => {
@@ -113,7 +116,7 @@ export class ResourcesCommonComponent implements OnInit, AfterViewInit {
         }),
         map(data => {
           this.isLoadingResults = false;
-          this.total = data && data.length ? data.length : 0;
+          // this.total = data && data.length ? data.length : 0;
           return data;
         })
       ).subscribe(res => {
