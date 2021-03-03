@@ -23,8 +23,9 @@ export class BaseRepository<MODEL extends {id?: number}>{
     delete(resourceUrl: string, model: any): Observable<any> {
         return this.httpClient.post(`${Api}/${resourceUrl}Service/Delete${resourceUrl}`, model);
     }
-    queryCount(resourceUrl: string): Observable<any> {
-        return this.httpClient.post(`${Api}/${resourceUrl}Service/Query${resourceUrl}Count`, {});
+    queryCount(resourceUrl: string, model: any): Observable<any> {
+        const body = this.genParams(model);
+        return this.httpClient.post(`${Api}/${resourceUrl}Service/Query${resourceUrl}Count`, body);
     }
     queryById(resourceUrl: string, model: any): Observable<any> {
         return this.httpClient.post(`${Api}/${resourceUrl}Service/Get${resourceUrl}`, model);

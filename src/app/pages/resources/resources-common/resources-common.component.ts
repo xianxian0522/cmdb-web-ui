@@ -74,9 +74,6 @@ export class ResourcesCommonComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.resourceUrl = this.layoutComponent.baseTitle;
     console.log(this.resourceUrl, 'url');
-    this.baseRepository.queryCount(this.resourceUrl).subscribe(count => {
-      this.total = count;
-    });
 
     this.baseRepository.getModel(this.resourceUrl).subscribe(col => {
       this.colNames = Object.keys(col.Properties).map(key => {
@@ -90,6 +87,11 @@ export class ResourcesCommonComponent implements OnInit, AfterViewInit {
       let arr = Object.keys(col.Properties).map(key => ({id: key, ...col.Properties[key],
         isEnum: col.Properties[key].hasOwnProperty('Enum')}));
       arr = arr.filter(item => item.Type === 'string');
+      arr.map(item => {
+        if (item.isEnum) {
+          item.id = item.id + 'EQ';
+        }
+      });
       this.searchQuestions = arr;
       this.searchForm = this.questionServices.toTextFormGroup(arr);
       // console.log(this.colNames, arr, this.searchForm);
@@ -102,6 +104,16 @@ export class ResourcesCommonComponent implements OnInit, AfterViewInit {
     });
   }
   ngAfterViewInit(): void {
+    merge(this.refresh, this.table.nzPageIndexChange, this.table.nzPageSizeChange).pipe(
+      debounceTime(200),
+      switchMap(_ => {
+        const obj = {...this.searchForm.value};
+        return this.baseRepository.queryCount(this.resourceUrl, obj);
+      })
+    ).subscribe(count => {
+      this.total = count;
+    });
+
     merge(this.refresh, this.table.nzPageIndexChange, this.table.nzPageSizeChange)
       .pipe(
         debounceTime(200),
@@ -116,12 +128,10 @@ export class ResourcesCommonComponent implements OnInit, AfterViewInit {
         }),
         map(data => {
           this.isLoadingResults = false;
-          // this.total = data && data.length ? data.length : 0;
           return data;
         })
       ).subscribe(res => {
         this.data = res ? res : [];
-        // console.log(this.data, this.total);
     });
     this.refresh.emit();
   }
@@ -145,7 +155,7 @@ export class ResourcesCommonComponent implements OnInit, AfterViewInit {
       nzComponentParams: {data: ele, mode: 'edit', resourceUrl: this.resourceUrl},
       nzWidth: '60vw',
     }).afterClose.subscribe(_ => {
-      console.log(_, 'edit');
+      // console.log(_, 'edit');
       if (_) {
         this.refresh.emit();
       }

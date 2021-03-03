@@ -333,7 +333,7 @@ export class ResourcesCommonEditComponent implements OnInit {
           } else {
             this.isReturn = true;
           }
-          console.log(value[key.id], 'object-text');
+          // console.log(value[key.id], 'object-text');
         }
       }
     });
