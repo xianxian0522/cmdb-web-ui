@@ -324,9 +324,15 @@ export class ResourcesCommonEditComponent implements OnInit {
       }
       if (key.Type === 'object-textarea') {
         const obj = value[key.id];
+        // 输入类型是必须是json格式
         if (obj && this.isJSONTest(obj)) {
-          // 转json对象
+          // 将json格式的字符 转换后的类型只能是对象形式的才行
           value[key.id] = JSON.parse(value[key.id]);
+          if (Object.prototype.toString.call(value[key.id]) === '[object Object]') {
+            this.isReturn = false;
+          } else {
+            this.isReturn = true;
+          }
           console.log(value[key.id], 'object-text');
         }
       }
