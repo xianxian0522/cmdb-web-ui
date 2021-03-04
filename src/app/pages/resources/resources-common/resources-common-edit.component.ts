@@ -259,6 +259,9 @@ export class ResourcesCommonEditComponent implements OnInit {
           }).subscribe(e => {
             Object.keys(res.Edges).map(key => {
               // console.log(key, e[key], 'key');
+              if (key === 'Repositories') {
+                e[`${key.slice(0, -3)}yIDs`] = (e[key] && e[key].length > 0) ? e[key].map(ids => ids.ID) : [];
+              }
               if (key.slice(-1) === 's' && key !== 'Vcs') {
                 e[`${key.slice(0, -1)}IDs`] = (e[key] && e[key].length > 0) ? e[key].map(ids => ids.ID) : [];
               } else if (key === 'Children') {
@@ -275,7 +278,8 @@ export class ResourcesCommonEditComponent implements OnInit {
                 e[k] = JSON.stringify(e[k]);
               }
             });
-            this.editForm.patchValue({...e});
+            setTimeout(() => this.editForm.patchValue({...e}), 10);
+            // this.editForm.patchValue({...e});
             this.beforeModifyData = e;
             // console.log(e, this.editForm.value, 'wm');
         });
@@ -349,7 +353,7 @@ export class ResourcesCommonEditComponent implements OnInit {
       Object.keys(value).map(key => {
         if (value[key] === null) {
           // 修改的时候如果内容为努力了 就是删除这个字段的内容 需要添加请求参数
-          if (key.slice(0, -2) === 'ID') {
+          if (key.slice(-2) === 'ID') {
             value['Clear' + key.slice(0, -2)] = true;
           } else {
             value['Clear' + key] = true;
@@ -363,6 +367,8 @@ export class ResourcesCommonEditComponent implements OnInit {
         // console.log(key, this.beforeModifyData[key], value[key]);
         value['Remove' + key] = [];
         value['Add' + key] = [];
+        this.beforeModifyData[key] = this.beforeModifyData[key] ? this.beforeModifyData[key] : [];
+        value[key]  = value[key] ? value[key] : [];
         this.beforeModifyData[key].map(beforeID => {
           // 新值不含原值 移除这个id
           if (!value[key].includes(beforeID)) {
