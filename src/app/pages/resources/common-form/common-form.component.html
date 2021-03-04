@@ -7,6 +7,15 @@
           <nz-select nzMode="tags" [nzDropdownMatchSelectWidth]="false" nzSize="small" nzShowSearch nzAllowClear [nzPlaceHolder]="question.Description" [formControlName]="question.id">
             <nz-option *ngFor="let select of question.Enum" [nzLabel]="select.N" [nzValue]="select.V"></nz-option>
           </nz-select>
+<!--          <nz-transfer-->
+<!--              [nzDataSource]="question.Enum"-->
+<!--              nzShowSearch-->
+<!--              [nzTitles]="['移除项', '选中项']"-->
+<!--              [nzFilterOption]="filterOption"-->
+<!--              (nzSearchChange)="search($event)"-->
+<!--              (nzSelectChange)="select($event)"-->
+<!--              (nzChange)="change($event, question.Enum)">-->
+<!--          </nz-transfer>-->
         </div>
         <ng-template #tagsBlock>
           <nz-select [nzDropdownMatchSelectWidth]="false" nzSize="small" nzShowSearch nzAllowClear [nzPlaceHolder]="question.Description" [formControlName]="question.id">

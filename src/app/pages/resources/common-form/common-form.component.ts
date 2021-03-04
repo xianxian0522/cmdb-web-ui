@@ -22,4 +22,19 @@ export class CommonFormComponent implements OnInit {
     // console.log(this.editForm.get(id), 'edit id', question);
     return this.editForm.get(id) as FormArray;
   }
+  // 多选择的时候 搜索的选择
+  filterOption(inputValue: string, item: any): boolean {
+    return item.title.indexOf(inputValue) > -1;
+  }
+  search(ret: {}): void {
+    console.log('nzSearchChangexx', ret);
+  }
+
+  select(ret: {}): void {
+    console.log('nzSelectChange', ret);
+  }
+
+  change(ret: {}, list): void {
+    console.log('nzChange', ret, list);
+  }
 }

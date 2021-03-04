@@ -30,6 +30,7 @@ export class ResourcesCommonEditComponent implements OnInit {
   selectList = [];
   editValueType = [];
   isReturn = false;
+  beforeModifyData: any;
 
   ngOnInit(): void {
     // this.questions = [
@@ -204,7 +205,11 @@ export class ResourcesCommonEditComponent implements OnInit {
         let tags = [];
         this.baseRepository.queryPage(url, { Limit: 1000, Offset: 0}).subscribe(r => {
           if (r) {
-            tags = r.map(k => ({V: k.ID, N: k.Name ? k.Name : k.Username || k.Role || k.InnerIP || k.ID}));
+            tags = r.map(k => ({
+              V: k.ID,
+              N: k.Name ? k.Name : k.Username || k.Role || k.InnerIP || k.ID,
+              title: k.Name ? k.Name : k.Username || k.Role || k.InnerIP || k.ID,
+            }));
           }
           if (res.Edges[key].Required) {
             edg.push({
@@ -214,7 +219,6 @@ export class ResourcesCommonEditComponent implements OnInit {
               isEnum: true,
               isTags: !res.Edges[key].Unique,
               Description: res.Edges[key].Description || res.Edges[key].Name,
-              // Type: 'integer',
             });
           } else {
             edg.push({
@@ -224,7 +228,6 @@ export class ResourcesCommonEditComponent implements OnInit {
               Enum: tags,
               isEnum: true,
               isTags: !res.Edges[key].Unique,
-              // Type: 'integer'
             });
           }
           const s = arr.concat(edg);
@@ -273,6 +276,7 @@ export class ResourcesCommonEditComponent implements OnInit {
               }
             });
             this.editForm.patchValue({...e});
+            this.beforeModifyData = e;
             // console.log(e, this.editForm.value, 'wm');
         });
       }
@@ -344,7 +348,7 @@ export class ResourcesCommonEditComponent implements OnInit {
     if (this.mode === 'edit') {
       Object.keys(value).map(key => {
         if (value[key] === null) {
-          // 修改的时候删除这个字段的内容
+          // 修改的时候如果内容为努力了 就是删除这个字段的内容 需要添加请求参数
           if (key.slice(0, -2) === 'ID') {
             value['Clear' + key.slice(0, -2)] = true;
           } else {
@@ -354,6 +358,27 @@ export class ResourcesCommonEditComponent implements OnInit {
         }
       });
     }
+    Object.keys(this.beforeModifyData).map(key => {
+      if (key.slice(-3) === 'IDs') {
+        // console.log(key, this.beforeModifyData[key], value[key]);
+        value['Remove' + key] = [];
+        value['Add' + key] = [];
+        this.beforeModifyData[key].map(beforeID => {
+          // 新值不含原值 移除这个id
+          if (!value[key].includes(beforeID)) {
+            value['Remove' + key].push(beforeID);
+            // console.log(value[key].includes(beforeID), 'zhiq');
+          }
+        });
+        value[key].map(nowID => {
+          // 原值不包含新增 增加这个id
+          if (!this.beforeModifyData[key].includes(nowID)) {
+            value['Add' + key].push(nowID);
+          }
+        });
+        // console.log(value, 'submit');
+      }
+    });
     (this.mode === 'edit' ? this.baseRepository.update(this.resourceUrl, value) :
       this.baseRepository.add(this.resourceUrl, value)).subscribe(res => {
         this.modalRef.close(res);
