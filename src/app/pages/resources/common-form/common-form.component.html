@@ -7,6 +7,7 @@
           <nz-select nzMode="tags" [nzDropdownMatchSelectWidth]="false" nzSize="small" nzShowSearch nzAllowClear [nzPlaceHolder]="question.Description" [formControlName]="question.id">
             <nz-option *ngFor="let select of question.Enum" [nzLabel]="select.N" [nzValue]="select.V"></nz-option>
           </nz-select>
+<!--          穿梭框-->
 <!--          <nz-transfer-->
 <!--              [nzDataSource]="question.Enum"-->
 <!--              nzShowSearch-->

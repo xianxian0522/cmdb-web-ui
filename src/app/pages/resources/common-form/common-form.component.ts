@@ -22,7 +22,8 @@ export class CommonFormComponent implements OnInit {
     // console.log(this.editForm.get(id), 'edit id', question);
     return this.editForm.get(id) as FormArray;
   }
-  // 多选择的时候 搜索的选择
+
+  // 穿梭框 多选择的时候 搜索的结果为true展示
   filterOption(inputValue: string, item: any): boolean {
     return item.title.indexOf(inputValue) > -1;
   }
