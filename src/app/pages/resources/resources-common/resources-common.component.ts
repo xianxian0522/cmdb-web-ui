@@ -176,7 +176,7 @@ export class ResourcesCommonComponent implements OnInit, AfterViewInit {
         console.log(res, 'delete');
         this.setOfCheckedId.delete(ID);
         this.refresh.emit();
-      }, err => this.messageService.error(err));
+      }, err => this.messageService.error(err.error));
     });
   }
 }

@@ -203,7 +203,7 @@ export class ResourcesCommonEditComponent implements OnInit {
       Object.keys(res.Edges).map(key => {
         const url = res.Edges[key].Type;
         let tags = [];
-        this.baseRepository.queryPage(url, { Limit: 1000, Offset: 0}).subscribe(r => {
+        this.baseRepository.queryPage(url, {}).subscribe(r => {
           if (r) {
             tags = r.map(k => ({
               V: k.ID,
@@ -383,7 +383,10 @@ export class ResourcesCommonEditComponent implements OnInit {
       this.baseRepository.add(this.resourceUrl, value)).subscribe(res => {
         this.modalRef.close(res);
         this.messageService.success(this.mode === 'edit' ? '修改成功' : '新增成功');
-    }, err => this.messageService.error(err));
+    }, err => {
+      this.messageService.error(err.error);
+      // console.log(err);
+    });
   }
   // 字符串转base64
   encode(str: string): string{
