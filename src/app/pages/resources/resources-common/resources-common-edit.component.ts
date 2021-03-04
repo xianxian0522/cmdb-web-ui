@@ -341,6 +341,19 @@ export class ResourcesCommonEditComponent implements OnInit {
       this.messageService.info(`输入的格式不正确`);
       return;
     }
+    if (this.mode === 'edit') {
+      Object.keys(value).map(key => {
+        if (value[key] === null) {
+          // 修改的时候删除这个字段的内容
+          if (key.slice(0, -2) === 'ID') {
+            value['Clear' + key.slice(0, -2)] = true;
+          } else {
+            value['Clear' + key] = true;
+          }
+          // console.log(value, 'zzz');
+        }
+      });
+    }
     (this.mode === 'edit' ? this.baseRepository.update(this.resourceUrl, value) :
       this.baseRepository.add(this.resourceUrl, value)).subscribe(res => {
         this.modalRef.close(res);
