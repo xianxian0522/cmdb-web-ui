@@ -275,10 +275,14 @@ export class ResourcesCommonEditComponent implements OnInit {
             // e.InstanceTemplate.EnvVars = e.InstanceTemplate.EnvVars ? e.InstanceTemplate.EnvVars : [];
             this.editValueType.map(k => {
               // 类型是object 里面是json格式自己输入的 需要转
-              if (k.Type === 'object-textarea') {
+              if (k.Type === 'object-textarea' && e[k.id]) {
                 console.log(k.id, 'iddd');
                 e[k.id] = JSON.stringify(e[k.id]);
               }
+              // if (k.Type === 'bytes') {
+              //   // 解码
+              //   e[k.id] = this.decode(e[k.id]);
+              // }
             });
             // Object.keys(e).map(k => {
             //  通过判断是否是对象类型 会把对象有的属性也转掉了 没一一对应的值
@@ -334,13 +338,20 @@ export class ResourcesCommonEditComponent implements OnInit {
   }
   onSubmit(): void {
     const value = {...this.editForm.value};
+    // if (value.State === null) {
+    //   value.State = '';
+    // }
     this.editValueType.map(key => {
-      if (key.Type === 'bytes') {
+      if (key.Type === 'bytes' && value[key.id]) {
         // 编码
         value[key.id] = this.encode(value[key.id]);
       }
       if (key.Type === 'object-textarea') {
         const obj = value[key.id];
+        if (obj === '') {
+          value[key.id] = null;
+          this.isReturn = false;
+        }
         // 输入类型是必须是json格式
         if (obj && this.isJSONTest(obj)) {
           // 将json格式的字符 转换后的类型只能是对象形式的才行
@@ -361,7 +372,7 @@ export class ResourcesCommonEditComponent implements OnInit {
     if (this.mode === 'edit') {
       Object.keys(value).map(key => {
         if (value[key] === null) {
-          // 修改的时候如果内容为努力了 就是删除这个字段的内容 需要添加请求参数
+          // 修改的时候如果内容为null了 就是删除这个字段的内容 需要添加请求参数
           if (key.slice(-2) === 'ID') {
             value['Clear' + key.slice(0, -2)] = true;
           } else {
@@ -370,30 +381,31 @@ export class ResourcesCommonEditComponent implements OnInit {
           // console.log(value, 'zzz');
         }
       });
+
+      Object.keys(this.beforeModifyData).map(key => {
+        if (key.slice(-3) === 'IDs') {
+          // console.log(key, this.beforeModifyData[key], value[key]);
+          value['Remove' + key] = [];
+          value['Add' + key] = [];
+          this.beforeModifyData[key] = this.beforeModifyData[key] ? this.beforeModifyData[key] : [];
+          value[key]  = value[key] ? value[key] : [];
+          this.beforeModifyData[key].map(beforeID => {
+            // 新值不含原值 移除这个id
+            if (!value[key].includes(beforeID)) {
+              value['Remove' + key].push(beforeID);
+              // console.log(value[key].includes(beforeID), 'zhiq');
+            }
+          });
+          value[key].map(nowID => {
+            // 原值不包含新增 增加这个id
+            if (!this.beforeModifyData[key].includes(nowID)) {
+              value['Add' + key].push(nowID);
+            }
+          });
+          // console.log(value, 'submit');
+        }
+      });
     }
-    Object.keys(this.beforeModifyData).map(key => {
-      if (key.slice(-3) === 'IDs') {
-        // console.log(key, this.beforeModifyData[key], value[key]);
-        value['Remove' + key] = [];
-        value['Add' + key] = [];
-        this.beforeModifyData[key] = this.beforeModifyData[key] ? this.beforeModifyData[key] : [];
-        value[key]  = value[key] ? value[key] : [];
-        this.beforeModifyData[key].map(beforeID => {
-          // 新值不含原值 移除这个id
-          if (!value[key].includes(beforeID)) {
-            value['Remove' + key].push(beforeID);
-            // console.log(value[key].includes(beforeID), 'zhiq');
-          }
-        });
-        value[key].map(nowID => {
-          // 原值不包含新增 增加这个id
-          if (!this.beforeModifyData[key].includes(nowID)) {
-            value['Add' + key].push(nowID);
-          }
-        });
-        // console.log(value, 'submit');
-      }
-    });
     (this.mode === 'edit' ? this.baseRepository.update(this.resourceUrl, value) :
       this.baseRepository.add(this.resourceUrl, value)).subscribe(res => {
         this.modalRef.close(res);
@@ -409,6 +421,13 @@ export class ResourcesCommonEditComponent implements OnInit {
     const code = encodeURI(str);
     // 对编码的字符串转化base64
     return btoa(code);
+  }
+  // base64转字符串
+  decode(base64): string{
+    // 对base64转编码
+    const decode = atob(base64);
+    // 编码转字符串
+    return  decodeURI(decode);
   }
   isJSONTest(str): boolean {
     try {
