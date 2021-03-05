@@ -338,9 +338,6 @@ export class ResourcesCommonEditComponent implements OnInit {
   }
   onSubmit(): void {
     const value = {...this.editForm.value};
-    // if (value.State === null) {
-    //   value.State = '';
-    // }
     this.editValueType.map(key => {
       if (key.Type === 'bytes' && value[key.id]) {
         // 编码
