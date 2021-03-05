@@ -273,11 +273,20 @@ export class ResourcesCommonEditComponent implements OnInit {
             });
             // e.InstanceTemplate.BindInfos = e.InstanceTemplate.BindInfos ? e.InstanceTemplate.BindInfos : [];
             // e.InstanceTemplate.EnvVars = e.InstanceTemplate.EnvVars ? e.InstanceTemplate.EnvVars : [];
-            Object.keys(e).map(k => {
-              if (Object.prototype.toString.call(e[k]) === '[object Object]') {
-                e[k] = JSON.stringify(e[k]);
+            this.editValueType.map(k => {
+              // 类型是object 里面是json格式自己输入的 需要转
+              if (k.Type === 'object-textarea') {
+                console.log(k.id, 'iddd');
+                e[k.id] = JSON.stringify(e[k.id]);
               }
             });
+            // Object.keys(e).map(k => {
+            //  通过判断是否是对象类型 会把对象有的属性也转掉了 没一一对应的值
+            //   console.log(k, e, 'xxx');
+            //   if (Object.prototype.toString.call(e[k]) === '[object Object]') {
+            //     e[k] = JSON.stringify(e[k]);
+            //   }
+            // });
             setTimeout(() => this.editForm.patchValue({...e}), 10);
             // this.editForm.patchValue({...e});
             this.beforeModifyData = e;
