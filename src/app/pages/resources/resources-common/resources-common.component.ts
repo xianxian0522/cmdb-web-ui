@@ -70,6 +70,26 @@ export class ResourcesCommonComponent implements OnInit, AfterViewInit {
     // Enum可枚举的V是填的值 N是展示的值
     return list.filter(value => value.V === v).map(n => n.N);
   }
+  objectData(data: any, id: string): any {
+    if (!data) {
+      return [];
+    }
+    if (data instanceof Array) {
+      const arr = data.map(k => ({title: id, content: data}));
+      // console.log(arr, 'array');
+      return arr;
+    } else {
+      const arr = Object.keys(data).map((k: any) => {
+        if (data[k] instanceof Array) {
+          return this.objectData(data[k], k)[0];
+        } else {
+          return ({title: k, content: data[k]});
+        }
+      });
+      // console.log(arr, 'objetc');
+      return arr;
+    }
+  }
 
   ngOnInit(): void {
     this.resourceUrl = this.layoutComponent.baseTitle;

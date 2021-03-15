@@ -79,9 +79,18 @@
 <!--                <td>{{ data.RealName }}</td>-->
 <!--                <td>{{ data.ReplicaSetMembers }}</td>-->
                 <td *ngFor="let col of colNames">
-                    <span *ngIf="col.type === 'object' || col.type === 'array'; else spanBlock" nz-tooltip [nzTooltipTitle]="data[col.id] | json">{{data[col.id]}}</span>
+<!--                    <span *ngIf="col.type === 'object' || col.type === 'array'; else spanBlock" nz-tooltip [nzTooltipTitle]="contentTemplate">{{data[col.id]}}</span>-->
+                    <button *ngIf="col.type === 'object' || col.type === 'array'; else spanBlock" nzType="default" nz-button nz-popover [nzPopoverContent]="contentTemplate">
+                        {{data[col.id]}}
+                    </button>
                     <ng-template #spanBlock>
                         <span>{{ col.list ? getEnum(data[col.id], col.list) : data[col.id]}}</span>
+                    </ng-template>
+                    <ng-template #contentTemplate>
+<!--                        <span>{{data[col.id] | json}}</span>-->
+                        <nz-descriptions [nzTitle]="col.name" nzBordered>
+                            <nz-descriptions-item *ngFor="let item of objectData(data[col.id], col.id)" [nzTitle]="item.title">{{item.content | json}}</nz-descriptions-item>
+                        </nz-descriptions>
                     </ng-template>
                 </td>
                 <td>{{ data.CreatedAt | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
