@@ -34,6 +34,9 @@
         <nz-form-control [nzSpan]="14" *ngSwitchCase="'bytes'">
           <input nz-input [formControlName]="question.id" [placeholder]="question.Description" [readonly]="question.id === 'ID' || (mode === 'edit' && question.Immutable)" nzSize="small">
         </nz-form-control>
+        <nz-form-control [nzSpan]="14" *ngSwitchCase="'bytes-bool'">
+          <label nz-checkbox [formControlName]="question.id"></label>
+        </nz-form-control>
         <nz-form-control [nzSpan]="14" *ngSwitchCase="'integer'">
           <nz-input-number [formControlName]="question.id" nzSize="small" [nzDisabled]="question.id === 'ID' || question.Immutable"></nz-input-number>
         </nz-form-control>

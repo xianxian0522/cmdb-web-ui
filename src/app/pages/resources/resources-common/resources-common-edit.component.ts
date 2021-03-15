@@ -198,6 +198,15 @@ export class ResourcesCommonEditComponent implements OnInit {
       this.editValueType = arr;
       // 后端返回ID后不需要用unshift添加
       arr.unshift({id: 'ID', Type: 'integer', Nillable: true, });
+      Object.keys(res.Properties).map((key, index) => {
+        if (res.Properties[key].Type === 'bytes') {
+          arr.splice(index + 2, 0, {
+            id: key + 'Bool',
+            Type: 'bytes-bool',
+            Description: res.Properties[key].Description + '是否转码'
+          });
+        }
+      });
 
       const edg = [];
       Object.keys(res.Edges).map(key => {
@@ -339,9 +348,10 @@ export class ResourcesCommonEditComponent implements OnInit {
   onSubmit(): void {
     const value = {...this.editForm.value};
     this.editValueType.map(key => {
-      if (key.Type === 'bytes' && value[key.id]) {
+      if (key.Type === 'bytes-bool' && value[key.id]) {
         // 编码
-        value[key.id] = this.encode(value[key.id]);
+        // console.log('password', value[key.id], value[key.id.slice(0, -4)], key.id.slice(0, -4));
+        value[key.id.slice(0, -4)] = this.encode(value[key.id.slice(0, -4)]);
       }
       if (key.Type === 'object-textarea') {
         const obj = value[key.id];

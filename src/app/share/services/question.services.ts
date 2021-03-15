@@ -43,8 +43,12 @@ export class QuestionServices {
           group[question.id] = new FormArray([]);
         }
       } else {
-        group[question.id] = question.Nillable || question.Optional ? new FormControl(question.value || null) :
-          new FormControl(question.value || null, [Validators.required]);
+        if (question.Type === 'bytes-bool') {
+          group[question.id] = new FormControl(true);
+        } else {
+          group[question.id] = question.Nillable || question.Optional ? new FormControl(question.value || null) :
+            new FormControl(question.value || null, [Validators.required]);
+        }
       }
       question.Description = question.Description || question.id;
     });

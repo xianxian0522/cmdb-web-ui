@@ -19,6 +19,7 @@ import {NzInputNumberModule} from 'ng-zorro-antd/input-number';
 import { CommonFormComponent } from './common-form/common-form.component';
 import {NzToolTipModule} from 'ng-zorro-antd/tooltip';
 import {NzTransferModule} from 'ng-zorro-antd/transfer';
+import {NzCheckboxModule} from 'ng-zorro-antd/checkbox';
 
 
 @NgModule({
@@ -45,6 +46,7 @@ import {NzTransferModule} from 'ng-zorro-antd/transfer';
     NzInputNumberModule,
     NzToolTipModule,
     NzTransferModule,
+    NzCheckboxModule,
   ]
 })
 export class ResourcesModule { }
