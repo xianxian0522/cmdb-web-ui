@@ -1,6 +1,7 @@
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {Injectable} from '@angular/core';
+import {TokenResponse} from '../mode/token';
 
 const Api = '/api/v1';
 
@@ -9,6 +10,13 @@ const Api = '/api/v1';
 })
 export class BaseRepository<MODEL extends {id?: number}>{
     protected constructor(protected httpClient: HttpClient) {}
+
+    token(): Observable<TokenResponse>{
+        return this.httpClient.get<TokenResponse>(`${Api}/sso/login`);
+    }
+    login(): Observable<any> {
+        return this.httpClient.get(`${Api}/sso/loginOAuth`);
+    }
 
     queryPage(resourceUrl: string, model: any): Observable<any> {
         const body = this.genParams(model);
@@ -48,10 +56,6 @@ export class BaseRepository<MODEL extends {id?: number}>{
         if (q) {
             Object.keys(q).forEach(k => {
                 const v = q[k];
-                // if (v instanceof Array) {
-                //     v.forEach(vv => addValue(k, vv));
-                //     return;
-                // }
                 addValue(k, v);
             });
         }

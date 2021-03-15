@@ -15,9 +15,9 @@ const routes: Routes = [
     component: LayoutComponent,
     loadChildren: () => import('../../pages/model/model.module').then(m => m.ModelModule)
   },
-  {
-    path: '**', component: LayoutComponent
-  },
+  // {
+  //   path: '**', component: LayoutComponent
+  // },
 ];
 
 @NgModule({

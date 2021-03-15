@@ -7,20 +7,27 @@ import { IconsProviderModule } from './icons-provider.module';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NZ_I18N } from 'ng-zorro-antd/i18n';
 import { zh_CN } from 'ng-zorro-antd/i18n';
 import { registerLocaleData } from '@angular/common';
 import zh from '@angular/common/locales/zh';
-import {WelcomeComponent} from './pages/welcome/welcome.component';
+import {NotFoundComponent} from './pages/not-found/not-found.component';
+import { LoginComponent } from './pages/login/login.component';
+import {NzButtonModule} from 'ng-zorro-antd/button';
+import {AuthInterceptor} from './share/services/http-interceptors';
+import {NzMessageModule} from 'ng-zorro-antd/message';
+import { MiddleComponent } from './pages/middle/middle.component';
 
 registerLocaleData(zh);
 
 @NgModule({
   declarations: [
     AppComponent,
-    WelcomeComponent
+    NotFoundComponent,
+    LoginComponent,
+    MiddleComponent
   ],
   imports: [
     BrowserModule,
@@ -30,9 +37,14 @@ registerLocaleData(zh);
     NzMenuModule,
     FormsModule,
     HttpClientModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    NzButtonModule,
+    NzMessageModule,
   ],
-  providers: [{ provide: NZ_I18N, useValue: zh_CN }],
+  providers: [
+    { provide: NZ_I18N, useValue: zh_CN },
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

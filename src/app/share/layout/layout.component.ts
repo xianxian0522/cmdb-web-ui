@@ -3,6 +3,7 @@ import {MenuItem, MenuItems} from '../menu';
 import {Location} from '@angular/common';
 import {Title} from '@angular/platform-browser';
 import {BaseRepository} from '../services/base.repository';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-layout',
@@ -16,6 +17,7 @@ export class LayoutComponent implements OnInit {
     private location: Location,
     private title: Title,
     private baseRepository: BaseRepository<any>,
+    private router: Router,
   ) { }
 
   isCollapsed = false;
@@ -54,6 +56,11 @@ export class LayoutComponent implements OnInit {
 
   titleCommon(url): void {
     const titleName = this.sectionItem.filter(v => v.id === url.split('/')[2]).map(n => n.name)[0];
-    this.title.setTitle(this.section.toUpperCase() + '-' + titleName);
+    this.title.setTitle(this.section.toUpperCase() + (titleName ? '-' + titleName : ''));
+  }
+
+  logout(): void {
+    localStorage.removeItem('token');
+    // this.router.navigateByUrl('/login');
   }
 }
