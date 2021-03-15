@@ -17,6 +17,7 @@ export class MiddleComponent implements OnInit {
   ngOnInit(): void {
     this.baseRepository.token().subscribe(res => {
       localStorage.setItem('token', res.token);
+
       this.router.navigateByUrl('/resources/AppMember');
     });
   }

@@ -4,6 +4,7 @@ import {Location} from '@angular/common';
 import {Title} from '@angular/platform-browser';
 import {BaseRepository} from '../services/base.repository';
 import {Router} from '@angular/router';
+import {JwtHelperService} from '@auth0/angular-jwt';
 
 @Component({
   selector: 'app-layout',
@@ -25,11 +26,17 @@ export class LayoutComponent implements OnInit {
   sections: MenuItem[];
   sectionItem: MenuItem[];
   baseTitle: string;
+  helper = new JwtHelperService();
+  username = '';
 
   ngOnInit(): void {
     this.sections = this.menuItems.getAllSections();
     const url = this.location.path();
     console.log(url, location.pathname);
+
+    const user = this.helper.decodeToken(localStorage.getItem('token'));
+    this.username = user.name as string || user.username as string;
+
     this.section = url.split('/')[1];
 
     this.baseTitle = url.split('/')[2];
