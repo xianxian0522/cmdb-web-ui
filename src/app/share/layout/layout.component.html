@@ -6,14 +6,14 @@
             [(nzCollapsed)]="isCollapsed"
             [nzTrigger]="null" nzTheme="light">
     <div class="sidebar-logo">
-      <a href="https://ng.ant.design/" target="_blank">
+<!--      <a href="https://ng.ant.design/" target="_blank">-->
         <img src="https://ng.ant.design/assets/img/logo.svg" alt="logo">
         <h1>{{section.toUpperCase()}}</h1>
-      </a>
+<!--      </a>-->
     </div>
     <ul nz-menu nzTheme="light" nzMode="inline" [nzInlineCollapsed]="isCollapsed" *ngFor="let menu of sectionItem">
       <li nz-menu-item nzMatchRouter>
-        <i nz-icon [nzType]="menu.icon"></i>
+        <i nz-icon [nzType]="menu.icon" nzTheme="outline"></i>
         <span>
           <a [routerLink]="'/' + section + '/' + menu.id">{{menu.name}}</a>
         </span>

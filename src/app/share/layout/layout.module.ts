@@ -10,6 +10,7 @@ import {FormsModule} from '@angular/forms';
 import {RouterModule} from '@angular/router';
 import {NzAvatarModule} from 'ng-zorro-antd/avatar';
 import {NzDropDownModule} from 'ng-zorro-antd/dropdown';
+import {NzIconModule} from 'ng-zorro-antd/icon';
 
 
 @NgModule({
@@ -23,7 +24,8 @@ import {NzDropDownModule} from 'ng-zorro-antd/dropdown';
     FormsModule,
     RouterModule,
     NzAvatarModule,
-    NzDropDownModule
+    NzDropDownModule,
+    NzIconModule,
   ],
   exports: [LayoutComponent]
 })

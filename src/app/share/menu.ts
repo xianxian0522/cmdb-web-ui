@@ -100,13 +100,13 @@ const MENUS: {[key: string]: MenuItem[]} = {
     {
       id: 'graph',
       name: '关联图',
-      icon: 'menu',
+      icon: 'apartment',
     },
-    {
-      id: 'menu22',
-      name: '菜单22',
-      icon: 'menu',
-    }
+    // {
+    //   id: 'menu22',
+    //   name: '菜单22',
+    //   icon: 'menu',
+    // }
   ],
 };
 const ALL_RESOURCES = MENUS[RESOURCES];
