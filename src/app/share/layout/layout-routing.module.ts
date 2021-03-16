@@ -9,7 +9,7 @@ const routes: Routes = [
     data: {section: 'resources', preload: true},
     component: LayoutComponent,
     // canActivate: [RoutesGuardService],
-    canActivateChild: [RoutesGuardService],
+    // canActivateChild: [RoutesGuardService],
     // resolve: {
     //   routes: RoutesGuardService,
     // },

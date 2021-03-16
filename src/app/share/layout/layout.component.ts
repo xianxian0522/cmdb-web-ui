@@ -5,6 +5,7 @@ import {Title} from '@angular/platform-browser';
 import {BaseRepository} from '../services/base.repository';
 import {Router} from '@angular/router';
 import {JwtHelperService} from '@auth0/angular-jwt';
+import {AllModelServices} from '../services/allModel.services';
 
 @Component({
   selector: 'app-layout',
@@ -19,6 +20,7 @@ export class LayoutComponent implements OnInit {
     private title: Title,
     private baseRepository: BaseRepository<any>,
     private router: Router,
+    private allModelServices: AllModelServices,
   ) { }
 
   isCollapsed = false;
@@ -28,6 +30,7 @@ export class LayoutComponent implements OnInit {
   baseTitle: string;
   helper = new JwtHelperService();
   username = '';
+  baseRoutePath;
 
   ngOnInit(): void {
     this.sections = this.menuItems.getAllSections();
@@ -46,22 +49,30 @@ export class LayoutComponent implements OnInit {
     this.baseTitle = url.split('/')[2];
 
     if (this.section === 'resources') {
-      this.baseRepository.getAllModel().subscribe(res => {
+      this.allModelServices.arr().then(res => {
         this.sectionItem = Object.keys(res).map(key => ({
           id: key,
           name: res[key].Description,
           icon: '',
         }));
+        this.baseRoutePath = Object.keys(res).map(k => k);
         this.titleCommon(url);
-      });
+        this.isInstanceRoutes(this.baseTitle);
+      }).catch(err => console.log(err));
     } else {
       this.sectionItem = this.menuItems.getItems(this.section);
+      console.log('.....EE');
       this.titleCommon(url);
     }
 
     this.location.onUrlChange(r => {
       this.baseTitle = r.split('/')[2];
       this.titleCommon(r);
+      this.section = r.split('/')[1];
+
+      if (this.section === 'resources') {
+        this.isInstanceRoutes(this.baseTitle);
+      }
     });
   }
 
@@ -73,5 +84,11 @@ export class LayoutComponent implements OnInit {
   logout(): void {
     localStorage.removeItem('token');
     this.router.navigateByUrl('/login');
+  }
+
+  isInstanceRoutes(url): void {
+    if (this.baseRoutePath.indexOf(url) === -1) {
+      this.router.navigateByUrl('notFound');
+    }
   }
 }

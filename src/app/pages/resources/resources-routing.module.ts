@@ -5,6 +5,7 @@ import {getRoutes, GetServicesRoutes} from '../../share/services/routes';
 import {RelationCommonComponent} from './relation-common/relation-common.component';
 import {HttpClient} from '@angular/common/http';
 import {BaseRepository} from '../../share/services/base.repository';
+import {AllModelServices} from '../../share/services/allModel.services';
 
 const routes: Routes = [
   {path: '', redirectTo: 'AppMember', pathMatch: 'full'},
@@ -56,20 +57,22 @@ const routes: Routes = [
   {path: '**', component: ResourcesCommonComponent},
 ];
 
+
+
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
 export class ResourcesRoutingModule {
-  // constructor(router: Router, baseRepository: BaseRepository<any>) {
-  //   const config = router.config;
-  //   console.log(config, 'ccc', routes, router);
-  //   baseRepository.getAllModel().subscribe(res => {
-  //     Object.keys(res).map(k => {
-  //       routes.push({path: k, component: ResourcesCommonComponent});
-  //     });
-  //     console.log(res, 'routes', routes);
-  //     router.resetConfig(config);
-  //   });
-  // }
+  constructor(allModelServices: AllModelServices, router: Router) {
+    // const config = router.config;
+    // console.log(config, 'ccc', routes, router);
+    // router.resetConfig(config);
+
+    // allModelServices.arr().then(res => {
+    //   Object.keys(res).map(k => {
+    //     routes.push({path: k, component: ResourcesCommonComponent});
+    //   });
+    // }).catch(err => console.log(err, 'err'));
+  }
 }
