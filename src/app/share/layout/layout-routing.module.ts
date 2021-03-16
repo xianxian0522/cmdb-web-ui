@@ -1,12 +1,18 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
 import {LayoutComponent} from './layout.component';
+import {RoutesGuardService} from '../services/routesGuardService';
 
 const routes: Routes = [
   {
     path: 'resources',
-    data: {section: 'resources'},
+    data: {section: 'resources', preload: true},
     component: LayoutComponent,
+    // canActivate: [RoutesGuardService],
+    canActivateChild: [RoutesGuardService],
+    // resolve: {
+    //   routes: RoutesGuardService,
+    // },
     loadChildren: () => import('../../pages/resources/resources.module').then(m => m.ResourcesModule)
   },
   {

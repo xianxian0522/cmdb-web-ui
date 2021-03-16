@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import {NotFoundComponent} from './pages/not-found/not-found.component';
 import {LoginComponent} from './pages/login/login.component';
 import {MiddleComponent} from './pages/middle/middle.component';
+import {SelectivePreloadingStrategyService} from './share/services/routesGuardService';
 
 const routes: Routes = [
   // { path: '', pathMatch: 'full', redirectTo: '/resources/AppMember' },
@@ -16,7 +17,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes,  {preloadingStrategy: SelectivePreloadingStrategyService})],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

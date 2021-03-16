@@ -4,6 +4,7 @@ import {ResourcesCommonComponent} from './resources-common/resources-common.comp
 import {getRoutes, GetServicesRoutes} from '../../share/services/routes';
 import {RelationCommonComponent} from './relation-common/relation-common.component';
 import {HttpClient} from '@angular/common/http';
+import {BaseRepository} from '../../share/services/base.repository';
 
 const routes: Routes = [
   {path: '', redirectTo: 'AppMember', pathMatch: 'full'},
@@ -51,7 +52,8 @@ const routes: Routes = [
     //   {path: 'relation', component: RelationCommonComponent},
     // ],
   },
-  {path: 'Vcs', component: ResourcesCommonComponent},
+  // {path: 'Vcs', component: ResourcesCommonComponent},
+  {path: '**', component: ResourcesCommonComponent},
 ];
 
 @NgModule({
@@ -59,8 +61,15 @@ const routes: Routes = [
   exports: [RouterModule]
 })
 export class ResourcesRoutingModule {
-  constructor(router: Router) {
-    const config = router.config;
-    console.log(config, 'ccc');
-  }
+  // constructor(router: Router, baseRepository: BaseRepository<any>) {
+  //   const config = router.config;
+  //   console.log(config, 'ccc', routes, router);
+  //   baseRepository.getAllModel().subscribe(res => {
+  //     Object.keys(res).map(k => {
+  //       routes.push({path: k, component: ResourcesCommonComponent});
+  //     });
+  //     console.log(res, 'routes', routes);
+  //     router.resetConfig(config);
+  //   });
+  // }
 }

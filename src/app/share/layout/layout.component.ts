@@ -34,8 +34,12 @@ export class LayoutComponent implements OnInit {
     const url = this.location.path();
     console.log(url, location.pathname, 'url');
 
-    const user = this.helper.decodeToken(localStorage.getItem('token'));
-    this.username = user.name as string || user.username as string;
+    try {
+      const user = this.helper.decodeToken(localStorage.getItem('token'));
+      this.username = user.name as string || user.username as string;
+    }catch (e) {
+      console.log(e);
+    }
 
     this.section = url.split('/')[1];
 
