@@ -18,16 +18,20 @@ export class MiddleComponent implements OnInit {
   routes;
 
   ngOnInit(): void {
-    this.baseRepository.token().subscribe(res => {
-      localStorage.setItem('token', res.token);
-
+    const token = localStorage.getItem('token');
+    if (!token) {
+      this.baseRepository.token().subscribe(res => {
+        if (res.token) {
+          localStorage.setItem('token', res.token);
+          this.router.navigateByUrl('/resources/AppMember');
+        }
+        // this.baseRepository.getAllModel().subscribe(data => {
+        //   this.routes = Object.keys(data).map(r => ({path: r, component: ResourcesCommonComponent}));
+        //   console.log(this.routes);
+        // });
+      });
+    } else {
       this.router.navigateByUrl('/resources/AppMember');
-
-      // this.baseRepository.getAllModel().subscribe(data => {
-      //   this.routes = Object.keys(data).map(r => ({path: r, component: ResourcesCommonComponent}));
-      //   console.log(this.routes);
-      // });
-    });
+    }
   }
-
 }
