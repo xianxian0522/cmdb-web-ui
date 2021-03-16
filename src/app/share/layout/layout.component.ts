@@ -32,7 +32,7 @@ export class LayoutComponent implements OnInit {
   ngOnInit(): void {
     this.sections = this.menuItems.getAllSections();
     const url = this.location.path();
-    console.log(url, location.pathname);
+    console.log(url, location.pathname, 'url');
 
     const user = this.helper.decodeToken(localStorage.getItem('token'));
     this.username = user.name as string || user.username as string;

@@ -92,7 +92,7 @@ export class ResourcesCommonComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.resourceUrl = this.layoutComponent.baseTitle;
+    this.resourceUrl = this.layoutComponent.baseTitle || 'AppMember';
     console.log(this.resourceUrl, 'url');
 
     this.baseRepository.getModel(this.resourceUrl).subscribe(col => {

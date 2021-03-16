@@ -1,8 +1,9 @@
 import { NgModule } from '@angular/core';
-import {Routes, RouterModule, Router} from '@angular/router';
+import {Routes, RouterModule, Router, ActivatedRoute} from '@angular/router';
 import {ResourcesCommonComponent} from './resources-common/resources-common.component';
 import {getRoutes, GetServicesRoutes} from '../../share/services/routes';
 import {RelationCommonComponent} from './relation-common/relation-common.component';
+import {HttpClient} from '@angular/common/http';
 
 const routes: Routes = [
   {path: '', redirectTo: 'AppMember', pathMatch: 'full'},
@@ -57,4 +58,9 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class ResourcesRoutingModule {}
+export class ResourcesRoutingModule {
+  constructor(router: Router) {
+    const config = router.config;
+    console.log(config, 'ccc');
+  }
+}
