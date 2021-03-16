@@ -23,6 +23,7 @@ const routes: Routes = [
   {path: 'ReplicaSetMember/relation', component: RelationCommonComponent},
   {path: 'ReplicaSet/relation', component: RelationCommonComponent},
   {path: 'Repository/relation', component: RelationCommonComponent},
+  {path: 'SaltMaster/relation', component: RelationCommonComponent},
   {path: 'User/relation', component: RelationCommonComponent},
   {path: 'Vcs/relation', component: RelationCommonComponent},
 
@@ -42,6 +43,7 @@ const routes: Routes = [
   {path: 'ReplicaSetMember', component: ResourcesCommonComponent},
   {path: 'ReplicaSet', component: ResourcesCommonComponent},
   {path: 'Repository', component: ResourcesCommonComponent},
+  {path: 'SaltMaster', component: ResourcesCommonComponent},
   {
     path: 'User', component: ResourcesCommonComponent,
     // children: [
