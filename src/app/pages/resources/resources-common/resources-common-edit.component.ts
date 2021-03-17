@@ -385,7 +385,15 @@ export class ResourcesCommonEditComponent implements OnInit {
           } else {
             value['Clear' + key] = true;
           }
-          // console.log(value, 'zzz');
+          console.log(value, key, 'zzz');
+        }
+        if (key !== 'ID' && key.slice(-2) === 'ID') {
+          // 根原始值一样 删掉这个属性
+          if (value[key] === this.beforeModifyData[key]) {
+            delete value[key];
+            // console.log(value[key], this.beforeModifyData[key], 'value select');
+          }
+          // console.log(value[key], this.beforeModifyData[key], 'delete before');
         }
       });
 
