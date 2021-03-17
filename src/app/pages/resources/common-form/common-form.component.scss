@@ -1,0 +1,21 @@
+.array-forms {
+  .array-form {
+    border: 1px solid #f00;
+    height: 100%;
+    position: relative;
+    top: -15px;
+    .ant-form-item {
+      margin-bottom: 0px;
+      margin-top: 24px;
+    }
+  }
+  i {
+    position: relative;
+    top: 12px;
+    left: 7px;
+    font-size: 16px;
+  }
+}
+.object-form {
+  border: 1px solid #ff0;
+}
