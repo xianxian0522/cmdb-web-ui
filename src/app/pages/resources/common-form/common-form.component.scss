@@ -1,4 +1,9 @@
 .array-forms {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
   .array-form {
     border: 1px solid #f00;
     height: 100%;
@@ -14,8 +19,16 @@
     top: 12px;
     left: 7px;
     font-size: 16px;
+    z-index: 2;
+    cursor: pointer;
   }
 }
 .object-form {
   border: 1px solid #ff0;
+}
+.add-item-icon {
+  margin-right: 50%;
+  font-size: 16px;
+  line-height: 2.2;
+  cursor: pointer;
 }

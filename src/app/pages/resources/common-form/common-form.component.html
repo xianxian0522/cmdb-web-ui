@@ -2,7 +2,7 @@
   <div *ngFor="let question of questions;">
     <nz-form-item *ngIf="question.isEnum; else elseBlock">
       <nz-form-label [nzSpan]="span" nzNoColon>{{question.Description}}</nz-form-label>
-      <i style="font-size: 16px; line-height: 2.2;" *ngIf="question.Type === 'array'" nz-icon nzType="plus-circle" nzTheme="outline"></i>
+<!--      <i (click)="addItems(question.id, question)" class="add-item-icon" *ngIf="question.Type === 'array'" nz-icon nzType="plus-circle" nzTheme="outline"></i>-->
       <nz-form-control [nzSpan]="14">
         <div *ngIf="question.isTags; else tagsBlock">
           <nz-select nzMode="tags" [nzDropdownMatchSelectWidth]="false" nzSize="small" nzShowSearch nzAllowClear [nzPlaceHolder]="question.Description" [formControlName]="question.id">
@@ -29,7 +29,7 @@
     <ng-template #elseBlock>
       <nz-form-item [ngSwitch]="question.Type">
         <nz-form-label [nzSpan]="span" nzNoColon>{{question.Description}}</nz-form-label>
-        <i style="font-size: 16px; line-height: 2.2;" *ngIf="question.Type === 'array'" nz-icon nzType="plus-circle" nzTheme="outline"></i>
+        <i (click)="addItems(question.id, question)" class="add-item-icon" *ngIf="question.Type === 'array'" nz-icon nzType="plus-circle" nzTheme="outline"></i>
         <nz-form-control [nzSpan]="14" *ngSwitchCase="'string'">
           <input nz-input [formControlName]="question.id" [placeholder]="question.Description" [readonly]="question.id === 'ID' || (mode === 'edit' && question.Immutable)" nzSize="small">
         </nz-form-control>
@@ -49,20 +49,23 @@
           <div class="object-form" *ngIf="question.Properties" app-common-form [selectList]="question.Enum" [questions]="question.Properties" [editForm]="editForm.get(question.id)" [mode]="mode" layoutType="horizontal" span="8"></div>
         </div>
         <div *ngSwitchCase="'array'" class="array-forms">
-          <i nz-icon nzType="close-circle" nzTheme="outline"></i>
-          <div class="array-form" app-common-form [editForm]="getFormArray(question.id, question).at(0)" [mode]="mode" [selectList]="question.Items.Enum" [questions]="question.Items.Properties" layoutType="horizontal" span="8"></div>
-<!--          <div [formArrayName]="getFormArray(question.id, question)">-->
-<!--            <div *ngFor="let num of question.arrItems; let i = index">-->
-<!--              <div *ngFor="let q of num.Properties">-->
-<!--                <nz-form-item>-->
-<!--                  <nz-form-label [nzSpan]="8">{{q.Description}}</nz-form-label>-->
-<!--                  <nz-form-control [nzSpan]="14">-->
-<!--                    <input nz-input [formControlName]="q.id" [placeholder]="q.Description" nzSize="small">-->
-<!--                  </nz-form-control>-->
-<!--                </nz-form-item>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          </div>-->
+          <div *ngFor="let obj of question.arrItems; let i = index">
+            <i (click)="deleteItem(question.id, question, i)" nz-icon nzType="close-circle" nzTheme="outline" ></i>
+            <div class="array-form" app-common-form [editForm]="getFormArray(question.id, question).at(i)" [mode]="mode" [selectList]="obj.Enum" [questions]="obj.Properties" layoutType="horizontal" span="8"></div>
+<!--            <div class="array-form" app-common-form [editForm]="getFormArray(question.id, question).at(i)" [mode]="mode" [selectList]="question.Items.Enum" [questions]="question.Items.Properties" layoutType="horizontal" span="8"></div>-->
+            <!--          <div [formArrayName]="getFormArray(question.id, question)">-->
+            <!--            <div *ngFor="let num of question.arrItems; let i = index">-->
+            <!--              <div *ngFor="let q of num.Properties">-->
+            <!--                <nz-form-item>-->
+            <!--                  <nz-form-label [nzSpan]="8">{{q.Description}}</nz-form-label>-->
+            <!--                  <nz-form-control [nzSpan]="14">-->
+            <!--                    <input nz-input [formControlName]="q.id" [placeholder]="q.Description" nzSize="small">-->
+            <!--                  </nz-form-control>-->
+            <!--                </nz-form-item>-->
+            <!--              </div>-->
+            <!--            </div>-->
+            <!--          </div>-->
+          </div>
         </div>
       </nz-form-item >
     </ng-template>

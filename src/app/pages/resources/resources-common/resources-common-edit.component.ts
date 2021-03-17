@@ -285,8 +285,13 @@ export class ResourcesCommonEditComponent implements OnInit {
             this.editValueType.map(k => {
               // 类型是object 里面是json格式自己输入的 需要转
               if (k.Type === 'object-textarea' && e[k.id]) {
-                console.log(k.id, 'iddd');
+                // console.log(k.id, 'iddd');
                 e[k.id] = JSON.stringify(e[k.id]);
+              }
+              // 是数组类型的需要增加表单
+              if (k.Type === 'array' || k.Type === 'object') {
+                console.log(k.id, 'array', k, e[k.id]);
+                this.editAddArrayForm(k, e[k.id]);
               }
               // if (k.Type === 'bytes') {
               //   // 解码
@@ -307,6 +312,44 @@ export class ResourcesCommonEditComponent implements OnInit {
         });
       }
     });
+  }
+
+  editAddArrayForm(arr, e): any {
+    if (arr instanceof Array) {
+      arr.map(key => {
+        if (key.Type === 'array') {
+          if (e[key.id].length > 1) {
+            key.arrItems = [];
+            e[key.id].forEach(k => {
+              console.log(this.editForm.value, 'kkkkk', k, key.id);
+              // this.addForm(this.editForm, e);
+              key.arrItems.push({...key.Items});
+            });
+          }
+        }
+        if (key.Type === 'object') {
+          this.editAddArrayForm(key.Properties, e);
+        }
+      });
+    } else {
+      this.editAddArrayForm(arr.Properties, e);
+    }
+  }
+  addForm(editForm, edit, key?): any {
+    const obj = editForm.value;
+    if (obj instanceof Array) {
+      if (edit[key].length > 1) {
+        console.log(obj, 'array', edit, key);
+      }
+    } else {
+      Object.keys(obj).map(k => {
+        if (Object.prototype.toString.call(obj[k]) === '[object Object]' || obj[k] instanceof Array) {
+          console.log(obj[k], 'object');
+          this.addForm(obj[k], edit, k);
+        }
+        console.log(Object.prototype.toString.call(obj[k]), ';;;', k, obj[k]);
+      });
+    }
   }
 
   loopCommon(arr): any {
@@ -334,6 +377,7 @@ export class ResourcesCommonEditComponent implements OnInit {
         // loop.unshift({id: 'ID', Type: 'integer', Nillable: true, });
         const loopEdit = this.questionServices.toTextFormGroup(loop);
         obj.Items.Properties = loop;
+        obj.arrItems = [{...obj.Items}];
         // 不需要将表单放入 editForm里面创建了group的 是group的 this.editForm.get(obj.id)获取 值会一一绑定对应
         // console.log( obj.id, 'obj', loopEdit);
         // obj.editForm = loopEdit;
