@@ -333,18 +333,31 @@ export class ResourcesCommonEditComponent implements OnInit {
         }
       });
     } else {
-      this.editAddArrayForm(arr.Properties, e);
+      if (arr.Type === 'object') {
+        this.editAddArrayForm(arr.Properties, e);
+      }
+      if (arr.Type === 'array') {
+        if (e.length > 1) {
+          arr.arrItems = [];
+          e.forEach(_ => {
+            arr.arrItems.push({...arr.Items});
+          });
+          this.addForm(this.editForm, e);
+        }
+      }
     }
   }
   addForm(editForm, edit, key?): any {
     const obj = editForm;
     if (obj.value instanceof Array) {
-      if (edit[key].length > 1) {
+      // 如果是对象传过来的edit是对象edit[key]才是数组
+      const arr = (edit[key] instanceof Array) ? edit[key] : edit;
+      if (arr.length > 1) {
         const base = obj.value[0];
         // 先清除表单再添加
         obj.clear();
-        edit[key].forEach(_ => {
-          console.log(base, obj, 'add');
+        arr.forEach(_ => {
+          // console.log(base, obj, 'add');
           const baseGroup = new FormGroup({});
           Object.keys(base).forEach(b => {
             baseGroup.addControl(b, new FormControl(null));
