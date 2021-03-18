@@ -81,7 +81,7 @@
                 <td *ngFor="let col of colNames">
 <!--                    <span *ngIf="col.type === 'object' || col.type === 'array'; else spanBlock" nz-tooltip [nzTooltipTitle]="contentTemplate">{{data[col.id]}}</span>-->
                     <button *ngIf="col.type === 'object' || col.type === 'array'; else spanBlock" nzType="default" nz-button nz-popover [nzPopoverContent]="contentTemplate">
-                        {{data[col.id]}}
+                        {{ col.type === 'object' ? data[col.id] : data[col.id][0]}}
                     </button>
                     <ng-template #spanBlock>
                         <span>{{ col.list ? getEnum(data[col.id], col.list) : data[col.id]}}</span>
@@ -89,7 +89,12 @@
                     <ng-template #contentTemplate>
 <!--                        <span>{{data[col.id] | json}}</span>-->
                         <nz-descriptions [nzTitle]="col.name" nzBordered>
-                            <nz-descriptions-item *ngFor="let item of objectData(data[col.id], col.id)" [nzTitle]="item.title">{{item.content | json}}</nz-descriptions-item>
+                            <nz-descriptions-item *ngFor="let item of objectData(data[col.id], col.id)" [nzTitle]="item.title">
+                              <div *ngIf="item.isArray; else stringContent">
+                                <div *ngFor="let t of item.content">{{t | json}}</div>
+                              </div>
+                              <ng-template #stringContent>{{item.content}}</ng-template>
+                            </nz-descriptions-item>
                         </nz-descriptions>
                     </ng-template>
                 </td>

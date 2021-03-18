@@ -75,15 +75,16 @@ export class ResourcesCommonComponent implements OnInit, AfterViewInit {
       return [];
     }
     if (data instanceof Array) {
-      const arr = data.map(k => ({title: id, content: data}));
-      // console.log(arr, 'array');
-      return arr;
+      // const arr = data.map(k => ({title: id, content: data}));
+      const isArray = data instanceof Array;
+      return [{title: id, content: data, isArray}];
     } else {
       const arr = Object.keys(data).map((k: any) => {
         if (data[k] instanceof Array) {
           return this.objectData(data[k], k)[0];
         } else {
-          return ({title: k, content: data[k]});
+          const isArray = data[k] instanceof Array;
+          return ({title: k, content: data[k], isArray});
         }
       });
       // console.log(arr, 'objetc');
