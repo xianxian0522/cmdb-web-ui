@@ -87,7 +87,7 @@ export class LayoutComponent implements OnInit {
   }
 
   isInstanceRoutes(url): void {
-    if (this.baseRoutePath.indexOf(url) === -1) {
+    if (this.baseRoutePath && this.baseRoutePath.indexOf(url) === -1) {
       this.router.navigateByUrl('notFound');
     }
   }
