@@ -290,7 +290,7 @@ export class ResourcesCommonEditComponent implements OnInit {
               }
               // 是数组类型的需要增加表单
               if (k.Type === 'array' || k.Type === 'object') {
-                console.log(k.id, 'array', k, e[k.id]);
+                // console.log(k.id, 'array', k, e[k.id]);
                 this.editAddArrayForm(k, e[k.id]);
               }
               // if (k.Type === 'bytes') {
@@ -321,10 +321,11 @@ export class ResourcesCommonEditComponent implements OnInit {
           if (e[key.id].length > 1) {
             key.arrItems = [];
             e[key.id].forEach(k => {
-              console.log(this.editForm.value, 'kkkkk', k, key.id);
-              // this.addForm(this.editForm, e);
+              // console.log(this.editForm.value, 'kkkkk', k, key.id);
               key.arrItems.push({...key.Items});
             });
+            // 新增表单
+            this.addForm(this.editForm, e);
           }
         }
         if (key.Type === 'object') {
@@ -336,18 +337,26 @@ export class ResourcesCommonEditComponent implements OnInit {
     }
   }
   addForm(editForm, edit, key?): any {
-    const obj = editForm.value;
-    if (obj instanceof Array) {
+    const obj = editForm;
+    if (obj.value instanceof Array) {
       if (edit[key].length > 1) {
-        console.log(obj, 'array', edit, key);
+        const base = obj.value[0];
+        // 先清除表单再添加
+        obj.clear();
+        edit[key].forEach(_ => {
+          console.log(base, obj, 'add');
+          const baseGroup = new FormGroup({});
+          Object.keys(base).forEach(b => {
+            baseGroup.addControl(b, new FormControl(null));
+          });
+          obj.push(baseGroup);
+        });
       }
     } else {
-      Object.keys(obj).map(k => {
-        if (Object.prototype.toString.call(obj[k]) === '[object Object]' || obj[k] instanceof Array) {
-          console.log(obj[k], 'object');
-          this.addForm(obj[k], edit, k);
+      Object.keys(obj.value).map(k => {
+        if (obj.get(k).value) {
+          this.addForm(obj.get(k), edit, k);
         }
-        console.log(Object.prototype.toString.call(obj[k]), ';;;', k, obj[k]);
       });
     }
   }

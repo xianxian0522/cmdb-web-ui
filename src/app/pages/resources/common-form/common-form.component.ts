@@ -51,7 +51,7 @@ export class CommonFormComponent implements OnInit {
     question.arrItems.splice(index, 1);
     (this.editForm.get(id) as FormArray).removeAt(index);
     // this.getFormArray(id, question).removeAt(index);
-    // console.log(id, question, index, this.editForm.get(id));
+    console.log(id, question, index, this.editForm.get(id));
   }
 
   // 穿梭框 多选择的时候 搜索的结果为true展示
