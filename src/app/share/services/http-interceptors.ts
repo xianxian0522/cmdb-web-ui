@@ -31,7 +31,7 @@ export class AuthInterceptor implements HttpInterceptor {
         err => {
           if (err instanceof HttpErrorResponse) {
             // console.log(err, 'error');
-            if (err.status === 401 || err.status === 403) {
+            if (err.status === 401) {
               localStorage.removeItem('token');
               window.location.href = '/login';
               // this.router.navigateByUrl('/login');
