@@ -48,7 +48,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
   };
 
   ngOnInit(): void {
-    console.log(d3, 'd3');
+    // console.log(d3, 'd3');
     // d3.select('#model').append(this.chart);
     // this.dataEdges();
   }
@@ -427,29 +427,6 @@ export class GraphComponent implements OnInit, AfterViewInit {
     });
     console.log(sourceDatas, 'data');
 
-    // if (dataFilter !== undefined && dataFilter.length > 0) {
-    //   const indexArray = [];
-    //   dataFilter.map(vv => {
-    //     sourceDatas.map((v, index: number) => {
-    //       if (v.relation === vv.relation && vv.isShow === 'false') {
-    //         indexArray.push(index);
-    //       }
-    //     });
-    //   });
-    //   if (indexArray.length > 0) {
-    //     const tempArray = [];
-    //     sourceDatas.map((v, ix) => {
-    //       indexArray.map(idx => {
-    //         if (idx !== ix) {
-    //           if (idx === indexArray.length - 1) {
-    //             tempArray.push(v);
-    //           }
-    //         }
-    //       });
-    //     });
-    //     sourceDatas = tempArray;
-    //   }
-    // }
     // 关系分组
     const linkGroup = {};
     // 对连接线进行统计和分组，不区分连接线的方向，只要属于同两个实体，即认为是同一组
@@ -508,33 +485,22 @@ export class GraphComponent implements OnInit, AfterViewInit {
 
     // const nodesArr = d3.values(nodes);
     const nodesArr = Object.keys(nodes).map(key => nodes[key]);
-    // const relationColors = d3.values(relationColor);
-    const relationColors = Object.keys(relationColor).map(key => relationColor[key]);
-    console.log(nodesArr, 'nodes', relationColors);
 
-    const examplesX = parseFloat(options.examplesX); // 关系示例坐标x
-    const examplesY = parseFloat(options.examplesY); // 关系示例坐标y
-    const examplesLength = 80;
-    const examplesSize = Math.floor((width - examplesX) / examplesLength);
-    const examplesRow = relationColors.length % examplesSize === 0 ? relationColors.length / examplesSize : Math
-      .ceil(relationColors.length / examplesSize);
-    // 计算关系示列位置
-    relationColors.forEach((item, index) => {
-      const num = (index + 1) % examplesSize === 0 ? examplesSize : (index + 1) % examplesSize;
-      item.x = examplesX + (num - 1) * examplesLength;
-      item.y = examplesY + 20 * Math.ceil((index + 1) / examplesSize);
-    });
-
-    // if (dataFilter === undefined) {
-    //   dataFilter = [];
-    //   relationColors.map(k => {
-    //     dataFilter.push({
-    //       relation: k.relation,
-    //       isShow: 'true'
-    //     });
-    //   });
-    // }
-    // console.log(dataFilter, 'datafil');
+    // const relationColors = Object.keys(relationColor).map(key => relationColor[key]);
+    // console.log(nodesArr, 'nodes', relationColors);
+    //
+    // const examplesX = parseFloat(options.examplesX); // 关系示例坐标x
+    // const examplesY = parseFloat(options.examplesY); // 关系示例坐标y
+    // const examplesLength = 80;
+    // const examplesSize = Math.floor((width - examplesX) / examplesLength);
+    // const examplesRow = relationColors.length % examplesSize === 0 ? relationColors.length / examplesSize : Math
+    //   .ceil(relationColors.length / examplesSize);
+    // // 计算关系示列位置
+    // relationColors.forEach((item, index) => {
+    //   const num = (index + 1) % examplesSize === 0 ? examplesSize : (index + 1) % examplesSize;
+    //   item.x = examplesX + (num - 1) * examplesLength;
+    //   item.y = examplesY + 20 * Math.ceil((index + 1) / examplesSize);
+    // });
 
     // 绑定相连节点
     nodesArr.map(kk => {
@@ -553,20 +519,13 @@ export class GraphComponent implements OnInit, AfterViewInit {
     });
     console.log(nodesArr, 'arr');
     // D3力导向布局
-    // const force = d3.forceSimulation(nodesArr) // 加载节点数据
-    //   .force('link', d3.forceLink(sourceDatas).id(d => d.id)) // 加载边数据
-    //   .force('charge', d3.forceManyBody().strength(-400))
-    //   .force('distance', (d) => { // 根据权重不同连接线段的长度也不同
-    //     // console.log(d);
-    //     return 10; // 连线的长度
-    //   }).force('center', d3.forceCenter());
     const force = d3.layout.force()
       .nodes(nodesArr)
       .links(sourceDatas)
       .size([width, height])
       .linkDistance(200)
-      .charge(-1500)
-      .start();
+      .charge(-1500);
+      // .start();
     // 全图缩放器
     const zoom = d3.behavior.zoom()
       .scaleExtent([0.25, 2])
@@ -577,28 +536,12 @@ export class GraphComponent implements OnInit, AfterViewInit {
         } = d3.event;
         container.attr('transform', 'translate(' + translate + ')scale(' + scale * 0.6 + ')');
       });
-    // const zoom = d3.zoom()
-    //   .scaleExtent([0.25, 2])
-    //   .on('zoom', () => {
-    //     // const {
-    //     //   translate,
-    //     //   scale
-    //     // } = d3.event;
-    //     console.log(container, 'sssssssss');
-    //     // container.attr('transform', 'translate(' + translate + ')scale(' + scale * 0.6 + ')');
-    //   });
     const svg = d3.select('#' + divid).append('svg')
       .attr('width', '100%')
       .attr('height', height)
       .attr('style', 'background-color:' + backgroundColor)
       .call(zoom)
       .on('dblclick.zoom', null);
-    // const svg = d3.select('#' + divid).append('svg')
-    //   .attr('width', width)
-    //   .attr('height', height)
-    //   .attr('style', 'background-color:' + backgroundColor)
-    //   .call(zoom)
-    //   .on('dblclick.zoom', null);
     // 缩放层（位置必须在 container 之前）
     const zoomOverlay = svg.append('rect')
       .attr('width', '100%')
@@ -612,6 +555,19 @@ export class GraphComponent implements OnInit, AfterViewInit {
     const tooltip = d3.select('body').append('div')
       .attr('class', 'tooltip')
       .attr('opacity', 0.0);
+
+    // 开启力导向布局
+    force.start();
+    // 手动快速布局
+    for (let i = 0, n = 1000; i < n; ++i) {
+      force.tick();
+    }
+    // 停止力布局
+    force.stop();
+    // 固定所有节点
+    nodesArr.forEach(d => {
+      d.fixed = true;
+    });
 
     // 根据分类进行筛选 无分类
     // if (options.showExamples) {
@@ -844,7 +800,6 @@ export class GraphComponent implements OnInit, AfterViewInit {
         tooltip.style('opacity', 0.0);
       })
       .call(force.drag);
-    // .call(this.drag(force));
 
     // 节点文字设置
     const nodesText = container.selectAll('.nodetext')
@@ -943,7 +898,6 @@ export class GraphComponent implements OnInit, AfterViewInit {
 
       })
       .call(force.drag);
-    // .call(this.drag(force));
 
     // 拖动节点
     const drag = force.drag()
@@ -956,12 +910,12 @@ export class GraphComponent implements OnInit, AfterViewInit {
       .on('drag', (d, i) => {});
 
     // 力学图运动开始时
-    force.on('start', () => {});
+    // force.on('start', () => {});
 
     // 力学图运动结束时
-    force.on('end', () => {});
+    // force.on('end', () => {});
 
-    force.on('tick', () => {
+    const tick = () => {
       edgesPath.attr('d', (d) => {
         const tan = Math.abs((d.target.y - d.source.y) / (d.target.x - d.source
           .x)); // 圆心连线tan值
@@ -1101,7 +1055,15 @@ export class GraphComponent implements OnInit, AfterViewInit {
       nodesText.attr('y', (d) => {
         return d.y;
       });
-    });
+    };
+    // 更新力导向图
+    // 注意1：必须调用一次 tick （否则，节点会堆积在左上角）
+    // 注意2：调用位置必须在 edgesPath, nodeText, edgesText, circle 后
+    setTimeout(() => {
+      tick();
+    }, 1);
+
+    force.on('tick', tick);
   }
 
   // 分配编号
