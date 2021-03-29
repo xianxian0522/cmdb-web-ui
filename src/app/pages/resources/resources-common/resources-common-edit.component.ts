@@ -337,7 +337,7 @@ export class ResourcesCommonEditComponent implements OnInit {
         this.editAddArrayForm(arr.Properties, e);
       }
       if (arr.Type === 'array') {
-        if (e.length > 1) {
+        if (e && e.length > 1) {
           arr.arrItems = [];
           e.forEach(_ => {
             arr.arrItems.push({...arr.Items});

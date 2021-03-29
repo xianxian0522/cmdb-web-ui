@@ -81,7 +81,8 @@
                 <td *ngFor="let col of colNames">
 <!--                    <span *ngIf="col.type === 'object' || col.type === 'array'; else spanBlock" nz-tooltip [nzTooltipTitle]="contentTemplate">{{data[col.id]}}</span>-->
                     <button *ngIf="col.type === 'object' || col.type === 'array'; else spanBlock" nzType="default" nz-button nz-popover [nzPopoverContent]="contentTemplate">
-                        {{ col.type === 'object' ? data[col.id] : data[col.id][0]}}
+<!--                        {{ col.type === 'object' ? data[col.id] : '[object Object]'}}-->
+                      [object Object]
                     </button>
                     <ng-template #spanBlock>
                         <span>{{ col.list ? getEnum(data[col.id], col.list) : data[col.id]}}</span>
