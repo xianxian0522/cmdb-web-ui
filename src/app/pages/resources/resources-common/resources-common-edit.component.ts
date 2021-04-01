@@ -305,10 +305,10 @@ export class ResourcesCommonEditComponent implements OnInit {
             //     e[k] = JSON.stringify(e[k]);
             //   }
             // });
+            // console.log(e, this.editForm.value, 'wm');
             setTimeout(() => this.editForm.patchValue({...e}), 10);
             // this.editForm.patchValue({...e});
             this.beforeModifyData = e;
-            // console.log(e, this.editForm.value, 'wm');
         });
       }
     });
@@ -318,7 +318,7 @@ export class ResourcesCommonEditComponent implements OnInit {
     if (arr instanceof Array) {
       arr.map(key => {
         if (key.Type === 'array') {
-          if (e[key.id].length > 1) {
+          if (e[key.id] && e[key.id].length > 1) {
             key.arrItems = [];
             e[key.id].forEach(k => {
               // console.log(this.editForm.value, 'kkkkk', k, key.id);
@@ -326,6 +326,11 @@ export class ResourcesCommonEditComponent implements OnInit {
             });
             // 新增表单
             this.addForm(this.editForm, e);
+          } else {
+            // 防止null
+            if (!e[key.id]) {
+              e[key.id] = [];
+            }
           }
         }
         if (key.Type === 'object') {
@@ -352,7 +357,7 @@ export class ResourcesCommonEditComponent implements OnInit {
     if (obj.value instanceof Array) {
       // 如果是对象传过来的edit是对象edit[key]才是数组
       const arr = (edit[key] instanceof Array) ? edit[key] : edit;
-      if (arr.length > 1) {
+      if (arr && arr.length > 1) {
         const base = obj.value[0];
         // 先清除表单再添加
         obj.clear();
