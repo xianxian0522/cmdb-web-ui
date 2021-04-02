@@ -5,7 +5,7 @@
 <!--      <i (click)="addItems(question.id, question)" class="add-item-icon" *ngIf="question.Type === 'array'" nz-icon nzType="plus-circle" nzTheme="outline"></i>-->
       <nz-form-control [nzSpan]="14">
         <div *ngIf="question.isTags; else tagsBlock">
-          <nz-select nzMode="tags" [nzDropdownMatchSelectWidth]="false" nzSize="small" nzShowSearch nzAllowClear [nzPlaceHolder]="question.Description" [formControlName]="question.id">
+          <nz-select nzMode="multiple" [nzDropdownMatchSelectWidth]="false" nzSize="small" nzShowSearch nzAllowClear [nzPlaceHolder]="question.Description" [formControlName]="question.id">
             <nz-option *ngFor="let select of question.Enum" [nzLabel]="select.N" [nzValue]="select.V"></nz-option>
           </nz-select>
 <!--          穿梭框-->
