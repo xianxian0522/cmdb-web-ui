@@ -48,7 +48,7 @@
             <tr>
                 <th nzLeft nzWidth="30px" [nzChecked]="checked" [nzIndeterminate]="indeterminate" (nzCheckedChange)="onAllChecked($event)"></th>
                 <th nzWidth="80px" nzLeft>ID</th>
-                <th *ngFor="let col of colNames">{{col.name}}</th>
+                <th *ngFor="let col of colNames" [nzWidth]="col.type === 'object' || col.type === 'array' ? '150px' : 'auto'">{{col.name}}</th>
 <!--                <th>DingTalkUserID</th>-->
 <!--                <th>State</th>-->
 <!--                <th>Mail</th>-->
