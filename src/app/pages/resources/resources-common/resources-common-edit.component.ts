@@ -216,8 +216,8 @@ export class ResourcesCommonEditComponent implements OnInit {
           if (r) {
             tags = r.map(k => ({
               V: k.ID,
-              N: k.Name ? k.Name : k.Username || k.Role || k.InnerIP || k.ID,
-              title: k.Name ? k.Name : k.Username || k.Role || k.InnerIP || k.ID,
+              N: k.InnerIP ? k.InnerIP : k.Name || k.Username || k.Role || k.ID,
+              title: k.InnerIP ? k.InnerIP : k.Name || k.Username || k.Role || k.ID,
             }));
           }
           if (res.Edges[key].Required) {
