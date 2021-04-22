@@ -5,6 +5,8 @@ import {QuestionServices} from '../../../share/services/question.services';
 import {BaseRepository} from '../../../share/services/base.repository';
 import {NzMessageService} from 'ng-zorro-antd/message';
 import {NzModalRef} from 'ng-zorro-antd/modal';
+import {map, mergeMap} from 'rxjs/operators';
+import {combineLatest} from 'rxjs';
 
 @Component({
   selector: 'app-resources-common-edit',
@@ -190,125 +192,117 @@ export class ResourcesCommonEditComponent implements OnInit {
     //   this.selectList = res;
     // });
 
-    this.baseRepository.getModel(this.resourceUrl).subscribe(res => {
-      this.modeTitle = res.Description;
+    this.baseRepository.getModel(this.resourceUrl).pipe(
+        map(res => {
+          this.modeTitle = res.Description;
 
-      const arr = Object.keys(res.Properties).map(key => ({id: key, ...res.Properties[key],
-        isEnum: res.Properties[key].hasOwnProperty('Enum')}));
-      this.editValueType = arr;
-      // 后端返回ID后不需要用unshift添加
-      arr.unshift({id: 'ID', Type: 'integer', Nillable: true, });
-      Object.keys(res.Properties).map((key, index) => {
-        if (res.Properties[key].Type === 'bytes') {
-          arr.splice(index + 2, 0, {
-            id: key + 'Bool',
-            Type: 'bytes-bool',
-            Description: res.Properties[key].Description + '是否转码'
+          const arr = Object.keys(res.Properties).map(key => ({id: key, ...res.Properties[key],
+            isEnum: res.Properties[key].hasOwnProperty('Enum')}));
+          this.editValueType = arr;
+          // 后端返回ID后不需要用unshift添加
+          arr.unshift({id: 'ID', Type: 'integer', Nillable: true, });
+          Object.keys(res.Properties).map((key, index) => {
+            if (res.Properties[key].Type === 'bytes') {
+              arr.splice(index + 2, 0, {
+                id: key + 'Bool',
+                Type: 'bytes-bool',
+                Description: res.Properties[key].Description + '是否转码'
+              });
+            }
           });
-        }
-      });
+          return [arr, res];
+        }),
+        mergeMap(([arr, res, ]) => {
+          return combineLatest(Object.keys(res.Edges).map(key => {
+            const url = res.Edges[key].Type;
+            return this.baseRepository.queryPage(url, {}).pipe(
+                map(r => {
+                  r = r || [];
+                  const tags = r.map(k => ({
+                    V: k.ID,
+                    N: k.InnerIP ? k.InnerIP : k.Name || k.Username || k.Role || k.ID,
+                    title: k.InnerIP ? k.InnerIP : k.Name || k.Username || k.Role || k.ID,
+                  }));
 
-      const edg = [];
-      Object.keys(res.Edges).map(key => {
-        const url = res.Edges[key].Type;
-        let tags = [];
-        this.baseRepository.queryPage(url, {}).subscribe(r => {
-          if (r) {
-            tags = r.map(k => ({
-              V: k.ID,
-              N: k.InnerIP ? k.InnerIP : k.Name || k.Username || k.Role || k.ID,
-              title: k.InnerIP ? k.InnerIP : k.Name || k.Username || k.Role || k.ID,
-            }));
-          }
-          if (res.Edges[key].Required) {
-            edg.push({
-              id: res.Edges[key].Name, ...res.Edges[key],
-              Enum: tags,
-              // isEnum: (tags.length > 0) ? true : false,
-              isEnum: true,
-              isTags: !res.Edges[key].Unique,
-              Description: res.Edges[key].Description || res.Edges[key].Name,
-            });
-          } else {
-            edg.push({
-              Nillable: true,
-              id: res.Edges[key].Name, ...res.Edges[key],
-              Description: res.Edges[key].Description || res.Edges[key].Name,
-              Enum: tags,
-              isEnum: true,
-              isTags: !res.Edges[key].Unique,
-            });
-          }
-          const s = arr.concat(edg);
-          const edit = this.questionServices.toTextFormGroup(s);
-          this.loopCommon(s);
+                  if (res.Edges[key].Required) {
+                    return {
+                      id: res.Edges[key].Name, ...res.Edges[key],
+                      Enum: tags,
+                      // isEnum: (tags.length > 0) ? true : false,
+                      isEnum: true,
+                      isTags: !res.Edges[key].Unique,
+                      Description: res.Edges[key].Description || res.Edges[key].Name,
+                    };
+                  } else {
+                    return {
+                      Nillable: true,
+                      id: res.Edges[key].Name, ...res.Edges[key],
+                      Description: res.Edges[key].Description || res.Edges[key].Name,
+                      Enum: tags,
+                      isEnum: true,
+                      isTags: !res.Edges[key].Unique,
+                    };
+                  }
+                })
+            );
+          })).pipe(
+              map(xs => {
+                const s = arr.concat(xs);
+                const edit = this.questionServices.toTextFormGroup(s);
+                this.loopCommon(s);
 
-          this.questions = s;
-          this.editForm = edit;
-          // console.log(this.editForm, 'model editForm', this.editForm.get('InstanceTemplate'));
-          // console.log(this.questions, 'questions');
-        });
-      });
-
-      // const edit = this.questionServices.toTextFormGroup(arr);
-      // this.loopCommon(arr);
-      //
-      // this.questions = arr;
-      // this.editForm = edit;
-      const withTrue = {};
-      Object.keys(res.Edges).map(key => {
-        withTrue[`With${key}`] = true;
-      });
+                this.questions = s;
+                this.editForm = edit;
+                return res;
+              })
+          );
+        }),
+        map(res => {
+          const withTrue = Object.keys(res.Edges).reduce((acc, current) => {
+            acc[`With${current}`] = true;
+            return acc;
+          }, {});
+          return [withTrue, res];
+        })
+    ).subscribe(([withTrue, res, ]) => {
       if (this.mode === 'edit') {
         // 查关联
         this.baseRepository.queryById(this.resourceUrl,
-          {
-            ID: this.data.ID,
-            ...withTrue,
-          }).subscribe(e => {
-            Object.keys(res.Edges).map(key => {
-              // console.log(key, e[key], 'key');
-              if (key === 'Repositories') {
-                e[`${key.slice(0, -3)}yIDs`] = (e[key] && e[key].length > 0) ? e[key].map(ids => ids.ID) : [];
-              }
-              if (key.slice(-1) === 's' && key !== 'Vcs') {
-                e[`${key.slice(0, -1)}IDs`] = (e[key] && e[key].length > 0) ? e[key].map(ids => ids.ID) : [];
-              } else if (key === 'Children') {
-                e[`${key.slice(0, 5)}IDs`] = (e[key] && e[key].length > 0) ? e[key].map(ids => ids.ID) : [];
-              } else {
-                e[`${key}ID`] = e[key] ? e[key].ID : null;
-                // console.log('duix 查询出的字段Parent、Children 对应editForm字段是ParentID、ChildIDs', key, e);
-              }
-            });
-            // e.InstanceTemplate.BindInfos = e.InstanceTemplate.BindInfos ? e.InstanceTemplate.BindInfos : [];
-            // e.InstanceTemplate.EnvVars = e.InstanceTemplate.EnvVars ? e.InstanceTemplate.EnvVars : [];
-            this.editValueType.map(k => {
-              // 类型是object 里面是json格式自己输入的 需要转
-              if (k.Type === 'object-textarea' && e[k.id]) {
-                // console.log(k.id, 'iddd');
-                e[k.id] = JSON.stringify(e[k.id]);
-              }
-              // 是数组类型的需要增加表单
-              if (k.Type === 'array' || k.Type === 'object') {
-                // console.log(k.id, 'array', k, e[k.id]);
-                this.editAddArrayForm(k, e[k.id]);
-              }
-              // if (k.Type === 'bytes') {
-              //   // 解码
-              //   e[k.id] = this.decode(e[k.id]);
-              // }
-            });
-            // Object.keys(e).map(k => {
-            //  通过判断是否是对象类型 会把对象有的属性也转掉了 没一一对应的值
-            //   console.log(k, e, 'xxx');
-            //   if (Object.prototype.toString.call(e[k]) === '[object Object]') {
-            //     e[k] = JSON.stringify(e[k]);
-            //   }
-            // });
-            // console.log(e, this.editForm.value, 'wm');
-            setTimeout(() => this.editForm.patchValue({...e}), 10);
-            // this.editForm.patchValue({...e});
-            this.beforeModifyData = e;
+            {
+              ID: this.data.ID,
+              ...withTrue,
+            }).subscribe(e => {
+          Object.keys(res.Edges).map(key => {
+            // console.log(key, e[key], 'key');
+            if (key === 'Repositories') {
+              e[`${key.slice(0, -3)}yIDs`] = (e[key] && e[key].length > 0) ? e[key].map(ids => ids.ID) : [];
+            }
+            if (key.slice(-1) === 's' && key !== 'Vcs') {
+              e[`${key.slice(0, -1)}IDs`] = (e[key] && e[key].length > 0) ? e[key].map(ids => ids.ID) : [];
+            } else if (key === 'Children') {
+              e[`${key.slice(0, 5)}IDs`] = (e[key] && e[key].length > 0) ? e[key].map(ids => ids.ID) : [];
+            } else {
+              e[`${key}ID`] = e[key] ? e[key].ID : null;
+              // console.log('duix 查询出的字段Parent、Children 对应editForm字段是ParentID、ChildIDs', key, e);
+            }
+          });
+          // e.InstanceTemplate.BindInfos = e.InstanceTemplate.BindInfos ? e.InstanceTemplate.BindInfos : [];
+          // e.InstanceTemplate.EnvVars = e.InstanceTemplate.EnvVars ? e.InstanceTemplate.EnvVars : [];
+          this.editValueType.map(k => {
+            // 类型是object 里面是json格式自己输入的 需要转
+            if (k.Type === 'object-textarea' && e[k.id]) {
+              // console.log(k.id, 'iddd');
+              e[k.id] = JSON.stringify(e[k.id]);
+            }
+            // 是数组类型的需要增加表单
+            if (k.Type === 'array' || k.Type === 'object') {
+              // console.log(k.id, 'array', k, e[k.id]);
+              this.editAddArrayForm(k, e[k.id]);
+            }
+          });
+          // setTimeout(() => this.editForm.patchValue({...e}), 1);
+          this.editForm.patchValue({...e});
+          this.beforeModifyData = e;
         });
       }
     });
