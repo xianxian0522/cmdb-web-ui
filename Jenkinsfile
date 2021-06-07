@@ -27,7 +27,7 @@ def jobInfo = [
       serverName: "artifactory", //部署目标，必须是在Jenkins中配置好的Artifactory服务器
         packages: [
     [ //部署信息
-    fileName: "*toolbox-ui*.tar.gz", //需要部署的文件名，可以使用通配符
+    fileName: "*.tar.gz", //需要部署的文件名，可以使用通配符
     serverName: "artifactory", //发布目标，必须是在Jenkins中配置好的Artifactory服务器
     ]
         ]
