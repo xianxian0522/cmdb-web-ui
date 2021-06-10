@@ -41,7 +41,7 @@
             [nzTotal]="total"
             [nzPageSize]="pageSize"
             [nzPageIndex]="pageIndex"
-            [nzScroll]="{ x: '2400px' }"
+            [nzScroll]="{ x: colNames?.length > 5 ? '2400px' : 'auto' }"
             [nzLoading]="isLoadingResults"
         >
             <thead>
