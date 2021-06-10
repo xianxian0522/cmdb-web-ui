@@ -2,8 +2,8 @@ import {AfterViewInit, Component, EventEmitter, OnInit, Output, ViewChild} from 
 import {BaseRepository} from '../../../share/services/base.repository';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {NzTableComponent} from 'ng-zorro-antd/table';
-import {merge, Subscription} from 'rxjs';
-import {debounceTime, map, switchMap} from 'rxjs/operators';
+import {combineLatest, merge, Subscription} from 'rxjs';
+import {debounceTime, map, mergeMap, switchMap} from 'rxjs/operators';
 import {LayoutComponent} from '../../../share/layout/layout.component';
 import {NzMessageService} from 'ng-zorro-antd/message';
 import { NzModalService} from 'ng-zorro-antd/modal';
@@ -41,6 +41,7 @@ export class ResourcesCommonComponent implements OnInit, AfterViewInit {
   @ViewChild(NzTableComponent) table: NzTableComponent;
   resourceUrl: string;
   colNames;
+  withTrue;
 
   updateCheckedSet(id: number, checked: boolean): void {
     if (checked) {
@@ -95,34 +96,108 @@ export class ResourcesCommonComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.resourceUrl = this.layoutComponent.baseTitle || 'AppMember';
     console.log(this.resourceUrl, 'url');
+    this.baseRepository.getModel(this.resourceUrl).pipe(
+      map(col => {
+        this.colNames = Object.keys(col.Properties).map(key => {
+          return {
+            name: col.Properties[key].Description ? col.Properties[key].Description : key,
+            id: key,
+            list: col.Properties[key].Enum ? col.Properties[key].Enum : null,
+            type: col.Properties[key].Type,
+          };
+        });
+        let arr = Object.keys(col.Properties).map(key => ({id: key, ...col.Properties[key],
+          isEnum: col.Properties[key].hasOwnProperty('Enum')}));
+        arr = arr.filter(item => item.Type === 'string');
+        arr.map(item => {
+          if (item.isEnum) {
+            item.id = item.id + 'EQ';
+          }
+        });
+        return [arr, col];
+      }),
+      mergeMap(([arr, col]) => {
+        return combineLatest(Object.keys(col.Edges).map(key => {
+          const url = col.Edges[key].Type;
+          return this.baseRepository.queryPage(url, {}).pipe(map(r => {
+            console.log(r, ';;;', url, key, this.resourceUrl);
+            r = r || [];
+            const tags = r.map(k => ({
+              V: k.ID,
+              N: k.InnerIP ? k.InnerIP : k.Name || k.Username || k.Role || k.Language || k.ID,
+              title: k.InnerIP ? k.InnerIP : k.Name || k.Username || k.Role || k.Language || k.ID,
+            }));
+            const obj: any = {
+              id: col.Edges[key].Name,
+              isEnum: true,
+              Enum: tags,
+              Description: col.Edges[key].Description || url,
+              isTags: !col.Edges[key].Unique,
+            };
+            if (!col.Edges[key].Required) {
+              obj.Nillable = true;
+            }
+            return obj;
+          }));
+        })).pipe(
+          map(xs => {
+            const s = arr.concat(xs);
+            this.searchQuestions = s;
+            this.searchForm = this.questionServices.toTextFormGroup(s);
 
-    this.baseRepository.getModel(this.resourceUrl).subscribe(col => {
-      this.colNames = Object.keys(col.Properties).map(key => {
-        return {
-          name: col.Properties[key].Description ? col.Properties[key].Description : key,
-          id: key,
-          list: col.Properties[key].Enum ? col.Properties[key].Enum : null,
-          type: col.Properties[key].Type,
-        };
-      });
-      let arr = Object.keys(col.Properties).map(key => ({id: key, ...col.Properties[key],
-        isEnum: col.Properties[key].hasOwnProperty('Enum')}));
-      arr = arr.filter(item => item.Type === 'string');
-      arr.map(item => {
-        if (item.isEnum) {
-          item.id = item.id + 'EQ';
-        }
-      });
-      this.searchQuestions = arr;
-      this.searchForm = this.questionServices.toTextFormGroup(arr);
-      // console.log(this.colNames, arr, this.searchForm);
-      // const value = this.searchForm.value;
-      // console.log(value, 'value');
-      // Object.keys(value).map(key => {
-      //   this.searchForm.get(key).valueChanges.subscribe(r => console.log(r, 'xxx'));
-      // });
-      this.searchForm.valueChanges.subscribe(r => this.refresh.emit());
+            return col;
+          })
+        );
+      }),
+      map(col => {
+        const withTrue = Object.keys(col.Edges).reduce((acc, current) => {
+          acc[`With${current}`] = true;
+          return acc;
+        }, {});
+        const nameCol = Object.keys(col.Edges).map(c => {
+          return {
+            name: col.Edges[c].Description,
+            id: c,
+            type: 'relation',
+            list: null,
+          };
+        });
+        return [withTrue, nameCol];
+      })
+    ).subscribe( ([withTrue, nameCol]) => {
+      if (this.resourceUrl === 'AppMember' || this.resourceUrl === 'BizMember' || this.resourceUrl === 'ReplicaSetMember') {
+        this.colNames = this.colNames.concat(nameCol);
+        this.withTrue = withTrue;
+      }
+      this.refresh.emit();
     });
+    // this.baseRepository.getModel(this.resourceUrl).subscribe(col => {
+      // this.colNames = Object.keys(col.Properties).map(key => {
+      //   return {
+      //     name: col.Properties[key].Description ? col.Properties[key].Description : key,
+      //     id: key,
+      //     list: col.Properties[key].Enum ? col.Properties[key].Enum : null,
+      //     type: col.Properties[key].Type,
+      //   };
+      // });
+      // let arr = Object.keys(col.Properties).map(key => ({id: key, ...col.Properties[key],
+      //   isEnum: col.Properties[key].hasOwnProperty('Enum')}));
+      // arr = arr.filter(item => item.Type === 'string');
+      // arr.map(item => {
+      //   if (item.isEnum) {
+      //     item.id = item.id + 'EQ';
+      //   }
+      // });
+      // this.searchQuestions = arr;
+      // this.searchForm = this.questionServices.toTextFormGroup(arr);
+      // // console.log(this.colNames, arr, this.searchForm);
+      // // const value = this.searchForm.value;
+      // // console.log(value, 'value');
+      // // Object.keys(value).map(key => {
+      // //   this.searchForm.get(key).valueChanges.subscribe(r => console.log(r, 'xxx'));
+      // // });
+      // this.searchForm.valueChanges.subscribe(r => this.refresh.emit());
+    // });
   }
   ngAfterViewInit(): void {
     merge(this.refresh, this.table.nzPageIndexChange, this.table.nzPageSizeChange).pipe(
@@ -140,11 +215,14 @@ export class ResourcesCommonComponent implements OnInit, AfterViewInit {
         debounceTime(200),
         switchMap(() => {
           this.isLoadingResults = true;
-          const obj = {
+          let obj = {
             Limit: this.table.nzPageSize,
             Offset: (this.table.nzPageIndex - 1) * this.table.nzPageSize,
             ...this.searchForm.value
           };
+          if (this.withTrue) {
+            obj = {...obj, ...this.withTrue};
+          }
           return this.baseRepository.queryPage(this.resourceUrl, obj);
         }),
         map(data => {
@@ -154,7 +232,7 @@ export class ResourcesCommonComponent implements OnInit, AfterViewInit {
       ).subscribe(res => {
         this.data = res ? res : [];
     });
-    this.refresh.emit();
+    // this.refresh.emit();
   }
 
   showCreateDialog(): void {

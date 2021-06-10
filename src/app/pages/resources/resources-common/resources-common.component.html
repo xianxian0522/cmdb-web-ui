@@ -8,7 +8,7 @@
                 <nz-form-label [nzSpan]="12" nzNoColon>{{search.Description}}</nz-form-label>
                 <nz-form-control [nzSpan]="14">
                     <div *ngIf="search.isTags; else tagsBlock">
-                        <nz-select style="width: 100px;" nzMode="tags" [nzDropdownMatchSelectWidth]="false" nzSize="small" nzShowSearch nzAllowClear [nzPlaceHolder]="search.Description" [formControlName]="search.id">
+                        <nz-select style="width: 300px;" nzMode="tags" [nzDropdownMatchSelectWidth]="false" nzSize="small" nzShowSearch nzAllowClear [nzPlaceHolder]="search.Description" [formControlName]="search.id">
                             <nz-option *ngFor="let select of search.Enum" [nzLabel]="select.N" [nzValue]="select.V"></nz-option>
                         </nz-select>
                     </div>
@@ -85,7 +85,8 @@
                       [object Object]
                     </button>
                     <ng-template #spanBlock>
-                        <span>{{ col.list ? getEnum(data[col.id], col.list) : data[col.id]}}</span>
+                      <span *ngIf="col.type === 'relation'; else typeBlock">{{ data[col.id]?.Name || data[col.id]?.Username || data[col.id]?.ID }}</span>
+                      <ng-template #typeBlock>{{ col.list ? getEnum(data[col.id], col.list) : data[col.id]}}</ng-template>
                     </ng-template>
                     <ng-template #contentTemplate>
 <!--                        <span>{{data[col.id] | json}}</span>-->
