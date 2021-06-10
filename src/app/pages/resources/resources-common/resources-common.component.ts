@@ -95,7 +95,7 @@ export class ResourcesCommonComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.resourceUrl = this.layoutComponent.baseTitle || 'AppMember';
-    console.log(this.resourceUrl, 'url');
+    // console.log(this.resourceUrl, 'url');
     this.baseRepository.getModel(this.resourceUrl).pipe(
       map(col => {
         this.colNames = Object.keys(col.Properties).map(key => {
@@ -120,7 +120,7 @@ export class ResourcesCommonComponent implements OnInit, AfterViewInit {
         return combineLatest(Object.keys(col.Edges).map(key => {
           const url = col.Edges[key].Type;
           return this.baseRepository.queryPage(url, {}).pipe(map(r => {
-            console.log(r, ';;;', url, key, this.resourceUrl);
+            // console.log(r, ';;;', url, key, this.resourceUrl);
             r = r || [];
             const tags = r.map(k => ({
               V: k.ID,
