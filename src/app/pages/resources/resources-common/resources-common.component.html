@@ -35,20 +35,23 @@
             #rowSelectionTable
             nzShowPagination
             nzShowSizeChanger
+            [nzBordered]="resourceUrl === 'LogicIdcEnv'"
             [nzFrontPagination]="false"
             (nzCurrentPageDataChange)="onCurrentPageDataChange()"
             [nzData]="data"
             [nzTotal]="total"
             [nzPageSize]="pageSize"
             [nzPageIndex]="pageIndex"
-            [nzScroll]="{ x: colNames?.length > 5 ? '2400px' : 'auto' }"
+            [nzScroll]="colNames?.length > 5 ? { x:  '2400px' } : null "
             [nzLoading]="isLoadingResults"
         >
             <thead>
             <tr>
-                <th nzLeft nzWidth="30px" [nzChecked]="checked" [nzIndeterminate]="indeterminate" (nzCheckedChange)="onAllChecked($event)"></th>
-                <th nzWidth="80px" nzLeft>ID</th>
-                <th *ngFor="let col of colNames" [nzWidth]="col.type === 'object' || col.type === 'array' ? '150px' : 'auto'">{{col.name}}</th>
+                <th rowSpan="2" nzLeft nzWidth="30px" [nzChecked]="checked" [nzIndeterminate]="indeterminate" (nzCheckedChange)="onAllChecked($event)"></th>
+                <th rowSpan="2" nzWidth="80px" nzLeft>ID</th>
+              <ng-container *ngFor="let col of colNames"  >
+                <th [rowspan]="col.colspan ? 1 : 2" [colspan]="col.colspan ? 2 : 1" [nzWidth]="col.type === 'object' || col.type === 'array' ? '150px' : 'auto'">{{col.name}}</th>
+              </ng-container>
 <!--                <th>DingTalkUserID</th>-->
 <!--                <th>State</th>-->
 <!--                <th>Mail</th>-->
@@ -57,9 +60,17 @@
 <!--                <th>Username</th>-->
 <!--                <th>RealName</th>-->
 <!--                <th>ReplicaSetMembers</th>-->
-                <th nzWidth="200px">创建时间</th>
-                <th nzWidth="200px">更新时间</th>
-                <th nzRight nzWidth="120px">操作</th>
+                <th rowSpan="2" nzWidth="200px">创建时间</th>
+                <th rowSpan="2" nzWidth="200px">更新时间</th>
+                <th rowSpan="2" nzRight nzWidth="120px">操作</th>
+            </tr>
+            <tr>
+              <ng-container *ngFor="let col of colNames">
+                <ng-container *ngIf="col.colspan">
+                  <th >名字</th>
+                  <th style="width: 200px" >显示名</th>
+                </ng-container>
+              </ng-container>
             </tr>
             </thead>
             <tbody>
@@ -78,10 +89,16 @@
 <!--                <td>{{ data.Username }}</td>-->
 <!--                <td>{{ data.RealName }}</td>-->
 <!--                <td>{{ data.ReplicaSetMembers }}</td>-->
-                <td *ngFor="let col of colNames">
-<!--                    <span *ngIf="col.type === 'object' || col.type === 'array'; else spanBlock" nz-tooltip [nzTooltipTitle]="contentTemplate">{{data[col.id]}}</span>-->
+              <ng-container *ngFor="let col of colNames">
+                <ng-container *ngIf="col.colspan; else colspanBlock">
+                  <td> {{ data[col.id]?.Name }} </td>
+                  <td>{{ data[col.id]?.DisplayName  }}</td>
+                </ng-container>
+                <ng-template #colspanBlock>
+                  <td >
+                    <!--                    <span *ngIf="col.type === 'object' || col.type === 'array'; else spanBlock" nz-tooltip [nzTooltipTitle]="contentTemplate">{{data[col.id]}}</span>-->
                     <button *ngIf="col.type === 'object' || col.type === 'array'; else spanBlock" nzType="default" nz-button nz-popover [nzPopoverContent]="contentTemplate">
-<!--                        {{ col.type === 'object' ? data[col.id] : '[object Object]'}}-->
+                      <!--                        {{ col.type === 'object' ? data[col.id] : '[object Object]'}}-->
                       [object Object]
                     </button>
                     <ng-template #spanBlock>
@@ -89,17 +106,20 @@
                       <ng-template #typeBlock>{{ col.list ? getEnum(data[col.id], col.list) : data[col.id]}}</ng-template>
                     </ng-template>
                     <ng-template #contentTemplate>
-<!--                        <span>{{data[col.id] | json}}</span>-->
-                        <nz-descriptions [nzTitle]="col.name" nzBordered>
-                            <nz-descriptions-item *ngFor="let item of objectData(data[col.id], col.id)" [nzTitle]="item.title">
-                              <div *ngIf="item.isArray; else stringContent">
-                                <div *ngFor="let t of item.content">{{t | json}}</div>
-                              </div>
-                              <ng-template #stringContent>{{item.content}}</ng-template>
-                            </nz-descriptions-item>
-                        </nz-descriptions>
+                      <!--                        <span>{{data[col.id] | json}}</span>-->
+                      <nz-descriptions [nzTitle]="col.name" nzBordered>
+                        <nz-descriptions-item *ngFor="let item of objectData(data[col.id], col.id)" [nzTitle]="item.title">
+                          <div *ngIf="item.isArray; else stringContent">
+                            <div *ngFor="let t of item.content">{{t | json}}</div>
+                          </div>
+                          <ng-template #stringContent>{{item.content}}</ng-template>
+                        </nz-descriptions-item>
+                      </nz-descriptions>
                     </ng-template>
-                </td>
+                  </td>
+                </ng-template>
+              </ng-container>
+
                 <td>{{ data.CreatedAt | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
                 <td>{{ data.UpdatedAt | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
                 <td nzRight>

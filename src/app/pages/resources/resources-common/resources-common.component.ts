@@ -169,6 +169,12 @@ export class ResourcesCommonComponent implements OnInit, AfterViewInit {
         this.colNames = this.colNames.concat(nameCol);
         this.withTrue = withTrue;
       }
+      if (this.resourceUrl === 'LogicIdcEnv') {
+        nameCol = (nameCol as any).filter(c => c.id !== 'ReplicaSets').map(col => ({...col, colspan: true}));
+        this.colNames = this.colNames.concat(nameCol);
+        this.withTrue = withTrue;
+        console.log(nameCol, ';;;;', withTrue, this.colNames);
+      }
       this.refresh.emit();
     });
     // this.baseRepository.getModel(this.resourceUrl).subscribe(col => {

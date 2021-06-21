@@ -218,11 +218,23 @@ export class ResourcesCommonEditComponent implements OnInit {
             return this.baseRepository.queryPage(url, {}).pipe(
                 map(r => {
                   r = r || [];
-                  const tags = r.map(k => ({
-                    V: k.ID,
-                    N: k.InnerIP ? k.InnerIP : k.Name || k.Username || k.Role || k.ID,
-                    title: k.InnerIP ? k.InnerIP : k.Name || k.Username || k.Role || k.ID,
-                  }));
+                  // const tags = r.map(k => ({
+                  //   V: k.ID,
+                  //   N: k.InnerIP ? k.InnerIP : k.Name || k.Username || k.Role || k.ID,
+                  //   title: k.InnerIP ? k.InnerIP : k.Name || k.Username || k.Role || k.Language + '-' + k.Version || k.ID,
+                  // }));
+                  const tags = r.map(k => {
+                    const t = {
+                      V: k.ID,
+                      N: k.InnerIP ? k.InnerIP : k.Name || k.Username || k.Role || k.ID,
+                      title: k.InnerIP ? k.InnerIP : k.Name || k.Username || k.Role || k.ID,
+                    };
+                    if (k.Language || k.Version) {
+                      t.N = k.Language + '-' + k.Version;
+                      t.title = k.Language + '-' + k.Version;
+                    }
+                    return t;
+                  });
 
                   if (res.Edges[key].Required) {
                     return {
