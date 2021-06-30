@@ -27,9 +27,11 @@
       </nz-form-control>
     </nz-form-item>
     <ng-template #elseBlock>
-      <nz-form-item [ngSwitch]="question.Type">
-        <nz-form-label [nzSpan]="span" nzNoColon>{{question.Description}}</nz-form-label>
-        <i (click)="addItems(question.id, question)" class="add-item-icon" *ngIf="question.Type === 'array'" nz-icon nzType="plus-circle" nzTheme="outline"></i>
+      <nz-form-item [ngSwitch]="question.Type" [ngClass]="{'array-item': question.Type === 'array'}">
+        <nz-form-label [nzSpan]="span" nzNoColon>
+          {{question.Description}}
+          <i (click)="addItems(question.id, question)" class="add-item-icon" *ngIf="question.Type === 'array'" nz-icon nzType="plus-circle" nzTheme="outline"></i>
+        </nz-form-label>
         <nz-form-control [nzSpan]="14" *ngSwitchCase="'string'">
           <input nz-input [formControlName]="question.id" [placeholder]="question.Description" [readonly]="question.id === 'ID' || (mode === 'edit' && question.Immutable)" nzSize="small">
         </nz-form-control>
@@ -45,7 +47,7 @@
         <nz-form-control [nzSpan]="14" *ngSwitchCase="'object-textarea'">
           <textarea nz-input nzAutosize [formControlName]="question.id" [placeholder]="question.Description" [readonly]="question.id === 'ID' || (mode === 'edit' && question.Immutable)" nzSize="small"></textarea>
         </nz-form-control>
-        <div *ngSwitchCase="'object'">
+        <div *ngSwitchCase="'object'" style="flex: 1">
           <div class="object-form" *ngIf="question.Properties" app-common-form [selectList]="question.Enum" [questions]="question.Properties" [editForm]="editForm.get(question.id)" [mode]="mode" layoutType="horizontal" span="8"></div>
         </div>
         <div *ngSwitchCase="'array'" class="array-forms">

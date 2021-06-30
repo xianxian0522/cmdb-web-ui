@@ -1,14 +1,16 @@
 .array-forms {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-around;
+  //justify-content: space-around;
   align-items: center;
   width: 100%;
+  flex: 1;
   .array-form {
     border: 1px solid #b7eb8f;
     height: 100%;
     position: relative;
     top: -15px;
+    margin-left: 10px;
     .ant-form-item {
       margin-bottom: 0px;
       margin-top: 24px;
@@ -17,7 +19,7 @@
   i {
     position: relative;
     top: 12px;
-    left: 7px;
+    left: 16px;
     font-size: 16px;
     z-index: 2;
     cursor: pointer;
@@ -27,8 +29,10 @@
   border: 1px solid #91d5ff;
 }
 .add-item-icon {
-  margin-right: 50%;
+  margin-left: 15px;
   font-size: 16px;
-  line-height: 2.2;
   cursor: pointer;
+}
+.object-form .array-item {
+  flex-direction: column;
 }
