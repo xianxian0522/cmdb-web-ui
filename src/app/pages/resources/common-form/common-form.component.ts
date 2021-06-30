@@ -38,20 +38,23 @@ export class CommonFormComponent implements OnInit {
   }
   addItems(id, question): void {
     question.arrItems.push({...question.Items});
-    const base = this.editForm.get(id).value[0];
+    // const base = this.editForm.get(id).value?.[0];
+    const base = question.Items.Properties.map(k => k.id);
     const baseGroup = new FormGroup({});
-    Object.keys(base).forEach(b => {
+    base.forEach(b => {
       baseGroup.addControl(b, new FormControl(null));
     });
     (this.editForm.get(id) as FormArray).push(baseGroup);
     // this.getFormArray(id, question).push(baseGroup);
-    // console.log('xxx;;;;', id, question, this.editForm.get(id));
+    // console.log('xxx;;;;', id, question, this.editForm.get(id), base);
   }
   deleteItem(id, question, index: number): void {
-    question.arrItems.splice(index, 1);
-    (this.editForm.get(id) as FormArray).removeAt(index);
+    if (question.arrItems.length > 1) {
+      question.arrItems.splice(index, 1);
+      (this.editForm.get(id) as FormArray).removeAt(index);
+    }
     // this.getFormArray(id, question).removeAt(index);
-    console.log(id, question, index, this.editForm.get(id));
+    // console.log(id, question, index, this.editForm.get(id));
   }
 
   // 穿梭框 多选择的时候 搜索的结果为true展示
