@@ -112,7 +112,7 @@
                           <div *ngIf="item.isArray; else stringContent">
                             <div *ngFor="let t of item.content">{{t | json}}</div>
                           </div>
-                          <ng-template #stringContent>{{item.content}}</ng-template>
+                          <ng-template #stringContent>{{item.content || item.content | json }}</ng-template>
                         </nz-descriptions-item>
                       </nz-descriptions>
                     </ng-template>
