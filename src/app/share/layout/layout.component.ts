@@ -61,7 +61,7 @@ export class LayoutComponent implements OnInit {
       }).catch(err => console.log(err));
     } else {
       this.sectionItem = this.menuItems.getItems(this.section);
-      // console.log(this.section, this.sectionItem, 'sss');
+      console.log(this.section, this.sectionItem, 'sss');
       this.titleCommon(url);
     }
 
