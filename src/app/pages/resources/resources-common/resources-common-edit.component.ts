@@ -214,7 +214,6 @@ export class ResourcesCommonEditComponent implements OnInit {
         }),
         mergeMap(([arr, res, ]) => {
           return combineLatest(Object.keys(res.Edges).map(key => {
-            console.log(key, res.Edges[key], '====');
             const url = res.Edges[key].Type;
             const obj = {};
             if (key === 'AppMembers') {
@@ -223,7 +222,6 @@ export class ResourcesCommonEditComponent implements OnInit {
             if (key === 'BizMembers') {
               obj[`WithBiz`] = true;
             }
-            console.log(obj);
             return this.baseRepository.queryPage(url, obj).pipe(
                 map(r => {
                   r = r || [];
