@@ -214,15 +214,19 @@ export class ResourcesCommonEditComponent implements OnInit {
         }),
         mergeMap(([arr, res, ]) => {
           return combineLatest(Object.keys(res.Edges).map(key => {
+            console.log(key, res.Edges[key], '====');
             const url = res.Edges[key].Type;
-            return this.baseRepository.queryPage(url, {}).pipe(
+            const obj = {};
+            if (key === 'AppMembers') {
+              obj[`WithApp`] = true;
+            }
+            if (key === 'BizMembers') {
+              obj[`WithBiz`] = true;
+            }
+            console.log(obj);
+            return this.baseRepository.queryPage(url, obj).pipe(
                 map(r => {
                   r = r || [];
-                  // const tags = r.map(k => ({
-                  //   V: k.ID,
-                  //   N: k.InnerIP ? k.InnerIP : k.Name || k.Username || k.Role || k.ID,
-                  //   title: k.InnerIP ? k.InnerIP : k.Name || k.Username || k.Role || k.Language + '-' + k.Version || k.ID,
-                  // }));
                   const tags = r.map(k => {
                     const t = {
                       V: k.ID,
@@ -232,6 +236,14 @@ export class ResourcesCommonEditComponent implements OnInit {
                     if (k.Language || k.Version) {
                       t.N = k.Language + '-' + k.Version;
                       t.title = k.Language + '-' + k.Version;
+                    }
+                    if (obj[`WithApp`]) {
+                      t.N = k?.App.Name + ' / ' + k.Role;
+                      t.title = k?.App.Name + ' / ' + k.Role;
+                    }
+                    if (obj[`WithBiz`]) {
+                      t.N = k?.Biz.Name + ' / ' + k.Role;
+                      t.title = k?.Biz.Name + ' / ' + k.Role;
                     }
                     return t;
                   });
