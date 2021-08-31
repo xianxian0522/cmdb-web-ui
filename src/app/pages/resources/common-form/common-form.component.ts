@@ -56,6 +56,9 @@ export class CommonFormComponent implements OnInit {
     // this.getFormArray(id, question).removeAt(index);
     // console.log(id, question, index, this.editForm.get(id));
   }
+  isNotSelected(tags, select: string): boolean {
+    return this.editForm.get(tags).value?.indexOf(select) === -1;
+  }
 
   // 穿梭框 多选择的时候 搜索的结果为true展示
   filterOption(inputValue: string, item: any): boolean {

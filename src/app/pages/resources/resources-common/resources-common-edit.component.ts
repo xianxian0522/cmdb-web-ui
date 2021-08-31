@@ -254,6 +254,7 @@ export class ResourcesCommonEditComponent implements OnInit {
                       isEnum: true,
                       isTags: !res.Edges[key].Unique,
                       Description: res.Edges[key].Description || res.Edges[key].Name,
+                      disabled: obj[`WithApp`] || obj[`WithBiz`],
                     };
                   } else {
                     return {
@@ -263,6 +264,7 @@ export class ResourcesCommonEditComponent implements OnInit {
                       Enum: tags,
                       isEnum: true,
                       isTags: !res.Edges[key].Unique,
+                      disabled: obj[`WithApp`] || obj[`WithBiz`],
                     };
                   }
                 })

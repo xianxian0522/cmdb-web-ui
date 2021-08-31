@@ -15,6 +15,7 @@ export class QuestionBase<T> {
   Items: any;
   arrItems: any;
   Enum: any;
+  disabled: boolean;
 
   constructor(options: {
     value?: T;
@@ -33,6 +34,7 @@ export class QuestionBase<T> {
     Items?: QuestionBase<T>;
     arrItems?: any;
     Enum?: any;
+    disabled?: boolean;
   } = {}) {
     this.value = options.value;
     this.id = options.id || '';
@@ -50,6 +52,7 @@ export class QuestionBase<T> {
     this.Items = options.Items || [];
     this.arrItems = options.arrItems || [];
     this.Enum = options.Enum || [];
+    this.disabled = !!options.disabled;
   }
 }
 

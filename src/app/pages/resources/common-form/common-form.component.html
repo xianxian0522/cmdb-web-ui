@@ -6,7 +6,7 @@
       <nz-form-control [nzSpan]="14">
         <div *ngIf="question.isTags; else tagsBlock">
           <nz-select nzMode="multiple" [nzDropdownMatchSelectWidth]="false" nzSize="small" nzShowSearch nzAllowClear [nzPlaceHolder]="question.Description" [formControlName]="question.id">
-            <nz-option *ngFor="let select of question.Enum" [nzLabel]="select.N" [nzValue]="select.V"></nz-option>
+            <nz-option *ngFor="let select of question.Enum" [nzDisabled]="question.disabled && isNotSelected(question.id, select.V)" [nzLabel]="select.N" [nzValue]="select.V"></nz-option>
           </nz-select>
 <!--          穿梭框-->
 <!--          <nz-transfer-->
